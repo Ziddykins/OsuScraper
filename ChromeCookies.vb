@@ -10,20 +10,51 @@ Imports System.Security.Cryptography
 Imports Org.BouncyCastle.Crypto.Parameters
 Imports Org.BouncyCastle.Crypto.Modes
 Imports Org.BouncyCastle.Crypto.Engines
-Module Cookies
-    Public Function GetCookieJar(domain_host As String) As Dictionary(Of String, String)
+
+Friend Module Cookies
+    Public Enum BrowserType
+        MSEdge
+        Chrome
+        Firefox
+        Other
+    End Enum
+
+    Public Function GetCookieJar(domain_host As String, browser_type As BrowserType) As Dictionary(Of String, String)
+        Dim CookiesDict As Dictionary(Of String, String) = New Dictionary(Of String, String)
+        Dim conn As SQLiteConnection
+        Dim cmd As SQLiteCommand
+
+        Dim browser_check_regkey As String = My.Computer.Registry.GetValue(
+                "HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\Shell\Associations\UrlAssociations\https\UserChoice",
+                "ProgId",
+                Nothing
+        ).ToString()
+
+        Dim app_local_data As String = ExpandEnvironmentVariables("%LOCALAPPDATA%")
+        Dim app_roaming_data As String = ExpandEnvironmentVariables("%APPDATA%")
         Dim SessionCookie As String = "osu_session"
         Dim XSRFCookie As String = "XSRF-TOKEN"
-        Dim strPath, strDb As String
-        Dim CookiesDict As Dictionary(Of String, String) = New Dictionary(Of String, String)
+        Dim strPath As String = ""
+        Dim strDb As String
         Dim enc_key As Byte()
+
         enc_key = GetEncKey()
-        strPath = "C:\Users\zigby\AppData\Local\Google\Chrome\User Data\Default\Network\Cookies"
+
+        Select Case browser_type
+            Case BrowserType.Chrome
+                strPath = app_local_data & "\Google\Chrome\User Data\Default\Cookies"
+            case BrowserType.Firefox
+                strPath = app_roaming_data & "\Mozilla\Firefox\Profiles\tl92esyp.default-release\cookies.sqlite"
+            Case BrowserType.MSEdge
+                strPath = app_local_data & "\Microsoft\Edge\User Data\Default\Network\Cookies"
+            Case BrowserType.Other
+                strPath = "Unsupportedlol"
+        End Select
+        
         strDb = "Data Source=" & strPath & ";"
-        Dim conn As SQLiteConnection = New SQLiteConnection(strDb)
-        Dim cmd As SQLiteCommand = conn.CreateCommand()
+        conn = New SQLiteConnection(strDb)
+        cmd = conn.CreateCommand()
         cmd.CommandText = "SELECT name, encrypted_value FROM main.cookies WHERE host_key LIKE " & domain_host
-        'cmd.CommandText = "SELECT _rowid_, FROM main.meta;"
         conn.Open()
 
         Using reader As SQLiteDataReader = cmd.ExecuteReader()
