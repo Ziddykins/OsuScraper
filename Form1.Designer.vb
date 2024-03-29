@@ -74,6 +74,12 @@ Partial Class frmMain
         lblForkLabel = New Label()
         tbForkValue = New TrackBar()
         ttGeneralHover = New ToolTip(components)
+        StatusStrip1 = New StatusStrip()
+        tslAuthenticatedLabel = New ToolStripStatusLabel()
+        tssAuthenticatedValue = New ToolStripStatusLabel()
+        tssSep1 = New ToolStripStatusLabel()
+        tssListingsLabel = New ToolStripStatusLabel()
+        ToolStripStatusLabel1 = New ToolStripStatusLabel()
         CType(pbLogo, ComponentModel.ISupportInitialize).BeginInit()
         grpModes.SuspendLayout()
         grpCategories.SuspendLayout()
@@ -81,6 +87,7 @@ Partial Class frmMain
         grpConfiguration.SuspendLayout()
         CType(tbSleepInterval, ComponentModel.ISupportInitialize).BeginInit()
         CType(tbForkValue, ComponentModel.ISupportInitialize).BeginInit()
+        StatusStrip1.SuspendLayout()
         SuspendLayout()
         ' 
         ' pbLogo
@@ -373,6 +380,7 @@ Partial Class frmMain
         ' 
         ' msMainMenu
         ' 
+        msMainMenu.ImageScalingSize = New Size(24, 24)
         msMainMenu.Items.AddRange(New ToolStripItem() {tsmFile, tsmListings, tsmOptions, tsmHelp})
         msMainMenu.Location = New Point(0, 0)
         msMainMenu.Name = "msMainMenu"
@@ -478,7 +486,7 @@ Partial Class frmMain
         btnOpenListings.Font = New Font("Quicksand", 9F)
         btnOpenListings.Location = New Point(13, 243)
         btnOpenListings.Name = "btnOpenListings"
-        btnOpenListings.Size = New Size(145, 30)
+        btnOpenListings.Size = New Size(145, 36)
         btnOpenListings.TabIndex = 15
         btnOpenListings.Text = "Open Listings"
         btnOpenListings.UseVisualStyleBackColor = True
@@ -489,7 +497,7 @@ Partial Class frmMain
         btnLogin.Font = New Font("Quicksand", 9F)
         btnLogin.Location = New Point(86, 209)
         btnLogin.Name = "btnLogin"
-        btnLogin.Size = New Size(70, 28)
+        btnLogin.Size = New Size(70, 36)
         btnLogin.TabIndex = 14
         btnLogin.Text = "Login"
         btnLogin.UseVisualStyleBackColor = True
@@ -502,7 +510,7 @@ Partial Class frmMain
         btnScrape.Font = New Font("Quicksand", 9F)
         btnScrape.Location = New Point(12, 279)
         btnScrape.Name = "btnScrape"
-        btnScrape.Size = New Size(145, 30)
+        btnScrape.Size = New Size(145, 38)
         btnScrape.TabIndex = 6
         btnScrape.Text = "Scrape"
         btnScrape.UseVisualStyleBackColor = True
@@ -524,7 +532,7 @@ Partial Class frmMain
         btnAutoFill.Font = New Font("Quicksand", 9F)
         btnAutoFill.Location = New Point(10, 209)
         btnAutoFill.Name = "btnAutoFill"
-        btnAutoFill.Size = New Size(70, 28)
+        btnAutoFill.Size = New Size(90, 36)
         btnAutoFill.TabIndex = 5
         btnAutoFill.Text = "Auto-Fill"
         btnAutoFill.UseVisualStyleBackColor = True
@@ -656,12 +664,54 @@ Partial Class frmMain
         tbForkValue.TabIndex = 0
         tbForkValue.TickStyle = TickStyle.TopLeft
         ' 
+        ' StatusStrip1
+        ' 
+        StatusStrip1.ImageScalingSize = New Size(24, 24)
+        StatusStrip1.Items.AddRange(New ToolStripItem() {tslAuthenticatedLabel, tssAuthenticatedValue, tssSep1, tssListingsLabel, ToolStripStatusLabel1})
+        StatusStrip1.Location = New Point(0, 540)
+        StatusStrip1.Name = "StatusStrip1"
+        StatusStrip1.Size = New Size(443, 22)
+        StatusStrip1.TabIndex = 5
+        StatusStrip1.Text = "StatusStrip1"
+        ' 
+        ' tslAuthenticatedLabel
+        ' 
+        tslAuthenticatedLabel.Name = "tslAuthenticatedLabel"
+        tslAuthenticatedLabel.Size = New Size(85, 17)
+        tslAuthenticatedLabel.Text = "Authenticated:"
+        ' 
+        ' tssAuthenticatedValue
+        ' 
+        tssAuthenticatedValue.ForeColor = Color.Red
+        tssAuthenticatedValue.Name = "tssAuthenticatedValue"
+        tssAuthenticatedValue.Size = New Size(23, 17)
+        tssAuthenticatedValue.Text = "No"
+        ' 
+        ' tssSep1
+        ' 
+        tssSep1.Name = "tssSep1"
+        tssSep1.Size = New Size(10, 17)
+        tssSep1.Text = "|"
+        ' 
+        ' tssListingsLabel
+        ' 
+        tssListingsLabel.Name = "tssListingsLabel"
+        tssListingsLabel.Size = New Size(50, 17)
+        tssListingsLabel.Text = "Listings:"
+        ' 
+        ' ToolStripStatusLabel1
+        ' 
+        ToolStripStatusLabel1.Name = "ToolStripStatusLabel1"
+        ToolStripStatusLabel1.Size = New Size(120, 17)
+        ToolStripStatusLabel1.Text = "No Cache/Not Pulled"
+        ' 
         ' frmMain
         ' 
         AutoScaleDimensions = New SizeF(7F, 18F)
         AutoScaleMode = AutoScaleMode.Font
         AutoSize = True
-        ClientSize = New Size(443, 533)
+        ClientSize = New Size(443, 562)
+        Controls.Add(StatusStrip1)
         Controls.Add(grpConfiguration)
         Controls.Add(grpCategories)
         Controls.Add(grpModes)
@@ -687,6 +737,8 @@ Partial Class frmMain
         grpConfiguration.PerformLayout()
         CType(tbSleepInterval, ComponentModel.ISupportInitialize).EndInit()
         CType(tbForkValue, ComponentModel.ISupportInitialize).EndInit()
+        StatusStrip1.ResumeLayout(False)
+        StatusStrip1.PerformLayout()
         ResumeLayout(False)
         PerformLayout()
 
@@ -742,4 +794,10 @@ Partial Class frmMain
     Friend WithEvents btnScrape As Button
     Friend WithEvents btnLogin As Button
     Friend WithEvents btnOpenListings As Button
+    Friend WithEvents StatusStrip1 As StatusStrip
+    Friend WithEvents tslAuthenticatedLabel As ToolStripStatusLabel
+    Friend WithEvents tssAuthenticatedValue As ToolStripStatusLabel
+    Friend WithEvents tssSep1 As ToolStripStatusLabel
+    Friend WithEvents tssListingsLabel As ToolStripStatusLabel
+    Friend WithEvents ToolStripStatusLabel1 As ToolStripStatusLabel
 End Class

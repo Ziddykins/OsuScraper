@@ -30,11 +30,10 @@ Public Class frmMain
     End Sub
 
     Private Sub btnAutoFill_Click(sender As Object, e As EventArgs) Handles btnAutoFill.Click
-        Dim cookies = GetCookieJar("'%ppy.sh%'")
+        Dim cookies = GetCookieJar("'%ppy.sh%'", BrowserType.Chrome)
 
         If cookies IsNot Nothing Then
             For Each item As KeyValuePair(Of String, String) in cookies
-                MessageBox.Show($"Key: {item.key} - Value: {item.Value}")
                 If item.Key = "XSRF-TOKEN" Then
                     txtXSRFToken.Text = item.Value
                 Else
@@ -113,5 +112,19 @@ Public Class frmMain
     Private Sub frmMain_Load(sender As Object, e As EventArgs) Handles Me.Load
         MaximizeBox = False
         
+        For Each control As Control In grpCategories.Controls
+            If TypeOf control Is CheckBox Then
+                If StrComp(control.Name, "chkCatAny") <> 0 Then
+                    AddHandler control.Click, AddressOf uncheckAllCategories
+                    MessageBox.Show("Added handler for " & control.Name.ToString())
+                End IF
+            End If
+        Next
+    End Sub
+
+    Private Sub uncheckAllCategories (sender As Object, e As EventArgs)
+        If chkCatAny.Checked = True Then
+            chkCatAny.Checked = False
+        End If
     End Sub
 End Class

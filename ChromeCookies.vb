@@ -42,7 +42,7 @@ Friend Module Cookies
 
         Select Case browser_type
             Case BrowserType.Chrome
-                strPath = app_local_data & "\Google\Chrome\User Data\Default\Cookies"
+                strPath = app_local_data & "\Google\Chrome\User Data\Default\Network\Cookies"
             case BrowserType.Firefox
                 strPath = app_roaming_data & "\Mozilla\Firefox\Profiles\tl92esyp.default-release\cookies.sqlite"
             Case BrowserType.MSEdge
@@ -60,38 +60,41 @@ Friend Module Cookies
         Using reader As SQLiteDataReader = cmd.ExecuteReader()
             While reader.Read()
                 Dim name = reader.GetString(0)
-                MessageBox.Show(name & reader.GetString(1))
                 If name = SessionCookie Or name = XSRFCookie Then
-                    Dim bajt() As Byte = CType(reader.GetValue(1), Byte())
-                    Dim Value As String = _decryptWithKey(bajt, enc_key, 3)
+                    Dim bajt() As Byte
+                    Dim Value As String
+                    If browser_type = BrowserType.Chrome _
+                        Or browser_type = BrowserType.MSEdge Then
+                        bajt = CType(reader.GetValue(1), Byte())
+                        Value = _decryptWithKey(bajt, enc_key, 3)
+                    Else
+                        Value = reader.GetString(1)
+                    End If
+
                     CookiesDict.Add(name, Value)
+
                 End If
             End While
         End Using
 
         conn.Close()
         Return CookiesDict
-
-        'Dim encoded = New List(Of String)
-        'For Each cookie In CookiesDict
-        '    Dim part = cookie.Key & "=" & cookie.Value
-        '    encoded.Add(part)
-        'Next
-        'Return String.Join("; ", encoded)
     End Function
 
     Public Function _decryptWithKey(ByVal message As Byte(), ByVal key As Byte(), ByVal nonSecretPayloadLength As Integer) As String
-        ' Dim message As Byte()
-        ' message = UnicodeStringToBytes(message1)
-        ' key = UnicodeStringToBytes(key1)
         Const KEY_BIT_SIZE As Integer = 256
         Const MAC_BIT_SIZE As Integer = 128
         Const NONCE_BIT_SIZE As Integer = 96
-        If key Is Nothing OrElse key.Length <> KEY_BIT_SIZE / 8 Then Throw New ArgumentException(String.Format("Key needs to be {0} bit!", KEY_BIT_SIZE), "key")
-        If message Is Nothing OrElse message.Length = 0 Then Throw New ArgumentException("Message required!", "message")
+
+        If key Is Nothing OrElse key.Length <> KEY_BIT_SIZE / 8 Then
+            Throw New ArgumentException(String.Format("Key needs to be {0} bit!", KEY_BIT_SIZE), "key")
+        End If
+
+        If message Is Nothing OrElse message.Length = 0 Then
+            Throw New ArgumentException("Message required!", "message")
+        End If
 
         Using cipherStream = New MemoryStream(message)
-
             Using cipherReader = New BinaryReader(cipherStream)
                 Dim nonSecretPayload = cipherReader.ReadBytes(nonSecretPayloadLength)
                 Dim nonce = cipherReader.ReadBytes(CInt(Convert.ToDouble(NONCE_BIT_SIZE) / 8.0))
@@ -112,9 +115,7 @@ Friend Module Cookies
             End Using
         End Using
     End Function
-    Private Function UnicodeStringToBytes(
-        ByVal str As String) As Byte()
-
+    Private Function UnicodeStringToBytes(ByVal str As String) As Byte()
         Return Encoding.Unicode.GetBytes(str)
     End Function
 
