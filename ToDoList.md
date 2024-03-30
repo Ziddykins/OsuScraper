@@ -8,11 +8,10 @@
  - [ ] Make Autofill pull from Firefox cookie database
  - [ ] Make Listings work
  - [ ] Make downloading work
- - [ ] Make selecting something else unselect All
  - [ ] Make all checkboxes work
 		
 ### Completed
-
+- [x] Make selecting something else unselect All
 ### Ideas
 
 ### Notes

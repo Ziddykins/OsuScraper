@@ -1,9 +1,24 @@
-﻿Imports System.Text.RegularExpressions
+﻿Imports System.ComponentModel
+Imports System.Text.RegularExpressions
 
 
 Public Class frmMain
-    Public frmListings As Form = New frmListings
-      
+    Public frmListings As Form
+    Public frmLoginForm As Form
+
+    Public Sub New()
+        InitializeComponent()
+        frmListings = New FrmListings
+        frmLoginForm = New frmLoginForm
+
+        frmListings.Show()
+        frmLoginForm.Show()
+
+        frmListings.Visible = False
+        frmLoginForm.Visible = False
+        
+    End Sub
+
     Private Sub CheckBox14_Click(sender As Object, e As EventArgs) Handles chkCatAny.Click
         If chkCatAny.Checked = True Then
             For Each cb As CheckBox In grpCategories.Controls.OfType(Of CheckBox)
@@ -12,7 +27,7 @@ Public Class frmMain
             chkCatAny.Checked = True
         End If
     End Sub
-    Private Sub Button2_Click(sender As Object, e As EventArgs) Handles btnScrape.Click
+    Private Sub Button2_Click(sender As Object, e As EventArgs)
         Dim xsrf_regex = "[a-zA-Z0-9]{40}"
         Dim osu_session_regex = "[a-zA-Z0-9]{100,}.*?%3D"
         Dim rgx_check As New Regex(osu_session_regex)
@@ -22,10 +37,10 @@ Public Class frmMain
             If rgx_check.IsMatch(txtXSRFToken.Text) Then
                 ' Do listings pull
             Else
-                MessageBox.Show("XSRF Token does not appear to be valid - Should be in the format: XSRF-TOKEN=" & Chr(34) & StrDup(40, "X").ToString(), "Error!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                MessageBox.Show("XSRF Token does not appear to be valid - Should be in the format: XSRF-TOKEN=" & Chr(34) & StrDup(40, "X").ToString, "Error!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             End If
         Else
-            MessageBox.Show("Osu Session Token does not appear to be valid - Should be in the format: osu-session=" & Chr(34) & StrDup(300, "X").ToString() & "%3D", "Error!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            MessageBox.Show("Osu Session Token does not appear to be valid - Should be in the format: osu-session=" & Chr(34) & StrDup(300, "X").ToString & "%3D", "Error!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End If
     End Sub
 
@@ -96,35 +111,45 @@ Public Class frmMain
     End Sub
 
     Private Sub btnOpenListings_Click(sender As Object, e As EventArgs) Handles btnOpenListings.Click
-        If frmListings Is Nothing Then
-            frmListings = New frmListings   
-            frmListings.Show()
+        If frmListings.IsDisposed = False Then
+            frmListings.Visible = True
         Else 
+            frmListings = New frmListings
             frmListings.Show()
+            frmListings.Visible = True
         End If
-    End Sub
-    Public Sub CleanUpListings()
-
-        frmListings.Dispose()
-        frmListings = Nothing
     End Sub
 
     Private Sub frmMain_Load(sender As Object, e As EventArgs) Handles Me.Load
         MaximizeBox = False
-        
+
         For Each control As Control In grpCategories.Controls
             If TypeOf control Is CheckBox Then
                 If StrComp(control.Name, "chkCatAny") <> 0 Then
                     AddHandler control.Click, AddressOf uncheckAllCategories
-                    MessageBox.Show("Added handler for " & control.Name.ToString())
                 End IF
             End If
         Next
     End Sub
 
-    Private Sub uncheckAllCategories (sender As Object, e As EventArgs)
+    Private Sub uncheckAllCategories(sender As Object, e As EventArgs)
         If chkCatAny.Checked = True Then
             chkCatAny.Checked = False
         End If
+    End Sub
+
+    Private Sub btnLogin_Click(sender As Object, e As EventArgs) Handles btnLogin.Click
+        If frmLoginForm.IsDisposed = False Then
+            frmLoginForm.Visible = True
+        Else 
+            frmLoginForm = New frmLoginForm
+            frmLoginForm.Show()
+            frmLoginForm.Visible = True
+        End If
+
+    End Sub
+
+    Private Sub btnLogin_Validating(sender As Object, e As CancelEventArgs) Handles btnLogin.Validating
+
     End Sub
 End Class

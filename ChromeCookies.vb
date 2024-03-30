@@ -58,21 +58,32 @@ Friend Module Cookies
         conn.Open()
 
         Using reader As SQLiteDataReader = cmd.ExecuteReader()
-            While reader.Read()
+            Dim max_lines As Integer = reader.FieldCount
+            frmMain.ToolStripProgressBar1.Maximum = max_lines
+            frmMain.ToolStripProgressBar1.Minimum = 1
+            frmMain.ToolStripProgressBar1.Value = 1
+            frmMain.ToolStripProgressBar1.Step = 1
+            While reader.Read()        
+                If frmMain.ToolStripProgressBar1.Value > frmMain.ToolStripProgressBar1.Maximum Then
+                    frmMain.ToolStripProgressBar1.Value = max_lines
+                End If
+                
+              
                 Dim name = reader.GetString(0)
+                
                 If name = SessionCookie Or name = XSRFCookie Then
-                    Dim bajt() As Byte
+                    Dim t_byte() As Byte
                     Dim Value As String
+
                     If browser_type = BrowserType.Chrome _
                         Or browser_type = BrowserType.MSEdge Then
-                        bajt = CType(reader.GetValue(1), Byte())
-                        Value = _decryptWithKey(bajt, enc_key, 3)
+                        t_byte = CType(reader.GetValue(1), Byte())
+                        Value = _decryptWithKey(t_byte, enc_key, 3)
                     Else
                         Value = reader.GetString(1)
                     End If
 
                     CookiesDict.Add(name, Value)
-
                 End If
             End While
         End Using

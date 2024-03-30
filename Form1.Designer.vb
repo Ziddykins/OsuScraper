@@ -57,7 +57,6 @@ Partial Class frmMain
         grpConfiguration = New GroupBox()
         btnOpenListings = New Button()
         btnLogin = New Button()
-        btnScrape = New Button()
         chkOverwriteExistingFiles = New CheckBox()
         btnAutoFill = New Button()
         lblXSRFTokenLabel = New Label()
@@ -75,11 +74,14 @@ Partial Class frmMain
         tbForkValue = New TrackBar()
         ttGeneralHover = New ToolTip(components)
         StatusStrip1 = New StatusStrip()
-        tslAuthenticatedLabel = New ToolStripStatusLabel()
+        tslStatusesLabel = New ToolStripStatusLabel()
         tssAuthenticatedValue = New ToolStripStatusLabel()
         tssSep1 = New ToolStripStatusLabel()
-        tssListingsLabel = New ToolStripStatusLabel()
-        ToolStripStatusLabel1 = New ToolStripStatusLabel()
+        tslCacheValue = New ToolStripStatusLabel()
+        tslSep2 = New ToolStripStatusLabel()
+        tslPulledValue = New ToolStripStatusLabel()
+        tslSpacer = New ToolStripStatusLabel()
+        ToolStripProgressBar1 = New ToolStripProgressBar()
         CType(pbLogo, ComponentModel.ISupportInitialize).BeginInit()
         grpModes.SuspendLayout()
         grpCategories.SuspendLayout()
@@ -455,7 +457,6 @@ Partial Class frmMain
         ' 
         grpConfiguration.Controls.Add(btnOpenListings)
         grpConfiguration.Controls.Add(btnLogin)
-        grpConfiguration.Controls.Add(btnScrape)
         grpConfiguration.Controls.Add(chkOverwriteExistingFiles)
         grpConfiguration.Controls.Add(btnAutoFill)
         grpConfiguration.Controls.Add(lblXSRFTokenLabel)
@@ -471,7 +472,7 @@ Partial Class frmMain
         grpConfiguration.Controls.Add(lblForkValue)
         grpConfiguration.Controls.Add(lblForkLabel)
         grpConfiguration.Controls.Add(tbForkValue)
-        grpConfiguration.Location = New Point(264, 140)
+        grpConfiguration.Location = New Point(267, 146)
         grpConfiguration.Name = "grpConfiguration"
         grpConfiguration.Size = New Size(176, 391)
         grpConfiguration.TabIndex = 4
@@ -484,9 +485,9 @@ Partial Class frmMain
         btnOpenListings.FlatAppearance.BorderColor = Color.IndianRed
         btnOpenListings.FlatStyle = FlatStyle.Popup
         btnOpenListings.Font = New Font("Quicksand", 9F)
-        btnOpenListings.Location = New Point(13, 243)
+        btnOpenListings.Location = New Point(11, 248)
         btnOpenListings.Name = "btnOpenListings"
-        btnOpenListings.Size = New Size(145, 36)
+        btnOpenListings.Size = New Size(145, 28)
         btnOpenListings.TabIndex = 15
         btnOpenListings.Text = "Open Listings"
         btnOpenListings.UseVisualStyleBackColor = True
@@ -495,30 +496,17 @@ Partial Class frmMain
         ' 
         btnLogin.AutoSize = True
         btnLogin.Font = New Font("Quicksand", 9F)
-        btnLogin.Location = New Point(86, 209)
+        btnLogin.Location = New Point(89, 214)
         btnLogin.Name = "btnLogin"
-        btnLogin.Size = New Size(70, 36)
+        btnLogin.Size = New Size(68, 28)
         btnLogin.TabIndex = 14
         btnLogin.Text = "Login"
         btnLogin.UseVisualStyleBackColor = True
         ' 
-        ' btnScrape
-        ' 
-        btnScrape.AutoSize = True
-        btnScrape.FlatAppearance.BorderColor = Color.IndianRed
-        btnScrape.FlatStyle = FlatStyle.Flat
-        btnScrape.Font = New Font("Quicksand", 9F)
-        btnScrape.Location = New Point(12, 279)
-        btnScrape.Name = "btnScrape"
-        btnScrape.Size = New Size(145, 38)
-        btnScrape.TabIndex = 6
-        btnScrape.Text = "Scrape"
-        btnScrape.UseVisualStyleBackColor = True
-        ' 
         ' chkOverwriteExistingFiles
         ' 
         chkOverwriteExistingFiles.AutoSize = True
-        chkOverwriteExistingFiles.Location = New Point(10, 368)
+        chkOverwriteExistingFiles.Location = New Point(11, 348)
         chkOverwriteExistingFiles.Name = "chkOverwriteExistingFiles"
         chkOverwriteExistingFiles.Size = New Size(129, 22)
         chkOverwriteExistingFiles.TabIndex = 13
@@ -530,9 +518,9 @@ Partial Class frmMain
         ' 
         btnAutoFill.AutoSize = True
         btnAutoFill.Font = New Font("Quicksand", 9F)
-        btnAutoFill.Location = New Point(10, 209)
+        btnAutoFill.Location = New Point(10, 214)
         btnAutoFill.Name = "btnAutoFill"
-        btnAutoFill.Size = New Size(90, 36)
+        btnAutoFill.Size = New Size(73, 28)
         btnAutoFill.TabIndex = 5
         btnAutoFill.Text = "Auto-Fill"
         btnAutoFill.UseVisualStyleBackColor = True
@@ -540,7 +528,7 @@ Partial Class frmMain
         ' lblXSRFTokenLabel
         ' 
         lblXSRFTokenLabel.AutoSize = True
-        lblXSRFTokenLabel.Location = New Point(81, 163)
+        lblXSRFTokenLabel.Location = New Point(81, 168)
         lblXSRFTokenLabel.Name = "lblXSRFTokenLabel"
         lblXSRFTokenLabel.Size = New Size(75, 18)
         lblXSRFTokenLabel.TabIndex = 12
@@ -549,7 +537,7 @@ Partial Class frmMain
         ' lblSessionLabel
         ' 
         lblSessionLabel.AutoSize = True
-        lblSessionLabel.Location = New Point(36, 119)
+        lblSessionLabel.Location = New Point(36, 121)
         lblSessionLabel.Name = "lblSessionLabel"
         lblSessionLabel.Size = New Size(121, 18)
         lblSessionLabel.TabIndex = 11
@@ -557,7 +545,7 @@ Partial Class frmMain
         ' 
         ' txtXSRFToken
         ' 
-        txtXSRFToken.Location = New Point(10, 181)
+        txtXSRFToken.Location = New Point(10, 186)
         txtXSRFToken.Name = "txtXSRFToken"
         txtXSRFToken.PlaceholderText = "XSRF-TOKEN:""<TOKEN>"""
         txtXSRFToken.Size = New Size(147, 22)
@@ -565,7 +553,7 @@ Partial Class frmMain
         ' 
         ' txtSessionToken
         ' 
-        txtSessionToken.Location = New Point(10, 137)
+        txtSessionToken.Location = New Point(10, 139)
         txtSessionToken.Name = "txtSessionToken"
         txtSessionToken.PlaceholderText = "osu_session:""<TOKEN>"""
         txtSessionToken.Size = New Size(148, 22)
@@ -574,7 +562,7 @@ Partial Class frmMain
         ' chkVerboseLogging
         ' 
         chkVerboseLogging.AutoSize = True
-        chkVerboseLogging.Location = New Point(10, 350)
+        chkVerboseLogging.Location = New Point(11, 326)
         chkVerboseLogging.Name = "chkVerboseLogging"
         chkVerboseLogging.Size = New Size(118, 22)
         chkVerboseLogging.TabIndex = 8
@@ -585,7 +573,7 @@ Partial Class frmMain
         ' chkNoExtractArchives
         ' 
         chkNoExtractArchives.AutoSize = True
-        chkNoExtractArchives.Location = New Point(10, 332)
+        chkNoExtractArchives.Location = New Point(11, 304)
         chkNoExtractArchives.Name = "chkNoExtractArchives"
         chkNoExtractArchives.Size = New Size(149, 22)
         chkNoExtractArchives.TabIndex = 7
@@ -596,7 +584,7 @@ Partial Class frmMain
         ' chkDisregardCache
         ' 
         chkDisregardCache.AutoSize = True
-        chkDisregardCache.Location = New Point(10, 314)
+        chkDisregardCache.Location = New Point(11, 282)
         chkDisregardCache.Name = "chkDisregardCache"
         chkDisregardCache.Size = New Size(145, 22)
         chkDisregardCache.TabIndex = 6
@@ -627,7 +615,7 @@ Partial Class frmMain
         ' tbSleepInterval
         ' 
         tbSleepInterval.AutoSize = False
-        tbSleepInterval.Location = New Point(4, 89)
+        tbSleepInterval.Location = New Point(10, 89)
         tbSleepInterval.Maximum = 25
         tbSleepInterval.Name = "tbSleepInterval"
         tbSleepInterval.Size = New Size(161, 24)
@@ -657,7 +645,7 @@ Partial Class frmMain
         ' tbForkValue
         ' 
         tbForkValue.AutoSize = False
-        tbForkValue.Location = New Point(4, 43)
+        tbForkValue.Location = New Point(10, 43)
         tbForkValue.Maximum = 25
         tbForkValue.Name = "tbForkValue"
         tbForkValue.Size = New Size(161, 24)
@@ -667,50 +655,70 @@ Partial Class frmMain
         ' StatusStrip1
         ' 
         StatusStrip1.ImageScalingSize = New Size(24, 24)
-        StatusStrip1.Items.AddRange(New ToolStripItem() {tslAuthenticatedLabel, tssAuthenticatedValue, tssSep1, tssListingsLabel, ToolStripStatusLabel1})
+        StatusStrip1.Items.AddRange(New ToolStripItem() {tslStatusesLabel, tssAuthenticatedValue, tssSep1, tslCacheValue, tslSep2, tslPulledValue, tslSpacer, ToolStripProgressBar1})
         StatusStrip1.Location = New Point(0, 540)
         StatusStrip1.Name = "StatusStrip1"
-        StatusStrip1.Size = New Size(443, 22)
+        StatusStrip1.Size = New Size(443, 24)
         StatusStrip1.TabIndex = 5
         StatusStrip1.Text = "StatusStrip1"
         ' 
-        ' tslAuthenticatedLabel
+        ' tslStatusesLabel
         ' 
-        tslAuthenticatedLabel.Name = "tslAuthenticatedLabel"
-        tslAuthenticatedLabel.Size = New Size(85, 17)
-        tslAuthenticatedLabel.Text = "Authenticated:"
+        tslStatusesLabel.Name = "tslStatusesLabel"
+        tslStatusesLabel.Size = New Size(53, 19)
+        tslStatusesLabel.Text = "Statuses:"
         ' 
         ' tssAuthenticatedValue
         ' 
+        tssAuthenticatedValue.BorderStyle = Border3DStyle.Etched
         tssAuthenticatedValue.ForeColor = Color.Red
         tssAuthenticatedValue.Name = "tssAuthenticatedValue"
-        tssAuthenticatedValue.Size = New Size(23, 17)
-        tssAuthenticatedValue.Text = "No"
+        tssAuthenticatedValue.Size = New Size(82, 19)
+        tssAuthenticatedValue.Text = "Authenticated"
         ' 
         ' tssSep1
         ' 
         tssSep1.Name = "tssSep1"
-        tssSep1.Size = New Size(10, 17)
+        tssSep1.Size = New Size(10, 19)
         tssSep1.Text = "|"
         ' 
-        ' tssListingsLabel
+        ' tslCacheValue
         ' 
-        tssListingsLabel.Name = "tssListingsLabel"
-        tssListingsLabel.Size = New Size(50, 17)
-        tssListingsLabel.Text = "Listings:"
+        tslCacheValue.ForeColor = Color.Red
+        tslCacheValue.Name = "tslCacheValue"
+        tslCacheValue.Size = New Size(40, 19)
+        tslCacheValue.Text = "Cache"
         ' 
-        ' ToolStripStatusLabel1
+        ' tslSep2
         ' 
-        ToolStripStatusLabel1.Name = "ToolStripStatusLabel1"
-        ToolStripStatusLabel1.Size = New Size(120, 17)
-        ToolStripStatusLabel1.Text = "No Cache/Not Pulled"
+        tslSep2.Name = "tslSep2"
+        tslSep2.Size = New Size(10, 19)
+        tslSep2.Text = "|"
+        ' 
+        ' tslPulledValue
+        ' 
+        tslPulledValue.ForeColor = Color.Red
+        tslPulledValue.Name = "tslPulledValue"
+        tslPulledValue.Size = New Size(40, 19)
+        tslPulledValue.Text = "Pulled"
+        ' 
+        ' tslSpacer
+        ' 
+        tslSpacer.Name = "tslSpacer"
+        tslSpacer.Size = New Size(60, 19)
+        tslSpacer.Spring = True
+        ' 
+        ' ToolStripProgressBar1
+        ' 
+        ToolStripProgressBar1.Name = "ToolStripProgressBar1"
+        ToolStripProgressBar1.Size = New Size(100, 18)
         ' 
         ' frmMain
         ' 
         AutoScaleDimensions = New SizeF(7F, 18F)
         AutoScaleMode = AutoScaleMode.Font
         AutoSize = True
-        ClientSize = New Size(443, 562)
+        ClientSize = New Size(443, 564)
         Controls.Add(StatusStrip1)
         Controls.Add(grpConfiguration)
         Controls.Add(grpCategories)
@@ -791,13 +799,15 @@ Partial Class frmMain
     Friend WithEvents chkOverwriteExistingFiles As CheckBox
     Friend WithEvents ttGeneralHover As ToolTip
     Friend WithEvents btnAutoFill As Button
-    Friend WithEvents btnScrape As Button
     Friend WithEvents btnLogin As Button
     Friend WithEvents btnOpenListings As Button
     Friend WithEvents StatusStrip1 As StatusStrip
-    Friend WithEvents tslAuthenticatedLabel As ToolStripStatusLabel
+    Friend WithEvents tslStatusesLabel As ToolStripStatusLabel
     Friend WithEvents tssAuthenticatedValue As ToolStripStatusLabel
     Friend WithEvents tssSep1 As ToolStripStatusLabel
-    Friend WithEvents tssListingsLabel As ToolStripStatusLabel
-    Friend WithEvents ToolStripStatusLabel1 As ToolStripStatusLabel
+    Friend WithEvents tslCacheValue As ToolStripStatusLabel
+    Friend WithEvents tslPulledValue As ToolStripStatusLabel
+    Friend WithEvents tslSep2 As ToolStripStatusLabel
+    Friend WithEvents tslSpacer As ToolStripStatusLabel
+    Friend WithEvents ToolStripProgressBar1 As ToolStripProgressBar
 End Class
