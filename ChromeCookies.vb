@@ -12,60 +12,57 @@ Imports Org.BouncyCastle.Crypto.Modes
 Imports Org.BouncyCastle.Crypto.Engines
 
 Friend Module Cookies
-    Public Enum BrowserType
-        MSEdge
-        Chrome
-        Firefox
-        Other
-    End Enum
-
     Public Function GetCookieJar(domain_host As String, browser_type As BrowserType) As Dictionary(Of String, String)
         Dim CookiesDict As Dictionary(Of String, String) = New Dictionary(Of String, String)
         Dim conn As SQLiteConnection
         Dim cmd As SQLiteCommand
 
-        Dim browser_check_regkey As String = My.Computer.Registry.GetValue(
-                "HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\Shell\Associations\UrlAssociations\https\UserChoice",
-                "ProgId",
-                Nothing
-        ).ToString()
+        KillOpenBrowser(browser_type)
+
+
 
         Dim app_local_data As String = ExpandEnvironmentVariables("%LOCALAPPDATA%")
         Dim app_roaming_data As String = ExpandEnvironmentVariables("%APPDATA%")
         Dim SessionCookie As String = "osu_session"
         Dim XSRFCookie As String = "XSRF-TOKEN"
-        Dim strPath As String = ""
-        Dim strDb As String
-        Dim enc_key As Byte()
+        Dim cookies_file As String = ""
+        Dim database_name As String = ""
+        Dim enc_key As Byte() = Nothing
+        Dim columns() As String = {"name", "encrypted_value", "host_key"}
+        Dim data_source As String
 
-        enc_key = GetEncKey()
+        If browser_type = BrowserType.Chrome Or browser_type = BrowserType.MSEdge Then
+            enc_key = GetCookieEncryptionKey(browser_type)
+        End If
 
         Select Case browser_type
             Case BrowserType.Chrome
-                strPath = app_local_data & "\Google\Chrome\User Data\Default\Network\Cookies"
+                cookies_file = app_local_data & "\Google\Chrome\User Data\Default\Network\Cookies"
+                database_name = "cookies"
             case BrowserType.Firefox
-                strPath = app_roaming_data & "\Mozilla\Firefox\Profiles\tl92esyp.default-release\cookies.sqlite"
+                cookies_file = app_roaming_data & "\Mozilla\Firefox\Profiles\tl92esyp.default-release\cookies.sqlite"
+                database_name = "moz_cookies"
+                columns = {"name", "value", "host"}
             Case BrowserType.MSEdge
-                strPath = app_local_data & "\Microsoft\Edge\User Data\Default\Network\Cookies"
+                cookies_file = app_local_data & "\Microsoft\Edge\User Data\Default\Network\Cookies"
+                database_name = "cookies"
             Case BrowserType.Other
-                strPath = "Unsupportedlol"
+                cookies_file = "Unsupportedlol"
+
         End Select
         
-        strDb = "Data Source=" & strPath & ";"
-        conn = New SQLiteConnection(strDb)
+        data_source = "Data Source=" & cookies_file & ";"
+        conn = New SQLiteConnection(data_source)
         cmd = conn.CreateCommand()
-        cmd.CommandText = "SELECT name, encrypted_value FROM main.cookies WHERE host_key LIKE " & domain_host
+        cmd.CommandText = $"SELECT {columns(0)}, {columns(1)} FROM main.{database_name} WHERE {columns(2)} LIKE " & domain_host
         conn.Open()
 
         Using reader As SQLiteDataReader = cmd.ExecuteReader()
             Dim max_lines As Integer = reader.FieldCount
-            frmMain.ToolStripProgressBar1.Maximum = max_lines
-            frmMain.ToolStripProgressBar1.Minimum = 1
-            frmMain.ToolStripProgressBar1.Value = 1
-            frmMain.ToolStripProgressBar1.Step = 1
+
             While reader.Read()        
-                If frmMain.ToolStripProgressBar1.Value > frmMain.ToolStripProgressBar1.Maximum Then
-                    frmMain.ToolStripProgressBar1.Value = max_lines
+                If frmMain.tspbProgressBar.Value > frmMain.tspbProgressBar.Maximum Then
+                    frmMain.tspbProgressBar.Value = max_lines
                 End If
                 
               
@@ -75,8 +72,7 @@ Friend Module Cookies
                     Dim t_byte() As Byte
                     Dim Value As String
 
-                    If browser_type = BrowserType.Chrome _
-                        Or browser_type = BrowserType.MSEdge Then
+                    If browser_type = BrowserType.Chrome Or browser_type = BrowserType.MSEdge Then
                         t_byte = CType(reader.GetValue(1), Byte())
                         Value = _decryptWithKey(t_byte, enc_key, 3)
                     Else
@@ -130,21 +126,62 @@ Friend Module Cookies
         Return Encoding.Unicode.GetBytes(str)
     End Function
 
-    Public Function GetEncKey() As Byte()
+    Public Function GetCookieEncryptionKey(browser_type As BrowserType) As Byte()
         Dim appData As String = GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
-        Dim keyfile As String
-        Console.Write(appData)
-        keyfile = appData & "\Google\Chrome\User Data\Local State"
-        Dim encKey As String
-        encKey = File.ReadAllText(keyfile)
-        Dim jsoc As JObject
-        jsoc = JObject.Parse(encKey)
-        Dim vvv As Object
-        vvv = jsoc("os_crypt")("encrypted_key")
-        Dim the_key As String
-        the_key = vvv.ToString()
-        Dim decodedKey = ProtectedData.Unprotect(Convert.FromBase64String(the_key).Skip(5).ToArray(), Nothing, DataProtectionScope.LocalMachine)
+        Dim keyfile As String = ""
+        Dim encryption_key As String
+        Dim json_localstate As JObject
+        Dim encrypted_key As Object
+        Dim encoded_key As String
+        Dim decoded_key() As Byte
 
-        Return decodedKey
+
+        If browser_type = BrowserType.Chrome Then
+            keyfile = appData & "\Google\Chrome\User Data\Local State"
+        Else If browser_type = BrowserType.MSEdge Then
+            keyfile = appData & "\Microsoft\Edge\User Data\Local State"
+        End If
+
+
+        encryption_key = File.ReadAllText(keyfile)
+        json_localstate = JObject.Parse(encryption_key)
+        encrypted_key = json_localstate("os_crypt")("encrypted_key")
+        encoded_key = encrypted_key.ToString()
+        
+        decoded_key = ProtectedData.Unprotect(
+            Convert.FromBase64String(encoded_key).Skip(5).ToArray(),
+            Nothing,
+            DataProtectionScope.LocalMachine
+        )
+
+        Return decoded_key
     End Function
+
+    Private Sub KillOpenBrowser(ByRef browser_type As BrowserType)
+        Dim browser_name As String = ""
+
+        Select Case browser_type
+            Case BrowserType.Chrome
+                browser_name = "chrome"
+            Case BrowserType.Firefox
+                browser_name = "firefox"
+            Case BrowserType.MSEdge
+                browser_name = "msedge"
+            Case BrowserType.Other
+
+        End Select
+
+        For Each process As Process In Process.GetProcessesByName(browser_name)
+            Dim user_answer As DialogResult = MessageBox.Show(
+                "Found an open " & browser_name & " process. Would you like to close it?",
+                "Found Open Browser",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question
+            )
+
+            If user_answer = DialogResult.Yes Then
+                process.Kill()
+            End If            
+        Next
+    End Sub
 End Module

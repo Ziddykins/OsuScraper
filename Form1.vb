@@ -16,12 +16,12 @@ Public Class frmMain
 
         frmListings.Visible = False
         frmLoginForm.Visible = False
-        
+
     End Sub
 
-    Private Sub CheckBox14_Click(sender As Object, e As EventArgs) Handles chkCatAny.Click
+    Private Sub CheckBox14_Click(sender As Object, e As EventArgs)
         If chkCatAny.Checked = True Then
-            For Each cb As CheckBox In grpCategories.Controls.OfType(Of CheckBox)
+            For Each cb In tpSingles.Controls.OfType(Of CheckBox)
                 cb.Checked = False
             Next
             chkCatAny.Checked = True
@@ -45,7 +45,11 @@ Public Class frmMain
     End Sub
 
     Private Sub btnAutoFill_Click(sender As Object, e As EventArgs) Handles btnAutoFill.Click
-        Dim cookies = GetCookieJar("'%ppy.sh%'", BrowserType.Chrome)
+        Dim default_browser As BrowserType
+        Dim cookies As Dictionary(Of String, String)
+
+        default_browser = GetDefaultBrowser()
+                cookies = GetCookieJar("'%ppy.sh%'", default_browser)
 
         If cookies IsNot Nothing Then
             For Each item As KeyValuePair(Of String, String) in cookies
@@ -57,8 +61,8 @@ Public Class frmMain
             Next
         Else
             MessageBox.Show(
-                "Failed to extract and/or decrypt cookies from Chrome database - " &
-                    "Please use the 'Login' button instead to pull values, or manually supply them." & vbCrLf & vbCrLf &
+                    "Failed to extract and/or decrypt cookies from database - " &
+                    "Please use the 'Login' button instead, or manually supply them." & vbCrLf & vbCrLf &
                     "These cookies can be found in your browser after logging into your Osu! account." & vbCrLf & vbCrLf &
                     "Chrome: F12 -> Storage -> Cookies" & vbCrLf &
                     "Firefox: F12 -> Storage -> Cookies" & vbCrLf &
@@ -70,17 +74,9 @@ Public Class frmMain
         End If
     End Sub
 
-    Private Sub tbForkValue_Scroll(sender As Object, e As EventArgs) Handles tbForkValue.Scroll
-        lblForkValue.Text = tbForkValue.Value.ToString()
-    End Sub
-
-    Private Sub tbSleepInterval_Scroll(sender As Object, e As EventArgs) Handles tbSleepInterval.Scroll
-        lblSleepInterval.Text = tbSleepInterval.Value.ToString()
-    End Sub
-
     Private Sub txtSessionToken_TextChanged(sender As Object, e As EventArgs) Handles txtSessionToken.TextChanged
-
         Dim session_token As Match
+
         session_token = Regex.Match(
             txtSessionToken.Text,
             Chr(34) & "?(?:osu_session[:=])?" & Chr(34) & "?([a-zA-Z0-9]{100,}%3D)" & Chr(34) & "?"
@@ -113,7 +109,7 @@ Public Class frmMain
     Private Sub btnOpenListings_Click(sender As Object, e As EventArgs) Handles btnOpenListings.Click
         If frmListings.IsDisposed = False Then
             frmListings.Visible = True
-        Else 
+        Else
             frmListings = New frmListings
             frmListings.Show()
             frmListings.Visible = True
@@ -121,15 +117,31 @@ Public Class frmMain
     End Sub
 
     Private Sub frmMain_Load(sender As Object, e As EventArgs) Handles Me.Load
+        Dim default_browser As BrowserType = GetDefaultBrowser()
+
         MaximizeBox = False
 
-        For Each control As Control In grpCategories.Controls
+        For Each control As Control In tpSingles.Controls
             If TypeOf control Is CheckBox Then
                 If StrComp(control.Name, "chkCatAny") <> 0 Then
                     AddHandler control.Click, AddressOf uncheckAllCategories
                 End IF
             End If
         Next
+
+        If default_browser = BrowserType.Chrome Then
+            tslBrowser.Text = "Chrome"
+            tslBrowser.ForeColor = Color.DarkGreen
+        Else If default_browser = BrowserType.Firefox Then
+            tslBrowser.Text = "Firefox"
+            tslBrowser.ForeColor = Color.IndianRed
+        Else If default_browser = BrowserType.MSEdge Then
+            tslBrowser.Text = "MSEdge"
+            tslBrowser.ForeColor = Color.CadetBlue
+        Else
+            tslBrowser.Text = "Unsupported"
+            tslBrowser.ForeColor = Color.HotPink
+        End If
     End Sub
 
     Private Sub uncheckAllCategories(sender As Object, e As EventArgs)
@@ -141,7 +153,7 @@ Public Class frmMain
     Private Sub btnLogin_Click(sender As Object, e As EventArgs) Handles btnLogin.Click
         If frmLoginForm.IsDisposed = False Then
             frmLoginForm.Visible = True
-        Else 
+        Else
             frmLoginForm = New frmLoginForm
             frmLoginForm.Show()
             frmLoginForm.Visible = True
@@ -149,7 +161,15 @@ Public Class frmMain
 
     End Sub
 
-    Private Sub btnLogin_Validating(sender As Object, e As CancelEventArgs) Handles btnLogin.Validating
+    Private Sub tbBatchSize_Scroll(sender As Object, e As EventArgs) Handles tbBatchSize.Scroll
+        lblBatchSizeValue.Text = tbBatchSize.Value.ToString()
+    End Sub
 
+    Private Sub tbForkValue_Scroll(sender As Object, e As EventArgs) Handles tbForkValue.Scroll
+        lblForkValue.Text = tbForkValue.Value.ToString()
+    End Sub
+
+    Private Sub tbSleepInterval_Scroll(sender As Object, e As EventArgs) Handles tbSleepInterval.Scroll
+        lblSleepInterval.Text = tbSleepInterval.Value.ToString
     End Sub
 End Class
