@@ -1,5 +1,5 @@
 ﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
-Partial Class frmLoginForm
+Partial Class FrmLoginForm
     Inherits System.Windows.Forms.Form
 
     'Form overrides dispose to clean up the component list.
@@ -23,170 +23,170 @@ Partial Class frmLoginForm
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmLoginForm))
-        PictureBox1 = New PictureBox()
-        GroupBox1 = New GroupBox()
-        PictureBox2 = New PictureBox()
-        TextBox2 = New TextBox()
-        TextBox1 = New TextBox()
-        Label2 = New Label()
-        Label1 = New Label()
-        Button3 = New Button()
-        Button2 = New Button()
-        Button1 = New Button()
-        CType(PictureBox1, ComponentModel.ISupportInitialize).BeginInit()
-        GroupBox1.SuspendLayout()
-        CType(PictureBox2, ComponentModel.ISupportInitialize).BeginInit()
+        pbLoginLogo = New PictureBox()
+        grpLoginControls = New GroupBox()
+        pbInformation = New PictureBox()
+        txtPasswordValue = New TextBox()
+        txtUsernameValue = New TextBox()
+        lblPasswordLabel = New Label()
+        lblUsernameLabel = New Label()
+        btnCancel = New Button()
+        btnClear = New Button()
+        btnSubmit = New Button()
+        CType(pbLoginLogo, ComponentModel.ISupportInitialize).BeginInit()
+        grpLoginControls.SuspendLayout()
+        CType(pbInformation, ComponentModel.ISupportInitialize).BeginInit()
         SuspendLayout()
         ' 
-        ' PictureBox1
+        ' pbLoginLogo
         ' 
-        PictureBox1.Dock = DockStyle.Top
-        PictureBox1.Image = My.Resources.Resources.os_logo_green
-        PictureBox1.Location = New Point(0, 0)
-        PictureBox1.Name = "PictureBox1"
-        PictureBox1.Size = New Size(356, 102)
-        PictureBox1.SizeMode = PictureBoxSizeMode.StretchImage
-        PictureBox1.TabIndex = 0
-        PictureBox1.TabStop = False
+        pbLoginLogo.Dock = DockStyle.Top
+        pbLoginLogo.Image = My.Resources.Resources.os_logo_green
+        pbLoginLogo.Location = New Point(0, 0)
+        pbLoginLogo.Name = "pbLoginLogo"
+        pbLoginLogo.Size = New Size(356, 81)
+        pbLoginLogo.SizeMode = PictureBoxSizeMode.StretchImage
+        pbLoginLogo.TabIndex = 0
+        pbLoginLogo.TabStop = False
         ' 
-        ' GroupBox1
+        ' grpLoginControls
         ' 
-        GroupBox1.AutoSize = True
-        GroupBox1.Controls.Add(PictureBox2)
-        GroupBox1.Controls.Add(TextBox2)
-        GroupBox1.Controls.Add(TextBox1)
-        GroupBox1.Controls.Add(Label2)
-        GroupBox1.Controls.Add(Label1)
-        GroupBox1.Controls.Add(Button3)
-        GroupBox1.Controls.Add(Button2)
-        GroupBox1.Controls.Add(Button1)
-        GroupBox1.Dock = DockStyle.Fill
-        GroupBox1.Font = New Font("Quicksand Light", 11.25F)
-        GroupBox1.Location = New Point(0, 102)
-        GroupBox1.Name = "GroupBox1"
-        GroupBox1.Size = New Size(356, 169)
-        GroupBox1.TabIndex = 1
-        GroupBox1.TabStop = False
-        GroupBox1.Text = "Login: osu.ppy.sh "
+        grpLoginControls.AutoSize = True
+        grpLoginControls.Controls.Add(pbInformation)
+        grpLoginControls.Controls.Add(txtPasswordValue)
+        grpLoginControls.Controls.Add(txtUsernameValue)
+        grpLoginControls.Controls.Add(lblPasswordLabel)
+        grpLoginControls.Controls.Add(lblUsernameLabel)
+        grpLoginControls.Controls.Add(btnCancel)
+        grpLoginControls.Controls.Add(btnClear)
+        grpLoginControls.Controls.Add(btnSubmit)
+        grpLoginControls.Dock = DockStyle.Fill
+        grpLoginControls.Font = New Font("Quicksand Light", 11.25F)
+        grpLoginControls.Location = New Point(0, 81)
+        grpLoginControls.Name = "grpLoginControls"
+        grpLoginControls.Size = New Size(356, 129)
+        grpLoginControls.TabIndex = 1
+        grpLoginControls.TabStop = False
+        grpLoginControls.Text = "Login: osu.ppy.sh "
         ' 
-        ' PictureBox2
+        ' pbInformation
         ' 
-        PictureBox2.Image = My.Resources.Resources.output_AkFn1N
-        PictureBox2.Location = New Point(17, 137)
-        PictureBox2.Name = "PictureBox2"
-        PictureBox2.Size = New Size(20, 20)
-        PictureBox2.SizeMode = PictureBoxSizeMode.AutoSize
-        PictureBox2.TabIndex = 7
-        PictureBox2.TabStop = False
+        pbInformation.Image = My.Resources.Resources.icons8_about_241
+        pbInformation.Location = New Point(326, 9)
+        pbInformation.Name = "pbInformation"
+        pbInformation.Size = New Size(24, 24)
+        pbInformation.SizeMode = PictureBoxSizeMode.AutoSize
+        pbInformation.TabIndex = 7
+        pbInformation.TabStop = False
         ' 
-        ' TextBox2
+        ' txtPasswordValue
         ' 
-        TextBox2.AcceptsReturn = True
-        TextBox2.Font = New Font("Quicksand", 8.25F)
-        TextBox2.Location = New Point(102, 66)
-        TextBox2.MaxLength = 256
-        TextBox2.Name = "TextBox2"
-        TextBox2.PasswordChar = "*"c
-        TextBox2.Size = New Size(242, 21)
-        TextBox2.TabIndex = 6
-        TextBox2.TextAlign = HorizontalAlignment.Center
-        TextBox2.UseSystemPasswordChar = True
+        txtPasswordValue.AcceptsReturn = True
+        txtPasswordValue.Font = New Font("Quicksand", 9F)
+        txtPasswordValue.Location = New Point(102, 62)
+        txtPasswordValue.MaxLength = 256
+        txtPasswordValue.Name = "txtPasswordValue"
+        txtPasswordValue.PasswordChar = "*"c
+        txtPasswordValue.Size = New Size(247, 22)
+        txtPasswordValue.TabIndex = 1
+        txtPasswordValue.TextAlign = HorizontalAlignment.Center
+        txtPasswordValue.UseSystemPasswordChar = True
         ' 
-        ' TextBox1
+        ' txtUsernameValue
         ' 
-        TextBox1.Font = New Font("Quicksand", 8.25F)
-        TextBox1.Location = New Point(102, 39)
-        TextBox1.MaxLength = 256
-        TextBox1.Name = "TextBox1"
-        TextBox1.Size = New Size(242, 21)
-        TextBox1.TabIndex = 5
-        TextBox1.TextAlign = HorizontalAlignment.Center
+        txtUsernameValue.Font = New Font("Quicksand", 9F)
+        txtUsernameValue.Location = New Point(102, 35)
+        txtUsernameValue.MaxLength = 256
+        txtUsernameValue.Name = "txtUsernameValue"
+        txtUsernameValue.Size = New Size(247, 22)
+        txtUsernameValue.TabIndex = 0
+        txtUsernameValue.TextAlign = HorizontalAlignment.Center
         ' 
-        ' Label2
+        ' lblPasswordLabel
         ' 
-        Label2.AutoSize = True
-        Label2.Font = New Font("Quicksand Light", 11.25F)
-        Label2.Location = New Point(17, 64)
-        Label2.Name = "Label2"
-        Label2.Size = New Size(79, 23)
-        Label2.TabIndex = 4
-        Label2.Text = "Password:"
-        Label2.TextAlign = ContentAlignment.MiddleRight
+        lblPasswordLabel.AutoSize = True
+        lblPasswordLabel.Font = New Font("Quicksand", 9F)
+        lblPasswordLabel.Location = New Point(32, 62)
+        lblPasswordLabel.Name = "lblPasswordLabel"
+        lblPasswordLabel.Size = New Size(64, 18)
+        lblPasswordLabel.TabIndex = 4
+        lblPasswordLabel.Text = "Password:"
+        lblPasswordLabel.TextAlign = ContentAlignment.MiddleRight
         ' 
-        ' Label1
+        ' lblUsernameLabel
         ' 
-        Label1.AutoSize = True
-        Label1.Font = New Font("Quicksand Light", 11.25F)
-        Label1.Location = New Point(12, 37)
-        Label1.Name = "Label1"
-        Label1.Size = New Size(84, 23)
-        Label1.TabIndex = 3
-        Label1.Text = "Username:"
-        Label1.TextAlign = ContentAlignment.MiddleRight
+        lblUsernameLabel.AutoSize = True
+        lblUsernameLabel.Font = New Font("Quicksand", 9F)
+        lblUsernameLabel.Location = New Point(27, 35)
+        lblUsernameLabel.Name = "lblUsernameLabel"
+        lblUsernameLabel.Size = New Size(69, 18)
+        lblUsernameLabel.TabIndex = 3
+        lblUsernameLabel.Text = "Username:"
+        lblUsernameLabel.TextAlign = ContentAlignment.MiddleRight
         ' 
-        ' Button3
+        ' btnCancel
         ' 
-        Button3.AutoSize = True
-        Button3.Font = New Font("Quicksand Light", 11.25F)
-        Button3.ForeColor = Color.Firebrick
-        Button3.Location = New Point(102, 98)
-        Button3.Name = "Button3"
-        Button3.Size = New Size(81, 38)
-        Button3.TabIndex = 2
-        Button3.Text = "&Cancel"
-        Button3.UseVisualStyleBackColor = True
+        btnCancel.AutoSize = True
+        btnCancel.Font = New Font("Quicksand", 9F)
+        btnCancel.ForeColor = Color.Firebrick
+        btnCancel.Location = New Point(102, 94)
+        btnCancel.Name = "btnCancel"
+        btnCancel.Size = New Size(81, 28)
+        btnCancel.TabIndex = 2
+        btnCancel.Text = "&Cancel"
+        btnCancel.UseVisualStyleBackColor = True
         ' 
-        ' Button2
+        ' btnClear
         ' 
-        Button2.AutoSize = True
-        Button2.Font = New Font("Quicksand Light", 11.25F)
-        Button2.ForeColor = Color.DarkBlue
-        Button2.Location = New Point(185, 98)
-        Button2.Name = "Button2"
-        Button2.Size = New Size(75, 38)
-        Button2.TabIndex = 1
-        Button2.Text = "Cl&ear"
-        Button2.UseVisualStyleBackColor = True
+        btnClear.AutoSize = True
+        btnClear.Font = New Font("Quicksand", 9F)
+        btnClear.ForeColor = Color.DarkBlue
+        btnClear.Location = New Point(188, 94)
+        btnClear.Name = "btnClear"
+        btnClear.Size = New Size(81, 28)
+        btnClear.TabIndex = 3
+        btnClear.Text = "Cl&ear"
+        btnClear.UseVisualStyleBackColor = True
         ' 
-        ' Button1
+        ' btnSubmit
         ' 
-        Button1.AutoSize = True
-        Button1.Font = New Font("Quicksand Light", 11.25F)
-        Button1.Location = New Point(268, 98)
-        Button1.Name = "Button1"
-        Button1.Size = New Size(81, 38)
-        Button1.TabIndex = 0
-        Button1.Text = "&Submit"
-        Button1.UseVisualStyleBackColor = True
+        btnSubmit.AutoSize = True
+        btnSubmit.Font = New Font("Quicksand", 9F)
+        btnSubmit.Location = New Point(268, 94)
+        btnSubmit.Name = "btnSubmit"
+        btnSubmit.Size = New Size(81, 28)
+        btnSubmit.TabIndex = 4
+        btnSubmit.Text = "&Submit"
+        btnSubmit.UseVisualStyleBackColor = True
         ' 
         ' frmLoginForm
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
-        ClientSize = New Size(356, 271)
-        Controls.Add(GroupBox1)
-        Controls.Add(PictureBox1)
+        ClientSize = New Size(356, 210)
+        Controls.Add(grpLoginControls)
+        Controls.Add(pbLoginLogo)
         Icon = CType(resources.GetObject("$this.Icon"), Icon)
         Name = "frmLoginForm"
         SizeGripStyle = SizeGripStyle.Hide
         StartPosition = FormStartPosition.CenterScreen
         Text = "OsuScraper - v2.2.1"
-        CType(PictureBox1, ComponentModel.ISupportInitialize).EndInit()
-        GroupBox1.ResumeLayout(False)
-        GroupBox1.PerformLayout()
-        CType(PictureBox2, ComponentModel.ISupportInitialize).EndInit()
+        CType(pbLoginLogo, ComponentModel.ISupportInitialize).EndInit()
+        grpLoginControls.ResumeLayout(False)
+        grpLoginControls.PerformLayout()
+        CType(pbInformation, ComponentModel.ISupportInitialize).EndInit()
         ResumeLayout(False)
         PerformLayout()
     End Sub
 
-    Friend WithEvents PictureBox1 As PictureBox
-    Friend WithEvents GroupBox1 As GroupBox
-    Friend WithEvents TextBox2 As TextBox
-    Friend WithEvents TextBox1 As TextBox
-    Friend WithEvents Label2 As Label
-    Friend WithEvents Label1 As Label
-    Friend WithEvents Button3 As Button
-    Friend WithEvents Button2 As Button
-    Friend WithEvents Button1 As Button
-    Friend WithEvents PictureBox2 As PictureBox
+    Friend WithEvents pbLoginLogo As PictureBox
+    Friend WithEvents grpLoginControls As GroupBox
+    Friend WithEvents txtPasswordValue As TextBox
+    Friend WithEvents txtUsernameValue As TextBox
+    Friend WithEvents lblPasswordLabel As Label
+    Friend WithEvents lblUsernameLabel As Label
+    Friend WithEvents btnCancel As Button
+    Friend WithEvents btnClear As Button
+    Friend WithEvents btnSubmit As Button
+    Friend WithEvents pbInformation As PictureBox
 End Class
