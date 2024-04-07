@@ -1,5 +1,5 @@
 ﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
-Partial Class frmMain
+Partial Class FrmMain
     Inherits System.Windows.Forms.Form
 
     'Form overrides dispose to clean up the component list.
@@ -23,7 +23,7 @@ Partial Class frmMain
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         components = New ComponentModel.Container()
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmMain))
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FrmMain))
         pbLogo = New PictureBox()
         grpModes = New GroupBox()
         chkModeTaiko = New CheckBox()
@@ -36,6 +36,7 @@ Partial Class frmMain
         tsmFile = New ToolStripMenuItem()
         OpenCacheFileToolStripMenuItem = New ToolStripMenuItem()
         ExitToolStripMenuItem = New ToolStripMenuItem()
+        ExitToolStripMenuItem1 = New ToolStripMenuItem()
         tsmListings = New ToolStripMenuItem()
         UpdateToolStripMenuItem = New ToolStripMenuItem()
         UpdateToolStripMenuItem1 = New ToolStripMenuItem()
@@ -44,28 +45,30 @@ Partial Class frmMain
         tsmOptions = New ToolStripMenuItem()
         tsmHelp = New ToolStripMenuItem()
         grpConfiguration = New GroupBox()
+        Button1 = New Button()
         lblBatchSizeValue = New Label()
         lblBatchSizeLabel = New Label()
         tbBatchSize = New TrackBar()
         btnOpenListings = New Button()
         btnLogin = New Button()
-        chkOverwriteExistingFiles = New CheckBox()
         btnAutoFill = New Button()
         lblXSRFTokenLabel = New Label()
         lblSessionLabel = New Label()
         txtXSRFToken = New TextBox()
         txtSessionToken = New TextBox()
-        chkVerboseLogging = New CheckBox()
-        chkNoExtractArchives = New CheckBox()
-        chkDisregardCache = New CheckBox()
         lblSleepInterval = New Label()
         lblSleepIntervalLabel = New Label()
         tbSleepInterval = New TrackBar()
         lblForkValue = New Label()
         lblForkLabel = New Label()
         tbForkValue = New TrackBar()
+        chkOverwriteExistingFiles = New CheckBox()
+        chkVerboseLogging = New CheckBox()
+        chkNoExtractArchives = New CheckBox()
+        chkDisregardCache = New CheckBox()
         ttGeneralHover = New ToolTip(components)
         StatusStrip1 = New StatusStrip()
+        tslBrowser = New ToolStripStatusLabel()
         tslStatusesLabel = New ToolStripStatusLabel()
         tssAuthenticatedValue = New ToolStripStatusLabel()
         tssSep1 = New ToolStripStatusLabel()
@@ -76,7 +79,6 @@ Partial Class frmMain
         tspbProgressBar = New ToolStripProgressBar()
         TabControl1 = New TabControl()
         tpSingles = New TabPage()
-        CheckBox1 = New CheckBox()
         chkCatGraveyard = New CheckBox()
         chkCatPersonal = New CheckBox()
         chkCatWorkInProgress = New CheckBox()
@@ -86,9 +88,9 @@ Partial Class frmMain
         chkCatLoved = New CheckBox()
         chkCatRanked = New CheckBox()
         chkCatFaves = New CheckBox()
-        chkCatAny = New CheckBox()
         tpPacks = New TabPage()
-        tslBrowser = New ToolStripStatusLabel()
+        CheckBox1 = New CheckBox()
+        chkCatAny = New CheckBox()
         CType(pbLogo, ComponentModel.ISupportInitialize).BeginInit()
         grpModes.SuspendLayout()
         msMainMenu.SuspendLayout()
@@ -99,6 +101,7 @@ Partial Class frmMain
         StatusStrip1.SuspendLayout()
         TabControl1.SuspendLayout()
         tpSingles.SuspendLayout()
+        tpPacks.SuspendLayout()
         SuspendLayout()
         ' 
         ' pbLogo
@@ -108,7 +111,7 @@ Partial Class frmMain
         pbLogo.Location = New Point(0, 24)
         pbLogo.Margin = New Padding(3, 4, 3, 4)
         pbLogo.Name = "pbLogo"
-        pbLogo.Size = New Size(443, 108)
+        pbLogo.Size = New Size(448, 108)
         pbLogo.SizeMode = PictureBoxSizeMode.Zoom
         pbLogo.TabIndex = 0
         pbLogo.TabStop = False
@@ -225,13 +228,13 @@ Partial Class frmMain
         msMainMenu.Items.AddRange(New ToolStripItem() {tsmFile, tsmListings, tsmOptions, tsmHelp})
         msMainMenu.Location = New Point(0, 0)
         msMainMenu.Name = "msMainMenu"
-        msMainMenu.Size = New Size(443, 24)
+        msMainMenu.Size = New Size(448, 24)
         msMainMenu.TabIndex = 3
         msMainMenu.Text = "MenuStrip1"
         ' 
         ' tsmFile
         ' 
-        tsmFile.DropDownItems.AddRange(New ToolStripItem() {OpenCacheFileToolStripMenuItem, ExitToolStripMenuItem})
+        tsmFile.DropDownItems.AddRange(New ToolStripItem() {OpenCacheFileToolStripMenuItem, ExitToolStripMenuItem, ExitToolStripMenuItem1})
         tsmFile.Name = "tsmFile"
         tsmFile.Size = New Size(37, 20)
         tsmFile.Text = "&File"
@@ -239,14 +242,20 @@ Partial Class frmMain
         ' OpenCacheFileToolStripMenuItem
         ' 
         OpenCacheFileToolStripMenuItem.Name = "OpenCacheFileToolStripMenuItem"
-        OpenCacheFileToolStripMenuItem.Size = New Size(156, 22)
+        OpenCacheFileToolStripMenuItem.Size = New Size(164, 22)
         OpenCacheFileToolStripMenuItem.Text = "Op&en cache file"
         ' 
         ' ExitToolStripMenuItem
         ' 
         ExitToolStripMenuItem.Name = "ExitToolStripMenuItem"
-        ExitToolStripMenuItem.Size = New Size(156, 22)
-        ExitToolStripMenuItem.Text = "&Exit"
+        ExitToolStripMenuItem.Size = New Size(164, 22)
+        ExitToolStripMenuItem.Text = "O&pen Debug Log"
+        ' 
+        ' ExitToolStripMenuItem1
+        ' 
+        ExitToolStripMenuItem1.Name = "ExitToolStripMenuItem1"
+        ExitToolStripMenuItem1.Size = New Size(164, 22)
+        ExitToolStripMenuItem1.Text = "E&xit"
         ' 
         ' tsmListings
         ' 
@@ -294,20 +303,17 @@ Partial Class frmMain
         ' 
         ' grpConfiguration
         ' 
+        grpConfiguration.Controls.Add(Button1)
         grpConfiguration.Controls.Add(lblBatchSizeValue)
         grpConfiguration.Controls.Add(lblBatchSizeLabel)
         grpConfiguration.Controls.Add(tbBatchSize)
         grpConfiguration.Controls.Add(btnOpenListings)
         grpConfiguration.Controls.Add(btnLogin)
-        grpConfiguration.Controls.Add(chkOverwriteExistingFiles)
         grpConfiguration.Controls.Add(btnAutoFill)
         grpConfiguration.Controls.Add(lblXSRFTokenLabel)
         grpConfiguration.Controls.Add(lblSessionLabel)
         grpConfiguration.Controls.Add(txtXSRFToken)
         grpConfiguration.Controls.Add(txtSessionToken)
-        grpConfiguration.Controls.Add(chkVerboseLogging)
-        grpConfiguration.Controls.Add(chkNoExtractArchives)
-        grpConfiguration.Controls.Add(chkDisregardCache)
         grpConfiguration.Controls.Add(lblSleepInterval)
         grpConfiguration.Controls.Add(lblSleepIntervalLabel)
         grpConfiguration.Controls.Add(tbSleepInterval)
@@ -316,10 +322,22 @@ Partial Class frmMain
         grpConfiguration.Controls.Add(tbForkValue)
         grpConfiguration.Location = New Point(267, 146)
         grpConfiguration.Name = "grpConfiguration"
-        grpConfiguration.Size = New Size(176, 426)
+        grpConfiguration.Size = New Size(176, 355)
         grpConfiguration.TabIndex = 4
         grpConfiguration.TabStop = False
         grpConfiguration.Text = "Configuration"
+        ' 
+        ' Button1
+        ' 
+        Button1.FlatAppearance.BorderColor = Color.IndianRed
+        Button1.FlatStyle = FlatStyle.Popup
+        Button1.Font = New Font("Quicksand", 9F)
+        Button1.Location = New Point(91, 306)
+        Button1.Name = "Button1"
+        Button1.Size = New Size(71, 40)
+        Button1.TabIndex = 19
+        Button1.Text = "Test"
+        Button1.UseVisualStyleBackColor = True
         ' 
         ' lblBatchSizeValue
         ' 
@@ -356,46 +374,37 @@ Partial Class frmMain
         ' 
         ' btnOpenListings
         ' 
-        btnOpenListings.AutoSize = True
         btnOpenListings.FlatAppearance.BorderColor = Color.IndianRed
         btnOpenListings.FlatStyle = FlatStyle.Popup
-        btnOpenListings.Font = New Font("Quicksand", 9F)
-        btnOpenListings.Location = New Point(11, 294)
+        btnOpenListings.Font = New Font("Quicksand", 8.25F)
+        btnOpenListings.Location = New Point(14, 306)
+        btnOpenListings.Margin = New Padding(1)
         btnOpenListings.Name = "btnOpenListings"
-        btnOpenListings.Size = New Size(145, 28)
+        btnOpenListings.Size = New Size(71, 40)
         btnOpenListings.TabIndex = 15
         btnOpenListings.Text = "Open Listings"
+        btnOpenListings.TextAlign = ContentAlignment.TopCenter
         btnOpenListings.UseVisualStyleBackColor = True
         ' 
         ' btnLogin
         ' 
-        btnLogin.AutoSize = True
+        btnLogin.FlatStyle = FlatStyle.Popup
         btnLogin.Font = New Font("Quicksand", 9F)
-        btnLogin.Location = New Point(89, 260)
+        btnLogin.Location = New Point(91, 261)
         btnLogin.Name = "btnLogin"
-        btnLogin.Size = New Size(68, 28)
+        btnLogin.Size = New Size(71, 40)
         btnLogin.TabIndex = 14
         btnLogin.Text = "Login"
         btnLogin.UseVisualStyleBackColor = True
         ' 
-        ' chkOverwriteExistingFiles
-        ' 
-        chkOverwriteExistingFiles.AutoSize = True
-        chkOverwriteExistingFiles.Location = New Point(11, 394)
-        chkOverwriteExistingFiles.Name = "chkOverwriteExistingFiles"
-        chkOverwriteExistingFiles.Size = New Size(129, 22)
-        chkOverwriteExistingFiles.TabIndex = 13
-        chkOverwriteExistingFiles.Text = "Overwrite Existing"
-        ttGeneralHover.SetToolTip(chkOverwriteExistingFiles, "Re-downloads and overwrites any archive with the same name, already in the output folder")
-        chkOverwriteExistingFiles.UseVisualStyleBackColor = True
-        ' 
         ' btnAutoFill
         ' 
-        btnAutoFill.AutoSize = True
-        btnAutoFill.Font = New Font("Quicksand", 9F)
-        btnAutoFill.Location = New Point(10, 260)
+        btnAutoFill.FlatStyle = FlatStyle.Popup
+        btnAutoFill.Font = New Font("Quicksand", 8.25F)
+        btnAutoFill.Location = New Point(14, 261)
+        btnAutoFill.Margin = New Padding(1)
         btnAutoFill.Name = "btnAutoFill"
-        btnAutoFill.Size = New Size(73, 28)
+        btnAutoFill.Size = New Size(71, 40)
         btnAutoFill.TabIndex = 5
         btnAutoFill.Text = "Auto-Fill"
         btnAutoFill.UseVisualStyleBackColor = True
@@ -433,39 +442,6 @@ Partial Class frmMain
         txtSessionToken.PlaceholderText = "osu_session:""<TOKEN>"""
         txtSessionToken.Size = New Size(148, 22)
         txtSessionToken.TabIndex = 9
-        ' 
-        ' chkVerboseLogging
-        ' 
-        chkVerboseLogging.AutoSize = True
-        chkVerboseLogging.Location = New Point(11, 372)
-        chkVerboseLogging.Name = "chkVerboseLogging"
-        chkVerboseLogging.Size = New Size(118, 22)
-        chkVerboseLogging.TabIndex = 8
-        chkVerboseLogging.Text = "Verbose logging"
-        ttGeneralHover.SetToolTip(chkVerboseLogging, "More detailed logs, in case something isn't working and you need to pinpoint where")
-        chkVerboseLogging.UseVisualStyleBackColor = True
-        ' 
-        ' chkNoExtractArchives
-        ' 
-        chkNoExtractArchives.AutoSize = True
-        chkNoExtractArchives.Location = New Point(11, 350)
-        chkNoExtractArchives.Name = "chkNoExtractArchives"
-        chkNoExtractArchives.Size = New Size(149, 22)
-        chkNoExtractArchives.TabIndex = 7
-        chkNoExtractArchives.Text = "Don't extract archives"
-        ttGeneralHover.SetToolTip(chkNoExtractArchives, "Archives will remain in the download folder and not extracted to the output folder")
-        chkNoExtractArchives.UseVisualStyleBackColor = True
-        ' 
-        ' chkDisregardCache
-        ' 
-        chkDisregardCache.AutoSize = True
-        chkDisregardCache.Location = New Point(11, 328)
-        chkDisregardCache.Name = "chkDisregardCache"
-        chkDisregardCache.Size = New Size(145, 22)
-        chkDisregardCache.TabIndex = 6
-        chkDisregardCache.Text = "Disregard cache files"
-        ttGeneralHover.SetToolTip(chkDisregardCache, "Ignores any cached songs and re-pulls the list and download locations fresh from the server")
-        chkDisregardCache.UseVisualStyleBackColor = True
         ' 
         ' lblSleepInterval
         ' 
@@ -527,15 +503,65 @@ Partial Class frmMain
         tbForkValue.TabIndex = 0
         tbForkValue.TickStyle = TickStyle.TopLeft
         ' 
+        ' chkOverwriteExistingFiles
+        ' 
+        chkOverwriteExistingFiles.AutoSize = True
+        chkOverwriteExistingFiles.Location = New Point(15, 533)
+        chkOverwriteExistingFiles.Name = "chkOverwriteExistingFiles"
+        chkOverwriteExistingFiles.Size = New Size(129, 22)
+        chkOverwriteExistingFiles.TabIndex = 13
+        chkOverwriteExistingFiles.Text = "Overwrite Existing"
+        ttGeneralHover.SetToolTip(chkOverwriteExistingFiles, "Re-downloads and overwrites any archive with the same name, already in the output folder")
+        chkOverwriteExistingFiles.UseVisualStyleBackColor = True
+        ' 
+        ' chkVerboseLogging
+        ' 
+        chkVerboseLogging.AutoSize = True
+        chkVerboseLogging.Location = New Point(15, 511)
+        chkVerboseLogging.Name = "chkVerboseLogging"
+        chkVerboseLogging.Size = New Size(118, 22)
+        chkVerboseLogging.TabIndex = 8
+        chkVerboseLogging.Text = "Verbose logging"
+        ttGeneralHover.SetToolTip(chkVerboseLogging, "More detailed logs, in case something isn't working and you need to pinpoint where")
+        chkVerboseLogging.UseVisualStyleBackColor = True
+        ' 
+        ' chkNoExtractArchives
+        ' 
+        chkNoExtractArchives.AutoSize = True
+        chkNoExtractArchives.Location = New Point(161, 533)
+        chkNoExtractArchives.Name = "chkNoExtractArchives"
+        chkNoExtractArchives.Size = New Size(149, 22)
+        chkNoExtractArchives.TabIndex = 7
+        chkNoExtractArchives.Text = "Don't extract archives"
+        ttGeneralHover.SetToolTip(chkNoExtractArchives, "Archives will remain in the download folder and not extracted to the output folder")
+        chkNoExtractArchives.UseVisualStyleBackColor = True
+        ' 
+        ' chkDisregardCache
+        ' 
+        chkDisregardCache.AutoSize = True
+        chkDisregardCache.Location = New Point(161, 511)
+        chkDisregardCache.Name = "chkDisregardCache"
+        chkDisregardCache.Size = New Size(145, 22)
+        chkDisregardCache.TabIndex = 6
+        chkDisregardCache.Text = "Disregard cache files"
+        ttGeneralHover.SetToolTip(chkDisregardCache, "Ignores any cached songs and re-pulls the list and download locations fresh from the server")
+        chkDisregardCache.UseVisualStyleBackColor = True
+        ' 
         ' StatusStrip1
         ' 
         StatusStrip1.ImageScalingSize = New Size(24, 24)
         StatusStrip1.Items.AddRange(New ToolStripItem() {tslBrowser, tslStatusesLabel, tssAuthenticatedValue, tssSep1, tslCacheValue, tslSep2, tslPulledValue, tslSpacer, tspbProgressBar})
-        StatusStrip1.Location = New Point(0, 609)
+        StatusStrip1.Location = New Point(0, 581)
         StatusStrip1.Name = "StatusStrip1"
-        StatusStrip1.Size = New Size(443, 24)
+        StatusStrip1.Size = New Size(448, 24)
         StatusStrip1.TabIndex = 5
         StatusStrip1.Text = "StatusStrip1"
+        ' 
+        ' tslBrowser
+        ' 
+        tslBrowser.Name = "tslBrowser"
+        tslBrowser.Size = New Size(65, 19)
+        tslBrowser.Text = "<Browser>"
         ' 
         ' tslStatusesLabel
         ' 
@@ -580,7 +606,7 @@ Partial Class frmMain
         ' tslSpacer
         ' 
         tslSpacer.Name = "tslSpacer"
-        tslSpacer.Size = New Size(26, 19)
+        tslSpacer.Size = New Size(31, 19)
         tslSpacer.Spring = True
         ' 
         ' tspbProgressBar
@@ -592,15 +618,14 @@ Partial Class frmMain
         ' 
         TabControl1.Controls.Add(tpSingles)
         TabControl1.Controls.Add(tpPacks)
-        TabControl1.Location = New Point(11, 244)
+        TabControl1.Location = New Point(11, 240)
         TabControl1.Name = "TabControl1"
         TabControl1.SelectedIndex = 0
-        TabControl1.Size = New Size(250, 335)
+        TabControl1.Size = New Size(247, 261)
         TabControl1.TabIndex = 6
         ' 
         ' tpSingles
         ' 
-        tpSingles.Controls.Add(CheckBox1)
         tpSingles.Controls.Add(chkCatGraveyard)
         tpSingles.Controls.Add(chkCatPersonal)
         tpSingles.Controls.Add(chkCatWorkInProgress)
@@ -610,29 +635,13 @@ Partial Class frmMain
         tpSingles.Controls.Add(chkCatLoved)
         tpSingles.Controls.Add(chkCatRanked)
         tpSingles.Controls.Add(chkCatFaves)
-        tpSingles.Controls.Add(chkCatAny)
         tpSingles.Location = New Point(4, 27)
         tpSingles.Name = "tpSingles"
         tpSingles.Padding = New Padding(3)
-        tpSingles.Size = New Size(242, 304)
+        tpSingles.Size = New Size(239, 230)
         tpSingles.TabIndex = 0
         tpSingles.Text = "Singles"
         tpSingles.UseVisualStyleBackColor = True
-        ' 
-        ' CheckBox1
-        ' 
-        CheckBox1.Appearance = Appearance.Button
-        CheckBox1.Font = New Font("Quicksand", 8.25F)
-        CheckBox1.ImageKey = "icons8-edit-none.png"
-        CheckBox1.ImageList = imlCategories
-        CheckBox1.Location = New Point(124, 19)
-        CheckBox1.Name = "CheckBox1"
-        CheckBox1.Size = New Size(97, 53)
-        CheckBox1.TabIndex = 21
-        CheckBox1.Text = "No Packs"
-        CheckBox1.TextAlign = ContentAlignment.MiddleCenter
-        CheckBox1.TextImageRelation = TextImageRelation.ImageAboveText
-        CheckBox1.UseVisualStyleBackColor = True
         ' 
         ' chkCatGraveyard
         ' 
@@ -640,7 +649,7 @@ Partial Class frmMain
         chkCatGraveyard.Font = New Font("Quicksand", 8.25F)
         chkCatGraveyard.ImageKey = "icons8-cemetery-24.png"
         chkCatGraveyard.ImageList = imlCategories
-        chkCatGraveyard.Location = New Point(165, 223)
+        chkCatGraveyard.Location = New Point(163, 151)
         chkCatGraveyard.Name = "chkCatGraveyard"
         chkCatGraveyard.Size = New Size(70, 62)
         chkCatGraveyard.TabIndex = 13
@@ -655,7 +664,7 @@ Partial Class frmMain
         chkCatPersonal.Font = New Font("Quicksand", 8.25F)
         chkCatPersonal.ImageKey = "icons8-test-account-24.png"
         chkCatPersonal.ImageList = imlCategories
-        chkCatPersonal.Location = New Point(86, 81)
+        chkCatPersonal.Location = New Point(84, 9)
         chkCatPersonal.Name = "chkCatPersonal"
         chkCatPersonal.Size = New Size(70, 62)
         chkCatPersonal.TabIndex = 12
@@ -670,7 +679,7 @@ Partial Class frmMain
         chkCatWorkInProgress.Font = New Font("Quicksand", 8.25F)
         chkCatWorkInProgress.ImageKey = "icons8-in-progress-24.png"
         chkCatWorkInProgress.ImageList = imlCategories
-        chkCatWorkInProgress.Location = New Point(85, 223)
+        chkCatWorkInProgress.Location = New Point(83, 151)
         chkCatWorkInProgress.Name = "chkCatWorkInProgress"
         chkCatWorkInProgress.Size = New Size(70, 62)
         chkCatWorkInProgress.TabIndex = 14
@@ -685,7 +694,7 @@ Partial Class frmMain
         chkCatLeaderBoard.Font = New Font("Quicksand", 8.25F)
         chkCatLeaderBoard.ImageKey = "icons8-leaderboard-24.png"
         chkCatLeaderBoard.ImageList = imlCategories
-        chkCatLeaderBoard.Location = New Point(7, 152)
+        chkCatLeaderBoard.Location = New Point(5, 80)
         chkCatLeaderBoard.Name = "chkCatLeaderBoard"
         chkCatLeaderBoard.Size = New Size(70, 62)
         chkCatLeaderBoard.TabIndex = 11
@@ -700,7 +709,7 @@ Partial Class frmMain
         chkCatPending.Font = New Font("Quicksand", 8.25F)
         chkCatPending.ImageKey = "icons8-pending-24.png"
         chkCatPending.ImageList = imlCategories
-        chkCatPending.Location = New Point(7, 223)
+        chkCatPending.Location = New Point(5, 151)
         chkCatPending.Name = "chkCatPending"
         chkCatPending.Size = New Size(70, 62)
         chkCatPending.TabIndex = 15
@@ -715,7 +724,7 @@ Partial Class frmMain
         chkCatQualified.Font = New Font("Quicksand", 8.25F)
         chkCatQualified.ImageKey = "icons8-qualified-24.png"
         chkCatQualified.ImageList = imlCategories
-        chkCatQualified.Location = New Point(165, 152)
+        chkCatQualified.Location = New Point(163, 80)
         chkCatQualified.Name = "chkCatQualified"
         chkCatQualified.Size = New Size(70, 62)
         chkCatQualified.TabIndex = 18
@@ -730,7 +739,7 @@ Partial Class frmMain
         chkCatLoved.Font = New Font("Quicksand", 8.25F)
         chkCatLoved.ImageKey = "icons8-heart-24.png"
         chkCatLoved.ImageList = imlCategories
-        chkCatLoved.Location = New Point(165, 81)
+        chkCatLoved.Location = New Point(163, 9)
         chkCatLoved.Name = "chkCatLoved"
         chkCatLoved.Size = New Size(70, 62)
         chkCatLoved.TabIndex = 17
@@ -745,7 +754,7 @@ Partial Class frmMain
         chkCatRanked.Font = New Font("Quicksand", 8.25F)
         chkCatRanked.ImageKey = "icons8-leaderboard-24.png"
         chkCatRanked.ImageList = imlCategories
-        chkCatRanked.Location = New Point(85, 152)
+        chkCatRanked.Location = New Point(83, 80)
         chkCatRanked.Name = "chkCatRanked"
         chkCatRanked.Size = New Size(70, 62)
         chkCatRanked.TabIndex = 19
@@ -760,7 +769,7 @@ Partial Class frmMain
         chkCatFaves.Font = New Font("Quicksand", 8.25F)
         chkCatFaves.ImageKey = "icons8-favorite-24.png"
         chkCatFaves.ImageList = imlCategories
-        chkCatFaves.Location = New Point(7, 81)
+        chkCatFaves.Location = New Point(5, 9)
         chkCatFaves.Name = "chkCatFaves"
         chkCatFaves.Size = New Size(70, 62)
         chkCatFaves.TabIndex = 16
@@ -769,56 +778,71 @@ Partial Class frmMain
         chkCatFaves.TextImageRelation = TextImageRelation.ImageAboveText
         chkCatFaves.UseVisualStyleBackColor = True
         ' 
+        ' tpPacks
+        ' 
+        tpPacks.Controls.Add(CheckBox1)
+        tpPacks.Controls.Add(chkCatAny)
+        tpPacks.Location = New Point(4, 24)
+        tpPacks.Name = "tpPacks"
+        tpPacks.Padding = New Padding(3)
+        tpPacks.Size = New Size(239, 233)
+        tpPacks.TabIndex = 1
+        tpPacks.Text = "Packs"
+        tpPacks.UseVisualStyleBackColor = True
+        ' 
+        ' CheckBox1
+        ' 
+        CheckBox1.Appearance = Appearance.Button
+        CheckBox1.Font = New Font("Quicksand", 8.25F)
+        CheckBox1.ImageKey = "icons8-edit-none.png"
+        CheckBox1.ImageList = imlCategories
+        CheckBox1.Location = New Point(124, 9)
+        CheckBox1.Name = "CheckBox1"
+        CheckBox1.Size = New Size(97, 53)
+        CheckBox1.TabIndex = 23
+        CheckBox1.Text = "No Packs"
+        CheckBox1.TextAlign = ContentAlignment.MiddleCenter
+        CheckBox1.TextImageRelation = TextImageRelation.ImageAboveText
+        CheckBox1.UseVisualStyleBackColor = True
+        ' 
         ' chkCatAny
         ' 
         chkCatAny.Appearance = Appearance.Button
         chkCatAny.Font = New Font("Quicksand", 8.25F)
         chkCatAny.ImageKey = "icons8-all-24.png"
         chkCatAny.ImageList = imlCategories
-        chkCatAny.Location = New Point(21, 19)
+        chkCatAny.Location = New Point(21, 9)
         chkCatAny.Name = "chkCatAny"
         chkCatAny.Size = New Size(97, 53)
-        chkCatAny.TabIndex = 20
+        chkCatAny.TabIndex = 22
         chkCatAny.Text = "All Packs"
         chkCatAny.TextAlign = ContentAlignment.MiddleCenter
         chkCatAny.TextImageRelation = TextImageRelation.ImageAboveText
         chkCatAny.UseVisualStyleBackColor = True
         ' 
-        ' tpPacks
-        ' 
-        tpPacks.Location = New Point(4, 24)
-        tpPacks.Name = "tpPacks"
-        tpPacks.Padding = New Padding(3)
-        tpPacks.Size = New Size(242, 307)
-        tpPacks.TabIndex = 1
-        tpPacks.Text = "Packs"
-        tpPacks.UseVisualStyleBackColor = True
-        ' 
-        ' tslBrowser
-        ' 
-        tslBrowser.Name = "tslBrowser"
-        tslBrowser.Size = New Size(65, 19)
-        tslBrowser.Text = "<Browser>"
-        ' 
-        ' frmMain
+        ' FrmMain
         ' 
         AutoScaleDimensions = New SizeF(7F, 18F)
         AutoScaleMode = AutoScaleMode.Font
         AutoSize = True
-        ClientSize = New Size(443, 633)
+        ClientSize = New Size(448, 605)
         Controls.Add(TabControl1)
         Controls.Add(StatusStrip1)
         Controls.Add(grpConfiguration)
         Controls.Add(grpModes)
         Controls.Add(pbLogo)
         Controls.Add(msMainMenu)
+        Controls.Add(chkOverwriteExistingFiles)
+        Controls.Add(chkVerboseLogging)
+        Controls.Add(chkDisregardCache)
+        Controls.Add(chkNoExtractArchives)
         Font = New Font("Quicksand", 9F)
         FormBorderStyle = FormBorderStyle.FixedDialog
         HelpButton = True
         Icon = CType(resources.GetObject("$this.Icon"), Icon)
         MainMenuStrip = msMainMenu
         Margin = New Padding(3, 4, 3, 4)
-        Name = "frmMain"
+        Name = "FrmMain"
         SizeGripStyle = SizeGripStyle.Hide
         StartPosition = FormStartPosition.CenterScreen
         Text = "Osu!Scraper"
@@ -836,6 +860,7 @@ Partial Class frmMain
         StatusStrip1.PerformLayout()
         TabControl1.ResumeLayout(False)
         tpSingles.ResumeLayout(False)
+        tpPacks.ResumeLayout(False)
         ResumeLayout(False)
         PerformLayout()
 
@@ -872,7 +897,6 @@ Partial Class frmMain
     Friend WithEvents lblXSRFTokenLabel As Label
     Friend WithEvents lblSessionLabel As Label
     Friend WithEvents txtXSRFToken As TextBox
-    Friend WithEvents txtSessionToken As TextBox
     Friend WithEvents chkVerboseLogging As CheckBox
     Friend WithEvents chkOverwriteExistingFiles As CheckBox
     Friend WithEvents ttGeneralHover As ToolTip
@@ -891,7 +915,6 @@ Partial Class frmMain
     Friend WithEvents TabControl1 As TabControl
     Friend WithEvents tpSingles As TabPage
     Friend WithEvents tpPacks As TabPage
-    Friend WithEvents CheckBox1 As CheckBox
     Friend WithEvents chkCatGraveyard As CheckBox
     Friend WithEvents chkCatPersonal As CheckBox
     Friend WithEvents chkCatWorkInProgress As CheckBox
@@ -901,9 +924,13 @@ Partial Class frmMain
     Friend WithEvents chkCatLoved As CheckBox
     Friend WithEvents chkCatRanked As CheckBox
     Friend WithEvents chkCatFaves As CheckBox
-    Friend WithEvents chkCatAny As CheckBox
     Friend WithEvents lblBatchSizeValue As Label
     Friend WithEvents lblBatchSizeLabel As Label
     Friend WithEvents tbBatchSize As TrackBar
     Friend WithEvents tslBrowser As ToolStripStatusLabel
+    Friend WithEvents Button1 As Button
+    Friend WithEvents ExitToolStripMenuItem1 As ToolStripMenuItem
+    Friend WithEvents CheckBox1 As CheckBox
+    Friend WithEvents chkCatAny As CheckBox
+    Friend WithEvents txtSessionToken As TextBox
 End Class
