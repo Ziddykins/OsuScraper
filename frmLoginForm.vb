@@ -22,7 +22,7 @@ Public Class FrmLoginForm
         End If
     End Sub
 
-    Private Shared Sub BtnSubmit_Click(sender As Object, e As EventArgs) Handles btnSubmit.Click
+    Private Sub BtnSubmit_Click(sender As Object, e As EventArgs) Handles btnSubmit.Click
         Dim username As String = txtUsernameValue.Text
         Dim password As String = txtPasswordValue.Text
         Dim baseUrl As String = "https://osu.ppy.sh"
