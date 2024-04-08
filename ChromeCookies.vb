@@ -1,104 +1,112 @@
 ﻿' https://github.com/tomsaso/chrome_cookies_vb_dotnet/tree/master/Chrome_cookies_stealer
 
-Imports System.Data.SQLite
-Imports System.Environment
 Imports System.IO
-Imports System.Security.Cryptography
+Imports System.Data.SQLite
 Imports System.Text
+Imports System.Environment
 Imports Newtonsoft.Json.Linq
 Imports Org.BouncyCastle.Crypto
-Imports Org.BouncyCastle.Crypto.Engines
-Imports Org.BouncyCastle.Crypto.Modes
+Imports System.Security.Cryptography
 Imports Org.BouncyCastle.Crypto.Parameters
+Imports Org.BouncyCastle.Crypto.Modes
+Imports Org.BouncyCastle.Crypto.Engines
 
 Friend Module Cookies
-
-    Public Function GetCookieJar(domainHost As String, browserType As BrowserType) As Dictionary(Of String, String)
-        Dim cookiesDict As New Dictionary(Of String, String)
+    Public Function GetCookieJar(domain_host As String, browser_type As BrowserType) As Dictionary(Of String, String)
+        Dim CookiesDict As Dictionary(Of String, String) = New Dictionary(Of String, String)
         Dim conn As SQLiteConnection
         Dim cmd As SQLiteCommand
 
-        KillOpenBrowser(browserType)
+        KillOpenBrowser(browser_type)
 
-        Dim sessionCookie As String = "osu_session"
-        Dim xsrfCookie As String = "XSRF-TOKEN"
-        Dim cookiesFile As String = ""
 
-        Dim databaseName As String = ""
-        Dim encKey As Byte() = Nothing
+
+        Dim app_local_data As String = ExpandEnvironmentVariables("%LOCALAPPDATA%")
+        Dim app_roaming_data As String = ExpandEnvironmentVariables("%APPDATA%")
+        Dim SessionCookie As String = "osu_session"
+        Dim XSRFCookie As String = "XSRF-TOKEN"
+        Dim cookies_file As String = ""
+        Dim database_name As String = ""
+        Dim enc_key As Byte() = Nothing
         Dim columns() As String = {"name", "encrypted_value", "host_key"}
-        Dim dataSource As String
+        Dim data_source As String
 
-        If browserType = BrowserType.Chrome Or browserType = BrowserType.MsEdge Then
-            encKey = GetCookieEncryptionKey(browserType)
+        If browser_type = BrowserType.Chrome Or browser_type = BrowserType.MSEdge Then
+            enc_key = GetCookieEncryptionKey(browser_type)
         End If
 
-        Select Case browserType
+        Select Case browser_type
             Case BrowserType.Chrome
-                cookiesFile = SpecialFolder.LocalApplicationData & "\Google\Chrome\User Data\Default\Network\Cookies"
-                databaseName = "cookies"
-            Case BrowserType.Firefox
-                cookiesFile = SpecialFolder.ApplicationData & "\Mozilla\Firefox\Profiles\tl92esyp.default-release\cookies.sqlite"
-                databaseName = "moz_cookies"
+                cookies_file = app_local_data & "\Google\Chrome\User Data\Default\Network\Cookies"
+                database_name = "cookies"
+            case BrowserType.Firefox
+                cookies_file = app_roaming_data & "\Mozilla\Firefox\Profiles\tl92esyp.default-release\cookies.sqlite"
+                database_name = "moz_cookies"
                 columns = {"name", "value", "host"}
-            Case BrowserType.MsEdge
-                cookiesFile = SpecialFolder.LocalApplicationData & "\Microsoft\Edge\User Data\Default\Network\Cookies"
-                databaseName = "cookies"
+            Case BrowserType.MSEdge
+                cookies_file = app_local_data & "\Microsoft\Edge\User Data\Default\Network\Cookies"
+                database_name = "cookies"
             Case BrowserType.Other
-                Throw New Exception("Your current browser is not supported. Please login manually, and copy " &
-                                           "your session cookie and XSRF token cookie.")
-        End Select
+                cookies_file = "Unsupportedlol"
 
-        dataSource = "Data Source=" & cookiesFile & ";"
-        conn = New SQLiteConnection(dataSource)
+        End Select
+        
+        data_source = "Data Source=" & cookies_file & ";"
+        conn = New SQLiteConnection(data_source)
         cmd = conn.CreateCommand()
-        cmd.CommandText = $"SELECT {columns(0)}, {columns(1)} FROM main.{databaseName} WHERE {columns(2)} LIKE " & domainHost
+        cmd.CommandText = $"SELECT {columns(0)}, {columns(1)} FROM main.{database_name} WHERE {columns(2)} LIKE " & domain_host
         conn.Open()
 
         Using reader As SQLiteDataReader = cmd.ExecuteReader()
-            While reader.Read()
+            Dim max_lines As Integer = reader.FieldCount
+
+            While reader.Read()        
+                If frmMain.tspbProgressBar.Value > frmMain.tspbProgressBar.Maximum Then
+                    frmMain.tspbProgressBar.Value = max_lines
+                End If
+                
+              
                 Dim name = reader.GetString(0)
+                
+                If name = SessionCookie Or name = XSRFCookie Then
+                    Dim t_byte() As Byte
+                    Dim Value As String
 
-                If name = sessionCookie Or name = xsrfCookie Then
-                    Dim tByte() As Byte
-                    Dim value As String
-
-                    If browserType = BrowserType.Chrome Or browserType = BrowserType.MsEdge Then
-                        tByte = CType(reader.GetValue(1), Byte())
-                        value = DecryptWithKey(tByte, encKey, 3)
+                    If browser_type = BrowserType.Chrome Or browser_type = BrowserType.MSEdge Then
+                        t_byte = CType(reader.GetValue(1), Byte())
+                        Value = _decryptWithKey(t_byte, enc_key, 3)
                     Else
-                        value = reader.GetString(1)
+                        Value = reader.GetString(1)
                     End If
 
-                    cookiesDict.Add(name, value)
+                    CookiesDict.Add(name, Value)
                 End If
             End While
         End Using
 
         conn.Close()
-
-        Return cookiesDict
+        Return CookiesDict
     End Function
 
-    Public Function DecryptWithKey(ByVal message As Byte(), ByVal key As Byte(), ByVal nonSecretPayloadLength As Integer) As String
-        Const keyBitSize As Integer = 256
-        Const macBitSize As Integer = 128
-        Const nonceBitSize As Integer = 96
+    Public Function _decryptWithKey(ByVal message As Byte(), ByVal key As Byte(), ByVal nonSecretPayloadLength As Integer) As String
+        Const KEY_BIT_SIZE As Integer = 256
+        Const MAC_BIT_SIZE As Integer = 128
+        Const NONCE_BIT_SIZE As Integer = 96
 
-        If key Is Nothing OrElse key.Length <> keyBitSize / 8 Then
-            Throw New ArgumentException(String.Format("Key needs to be {0} bit!", keyBitSize), NameOf(key))
+        If key Is Nothing OrElse key.Length <> KEY_BIT_SIZE / 8 Then
+            Throw New ArgumentException(String.Format("Key needs to be {0} bit!", KEY_BIT_SIZE), "key")
         End If
 
         If message Is Nothing OrElse message.Length = 0 Then
-            Throw New ArgumentException($"Message required!", NameOf(message))
+            Throw New ArgumentException("Message required!", "message")
         End If
 
         Using cipherStream = New MemoryStream(message)
             Using cipherReader = New BinaryReader(cipherStream)
                 Dim nonSecretPayload = cipherReader.ReadBytes(nonSecretPayloadLength)
-                Dim nonce = cipherReader.ReadBytes(CInt(Convert.ToDouble(nonceBitSize) / 8.0))
+                Dim nonce = cipherReader.ReadBytes(CInt(Convert.ToDouble(NONCE_BIT_SIZE) / 8.0))
                 Dim cipher = New GcmBlockCipher(New AesEngine())
-                Dim parameters = New AeadParameters(New KeyParameter(key), macBitSize, nonce)
+                Dim parameters = New AeadParameters(New KeyParameter(key), MAC_BIT_SIZE, nonce)
                 cipher.Init(False, parameters)
                 Dim cipherText = cipherReader.ReadBytes(message.Length)
                 Dim plainText = New Byte(cipher.GetOutputSize(cipherText.Length) - 1) {}
@@ -106,7 +114,7 @@ Friend Module Cookies
                 Try
                     Dim len = cipher.ProcessBytes(cipherText, 0, cipherText.Length, plainText, 0)
                     cipher.DoFinal(plainText, len)
-                Catch unusedInvalidCipherTextException1 As InvalidCipherTextException
+                Catch __unusedInvalidCipherTextException1__ As InvalidCipherTextException
                     Return Nothing
                 End Try
 
@@ -114,62 +122,66 @@ Friend Module Cookies
             End Using
         End Using
     End Function
+    Private Function UnicodeStringToBytes(ByVal str As String) As Byte()
+        Return Encoding.Unicode.GetBytes(str)
+    End Function
 
-    Public Function GetCookieEncryptionKey(browserType As BrowserType) As Byte()
+    Public Function GetCookieEncryptionKey(browser_type As BrowserType) As Byte()
         Dim appData As String = GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
         Dim keyfile As String = ""
-        Dim encryptionKey As String
-        Dim jsonLocalstate As JObject
-        Dim encryptedKey As Object
-        Dim encodedKey As String
-        Dim decodedKey() As Byte
+        Dim encryption_key As String
+        Dim json_localstate As JObject
+        Dim encrypted_key As Object
+        Dim encoded_key As String
+        Dim decoded_key() As Byte
 
-        If browserType = BrowserType.Chrome Then
+
+        If browser_type = BrowserType.Chrome Then
             keyfile = appData & "\Google\Chrome\User Data\Local State"
-        ElseIf browserType = BrowserType.MsEdge Then
+        Else If browser_type = BrowserType.MSEdge Then
             keyfile = appData & "\Microsoft\Edge\User Data\Local State"
         End If
 
-        encryptionKey = File.ReadAllText(keyfile)
-        jsonLocalstate = JObject.Parse(encryptionKey)
-        encryptedKey = jsonLocalstate("os_crypt")("encrypted_key")
-        encodedKey = encryptedKey.ToString()
 
-        decodedKey = ProtectedData.Unprotect(
-            Convert.FromBase64String(encodedKey).Skip(5).ToArray(),
+        encryption_key = File.ReadAllText(keyfile)
+        json_localstate = JObject.Parse(encryption_key)
+        encrypted_key = json_localstate("os_crypt")("encrypted_key")
+        encoded_key = encrypted_key.ToString()
+        
+        decoded_key = ProtectedData.Unprotect(
+            Convert.FromBase64String(encoded_key).Skip(5).ToArray(),
             Nothing,
             DataProtectionScope.LocalMachine
         )
 
-        Return decodedKey
+        Return decoded_key
     End Function
 
-    Private Sub KillOpenBrowser(ByRef browserType As BrowserType)
-        Dim browserName As String = ""
+    Private Sub KillOpenBrowser(ByRef browser_type As BrowserType)
+        Dim browser_name As String = ""
 
-        Select Case browserType
+        Select Case browser_type
             Case BrowserType.Chrome
-                browserName = "chrome"
+                browser_name = "chrome"
             Case BrowserType.Firefox
-                browserName = "firefox"
-            Case BrowserType.MsEdge
-                browserName = "msedge"
+                browser_name = "firefox"
+            Case BrowserType.MSEdge
+                browser_name = "msedge"
             Case BrowserType.Other
 
         End Select
 
-        Dim userAnswer As DialogResult = MessageBox.Show(
-            "Your {browser_type} browser might have to be closed in order to read from the file; is it okay to close it now?",
-            "Found Open Browser",
-            MessageBoxButtons.YesNo,
-            MessageBoxIcon.Question
-        )
+        For Each process As Process In Process.GetProcessesByName(browser_name)
+            Dim user_answer As DialogResult = MessageBox.Show(
+                "Found an open " & browser_name & " process. Would you like to close it?",
+                "Found Open Browser",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question
+            )
 
-        If userAnswer = DialogResult.Yes Then
-            For Each process As Process In Process.GetProcessesByName(browserName)
+            If user_answer = DialogResult.Yes Then
                 process.Kill()
-            Next
-        End If
+            End If            
+        Next
     End Sub
-
 End Module
