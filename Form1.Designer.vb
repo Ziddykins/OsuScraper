@@ -705,7 +705,7 @@ Partial Class frmMain
         ' tslSpacer
         ' 
         tslSpacer.Name = "tslSpacer"
-        tslSpacer.Size = New Size(91, 19)
+        tslSpacer.Size = New Size(60, 19)
         tslSpacer.Spring = True
         ' 
         ' ToolStripProgressBar1
