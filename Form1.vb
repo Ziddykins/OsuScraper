@@ -1,6 +1,6 @@
 ﻿Imports System.ComponentModel
 Imports System.Text.RegularExpressions
-
+ 
 
 Public Class frmMain
     Public frmListings As Form
@@ -16,7 +16,7 @@ Public Class frmMain
 
         frmListings.Visible = False
         frmLoginForm.Visible = False
-        
+
     End Sub
 
     Private Sub CheckBox14_Click(sender As Object, e As EventArgs) Handles chkCatAny.Click
@@ -113,7 +113,7 @@ Public Class frmMain
     Private Sub btnOpenListings_Click(sender As Object, e As EventArgs) Handles btnOpenListings.Click
         If frmListings.IsDisposed = False Then
             frmListings.Visible = True
-        Else 
+        Else
             frmListings = New frmListings
             frmListings.Show()
             frmListings.Visible = True
@@ -141,7 +141,7 @@ Public Class frmMain
     Private Sub btnLogin_Click(sender As Object, e As EventArgs) Handles btnLogin.Click
         If frmLoginForm.IsDisposed = False Then
             frmLoginForm.Visible = True
-        Else 
+        Else
             frmLoginForm = New frmLoginForm
             frmLoginForm.Show()
             frmLoginForm.Visible = True
@@ -150,6 +150,10 @@ Public Class frmMain
     End Sub
 
     Private Sub btnLogin_Validating(sender As Object, e As CancelEventArgs) Handles btnLogin.Validating
+
+    End Sub
+
+    Private Sub chkCatAny_CheckedChanged(sender As Object, e As EventArgs) Handles chkCatAny.CheckedChanged
 
     End Sub
 End Class
