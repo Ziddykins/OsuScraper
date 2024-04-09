@@ -156,32 +156,4 @@ Friend Module Cookies
 
         Return decoded_key
     End Function
-
-    Private Sub KillOpenBrowser(ByRef browser_type As BrowserType)
-        Dim browser_name As String = ""
-
-        Select Case browser_type
-            Case BrowserType.Chrome
-                browser_name = "chrome"
-            Case BrowserType.Firefox
-                browser_name = "firefox"
-            Case BrowserType.MSEdge
-                browser_name = "msedge"
-            Case BrowserType.Other
-
-        End Select
-
-        For Each process As Process In Process.GetProcessesByName(browser_name)
-            Dim user_answer As DialogResult = MessageBox.Show(
-                "Found an open " & browser_name & " process. Would you like to close it?",
-                "Found Open Browser",
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Question
-            )
-
-            If user_answer = DialogResult.Yes Then
-                process.Kill()
-            End If            
-        Next
-    End Sub
 End Module

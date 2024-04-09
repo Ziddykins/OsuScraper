@@ -1,4 +1,5 @@
 ﻿Imports System.ComponentModel
+Imports System.Net.Http
 Imports System.Text.RegularExpressions
 
 
@@ -52,12 +53,13 @@ Public Class frmMain
     Private Sub btnAutoFill_Click(sender As Object, e As EventArgs) Handles btnAutoFill.Click
         Dim default_browser As BrowserType
         Dim cookies As Dictionary(Of String, String)
+        Dim response As HttpResponseMessage
 
         default_browser = GetDefaultBrowser()
         cookies = GetCookieJar("'%ppy.sh%'", default_browser)
 
         If cookies IsNot Nothing Then
-            For Each item As KeyValuePair(Of String, String) in cookies
+            For Each item As KeyValuePair(Of String, String) In cookies
                 If item.Key = "XSRF-TOKEN" Then
                     txtXSRFToken.Text = item.Value
                 Else
@@ -77,6 +79,10 @@ Public Class frmMain
                 MessageBoxIcon.Exclamation
             )
         End If
+
+        response = HTTPGet("https://osu.ppy.sh/beatmaps/packs")
+        PullPacks()
+        
     End Sub
 
     Private Sub txtSessionToken_TextChanged(sender As Object, e As EventArgs) Handles txtSessionToken.TextChanged
@@ -120,15 +126,15 @@ Public Class frmMain
             If TypeOf control Is CheckBox Then
                 If StrComp(control.Name, "chkCatAny") <> 0 Then
                     AddHandler control.Click, AddressOf uncheckAllCategories
-                End IF
+                End If
             End If
         Next
 
         If default_browser = BrowserType.Chrome Then
             tslBrowser.Image = My.Resources.icons8_chrome_24
-        Else If default_browser = BrowserType.Firefox Then
+        ElseIf default_browser = BrowserType.Firefox Then
             tslBrowser.Image = My.Resources.icons8_firefox_24
-        Else If default_browser = BrowserType.MSEdge Then
+        ElseIf default_browser = BrowserType.MSEdge Then
             tslBrowser.Image = My.Resources.icons8_edge_24
         Else
 
@@ -169,14 +175,64 @@ Public Class frmMain
             frmHelp.Dispose
         End If
 
-        If frmListings IsNot Nothing Then
-            frmListings.Dispose
-        End If
-
         Close()
     End Sub
 
-    Private Sub FrmListings_Closed(sender As Object, e As EventArgs) Handles Me.Closed
-        Me.Visible = False
+    Private Function HTTPGet(url As String) As HttpResponseMessage
+        Dim client As HttpClient = New HttpClient()
+        Dim request As HttpRequestMessage = New HttpRequestMessage(HttpMethod.[Get], url)
+
+        request.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:124.0) Gecko/20100101 Firefox/124.0")
+        request.Headers.Add("Accept", "text/html, application/xhtml+xml")
+        request.Headers.Add("Accept-Language", "en-CA,en-US;q=0.7,en;q=0.3")
+        request.Headers.Add("Connection", "keep-alive")
+        request.Headers.Add("Referer", "https://osu.ppy.sh/")
+        request.Headers.Add("Cookie", $"XSRF-TOKEN={txtXSRFToken.Text}; osu_session={txtSessionToken.Text};")
+        request.Headers.Add("Sec-Fetch-Dest", "empty")
+        request.Headers.Add("Sec-Fetch-Mode", "cors")
+        request.Headers.Add("Sec-Fetch-Site", "same-origin")
+
+        Dim response As HttpResponseMessage = client.SendAsync(request).Result
+        response.EnsureSuccessStatusCode()
+        
+        Return response
+    End Function
+
+    Private Sub PullPacks()
+        Dim type As String = Nothing
+        Dim response As HttpResponseMessage
+        Dim content As String
+        Dim lines() As String
+        
+        If chkPackStandard.Checked = True
+            type = "standard"
+        End If
+
+        response = HTTPGet($"https://osu.ppy.sh/beatmaps/packs?type={type}")
+        content = response.Content.ReadAsStringAsync.Result.ToString()
+        
+        'content = content.Replace(vbCr, "").Replace(vbLf, "").Replace(vbCrLf, "")
+        content = Regex.Replace(content, "(?:[\r\n]+|\s{2,})", " ")
+        lines = content.Split("class=" & Chr(34) & "beatmap-pack js-beatmap-pack js-accordion__item")
+
+        For Each line As String In lines
+            Dim matched As Match = Regex.Match(line, Chr(34) & " data-pack-tag=" & Chr(34) & "(.*?)" & Chr(34) & ".*?href=" & Chr(34) & "(.*?)" & Chr(34) & ".*?pack__name" & Chr(34) & ">(.*?)<\/div>.*?__date" & Chr(34) & ">(.*?)<\/span>.*?__author--bold" & Chr(34) & ">(.*?)<\/span>")
+            Dim pack_title As String = matched.Groups(3).Value
+            Dim pack_author As String = matched.Groups(4).Value
+            Dim pack_date As String = matched.Groups(2).Value
+            Dim pack_code As String = matched.Groups(1).Value
+
+            If pack_title IsNot Nothing Then
+                Dim pack As ListViewItem = New ListViewItem(pack_title)
+                tvListings.Nodes(0).Nodes(0).Nodes.Add(pack_title)
+                
+            End If
+
+        Next
+
+        
+        'Regex.Replace(content, "\s{2,}", " ",RegexOptions.Multiline)
+
+        MessageBox.Show(CStr(content.length()))
     End Sub
 End Class
