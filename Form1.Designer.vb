@@ -81,27 +81,28 @@ Partial Class frmMain
         Button1 = New Button()
         grpSession = New GroupBox()
         grpOptions = New GroupBox()
-        GroupBox1 = New GroupBox()
+        grpListings = New GroupBox()
         Button4 = New Button()
         Button3 = New Button()
         Button2 = New Button()
-        GroupBox2 = New GroupBox()
+        grpDownloads = New GroupBox()
         Button5 = New Button()
         Button6 = New Button()
         Button7 = New Button()
         Button8 = New Button()
         cbFilter = New ComboBox()
         tpSingles = New TabPage()
-        CheckBox4 = New CheckBox()
-        chkCatGraveyard = New CheckBox()
-        chkCatPersonal = New CheckBox()
-        chkCatWorkInProgress = New CheckBox()
-        chkCatLeaderBoard = New CheckBox()
-        chkCatPending = New CheckBox()
-        chkCatQualified = New CheckBox()
-        chkCatLoved = New CheckBox()
-        chkCatRanked = New CheckBox()
-        chkCatFaves = New CheckBox()
+        chkSingleAll = New CheckBox()
+        chkSingleGraveyard = New CheckBox()
+        ilCategoriesColor = New ImageList(components)
+        chkSinglePersonal = New CheckBox()
+        chkSingleWIP = New CheckBox()
+        chkSingleLeaderBoard = New CheckBox()
+        chkSinglePending = New CheckBox()
+        chkSingleQualified = New CheckBox()
+        chkSingleLoved = New CheckBox()
+        chkSingleRanked = New CheckBox()
+        chkSingleFaves = New CheckBox()
         tpPacks = New TabPage()
         chkPackAlArt = New CheckBox()
         chkPackTheme = New CheckBox()
@@ -110,8 +111,8 @@ Partial Class frmMain
         chkPackLoved = New CheckBox()
         chkPackSpotlights = New CheckBox()
         chkPackStandard = New CheckBox()
-        chkCatAny = New CheckBox()
-        TabControl1 = New TabControl()
+        chkPackAll = New CheckBox()
+        tcMainTabs = New TabControl()
         CType(pbLogo, ComponentModel.ISupportInitialize).BeginInit()
         grpModes.SuspendLayout()
         msMainMenu.SuspendLayout()
@@ -122,21 +123,21 @@ Partial Class frmMain
         StatusStrip1.SuspendLayout()
         grpSession.SuspendLayout()
         grpOptions.SuspendLayout()
-        GroupBox1.SuspendLayout()
-        GroupBox2.SuspendLayout()
+        grpListings.SuspendLayout()
+        grpDownloads.SuspendLayout()
         tpSingles.SuspendLayout()
         tpPacks.SuspendLayout()
-        TabControl1.SuspendLayout()
+        tcMainTabs.SuspendLayout()
         SuspendLayout()
         ' 
         ' pbLogo
         ' 
         pbLogo.Dock = DockStyle.Top
-        pbLogo.Image = My.Resources.Resources.os_logo
+        pbLogo.Image = My.Resources.Resources.os_logo_banner
         pbLogo.Location = New Point(0, 24)
         pbLogo.Margin = New Padding(3, 4, 3, 4)
         pbLogo.Name = "pbLogo"
-        pbLogo.Size = New Size(901, 108)
+        pbLogo.Size = New Size(949, 108)
         pbLogo.SizeMode = PictureBoxSizeMode.Zoom
         pbLogo.TabIndex = 0
         pbLogo.TabStop = False
@@ -242,6 +243,8 @@ Partial Class frmMain
         imlCategories.Images.SetKeyName(8, "icons8-qualified-24.png")
         imlCategories.Images.SetKeyName(9, "icons8-leaderboard-24.png")
         imlCategories.Images.SetKeyName(10, "icons8-edit-none.png")
+        imlCategories.Images.SetKeyName(11, "icons8-osu-24.png")
+        imlCategories.Images.SetKeyName(12, "icons8-spotlight-24.png")
         ' 
         ' msMainMenu
         ' 
@@ -249,7 +252,7 @@ Partial Class frmMain
         msMainMenu.Items.AddRange(New ToolStripItem() {tsmFile, tsmListings, tsmOptions, tsmHelp})
         msMainMenu.Location = New Point(0, 0)
         msMainMenu.Name = "msMainMenu"
-        msMainMenu.Size = New Size(901, 24)
+        msMainMenu.Size = New Size(949, 24)
         msMainMenu.TabIndex = 3
         msMainMenu.Text = "MenuStrip1"
         ' 
@@ -443,14 +446,13 @@ Partial Class frmMain
         btnAutoFill.AutoSize = True
         btnAutoFill.FlatStyle = FlatStyle.Popup
         btnAutoFill.Font = New Font("Quicksand", 9F)
-        btnAutoFill.Image = My.Resources.Resources.icons8_fill_color_24
+        btnAutoFill.Image = My.Resources.Resources.icons8_wand_24
+        btnAutoFill.ImageAlign = ContentAlignment.MiddleLeft
         btnAutoFill.Location = New Point(13, 130)
         btnAutoFill.Name = "btnAutoFill"
         btnAutoFill.Size = New Size(150, 40)
         btnAutoFill.TabIndex = 5
         btnAutoFill.Text = "Auto-Fill"
-        btnAutoFill.TextAlign = ContentAlignment.MiddleRight
-        btnAutoFill.TextImageRelation = TextImageRelation.ImageBeforeText
         btnAutoFill.UseVisualStyleBackColor = True
         ' 
         ' lblXSRFTokenLabel
@@ -524,9 +526,9 @@ Partial Class frmMain
         ' 
         StatusStrip1.ImageScalingSize = New Size(24, 24)
         StatusStrip1.Items.AddRange(New ToolStripItem() {tslBrowser, tslSep3, tssAuthenticatedValue, tssSep1, tslCacheValue, tslSep2, tslPulledValue, tslSpacer, tspbProgressBar})
-        StatusStrip1.Location = New Point(0, 646)
+        StatusStrip1.Location = New Point(0, 600)
         StatusStrip1.Name = "StatusStrip1"
-        StatusStrip1.Size = New Size(901, 29)
+        StatusStrip1.Size = New Size(949, 29)
         StatusStrip1.TabIndex = 5
         StatusStrip1.Text = "StatusStrip1"
         ' 
@@ -580,7 +582,7 @@ Partial Class frmMain
         ' tslSpacer
         ' 
         tslSpacer.Name = "tslSpacer"
-        tslSpacer.Size = New Size(653, 24)
+        tslSpacer.Size = New Size(701, 24)
         tslSpacer.Spring = True
         ' 
         ' tspbProgressBar
@@ -607,7 +609,7 @@ Partial Class frmMain
         TreeNode2.Text = "Singles"
         tvListings.Nodes.AddRange(New TreeNode() {TreeNode1, TreeNode2})
         tvListings.SelectedImageIndex = 0
-        tvListings.Size = New Size(306, 462)
+        tvListings.Size = New Size(306, 413)
         tvListings.TabIndex = 7
         ' 
         ' ilLists
@@ -620,7 +622,7 @@ Partial Class frmMain
         ' 
         ' Button1
         ' 
-        Button1.Location = New Point(14, 32)
+        Button1.Location = New Point(32, 25)
         Button1.Name = "Button1"
         Button1.Size = New Size(105, 23)
         Button1.TabIndex = 8
@@ -636,7 +638,7 @@ Partial Class frmMain
         grpSession.Controls.Add(lblXSRFTokenLabel)
         grpSession.Location = New Point(12, 326)
         grpSession.Name = "grpSession"
-        grpSession.Size = New Size(176, 184)
+        grpSession.Size = New Size(176, 260)
         grpSession.TabIndex = 19
         grpSession.TabStop = False
         grpSession.Text = "Session"
@@ -647,29 +649,29 @@ Partial Class frmMain
         grpOptions.Controls.Add(chkNoExtractArchives)
         grpOptions.Controls.Add(chkVerboseLogging)
         grpOptions.Controls.Add(chkOverwriteExistingFiles)
-        grpOptions.Location = New Point(12, 516)
+        grpOptions.Location = New Point(769, 467)
         grpOptions.Name = "grpOptions"
-        grpOptions.Size = New Size(176, 123)
+        grpOptions.Size = New Size(168, 123)
         grpOptions.TabIndex = 20
         grpOptions.TabStop = False
         grpOptions.Text = "Options"
         ' 
-        ' GroupBox1
+        ' grpListings
         ' 
-        GroupBox1.Controls.Add(Button4)
-        GroupBox1.Controls.Add(Button3)
-        GroupBox1.Controls.Add(Button2)
-        GroupBox1.Controls.Add(Button1)
-        GroupBox1.Location = New Point(769, 139)
-        GroupBox1.Name = "GroupBox1"
-        GroupBox1.Size = New Size(132, 181)
-        GroupBox1.TabIndex = 21
-        GroupBox1.TabStop = False
-        GroupBox1.Text = "Listings"
+        grpListings.Controls.Add(Button4)
+        grpListings.Controls.Add(Button3)
+        grpListings.Controls.Add(Button2)
+        grpListings.Controls.Add(Button1)
+        grpListings.Location = New Point(769, 139)
+        grpListings.Name = "grpListings"
+        grpListings.Size = New Size(168, 158)
+        grpListings.TabIndex = 21
+        grpListings.TabStop = False
+        grpListings.Text = "Listings"
         ' 
         ' Button4
         ' 
-        Button4.Location = New Point(14, 125)
+        Button4.Location = New Point(32, 118)
         Button4.Name = "Button4"
         Button4.Size = New Size(105, 23)
         Button4.TabIndex = 11
@@ -678,7 +680,7 @@ Partial Class frmMain
         ' 
         ' Button3
         ' 
-        Button3.Location = New Point(14, 94)
+        Button3.Location = New Point(32, 87)
         Button3.Name = "Button3"
         Button3.Size = New Size(105, 23)
         Button3.TabIndex = 10
@@ -687,29 +689,29 @@ Partial Class frmMain
         ' 
         ' Button2
         ' 
-        Button2.Location = New Point(14, 63)
+        Button2.Location = New Point(32, 56)
         Button2.Name = "Button2"
         Button2.Size = New Size(105, 23)
         Button2.TabIndex = 9
         Button2.Text = "Button2"
         Button2.UseVisualStyleBackColor = True
         ' 
-        ' GroupBox2
+        ' grpDownloads
         ' 
-        GroupBox2.Controls.Add(Button5)
-        GroupBox2.Controls.Add(Button6)
-        GroupBox2.Controls.Add(Button7)
-        GroupBox2.Controls.Add(Button8)
-        GroupBox2.Location = New Point(769, 329)
-        GroupBox2.Name = "GroupBox2"
-        GroupBox2.Size = New Size(132, 310)
-        GroupBox2.TabIndex = 22
-        GroupBox2.TabStop = False
-        GroupBox2.Text = "Downloads"
+        grpDownloads.Controls.Add(Button5)
+        grpDownloads.Controls.Add(Button6)
+        grpDownloads.Controls.Add(Button7)
+        grpDownloads.Controls.Add(Button8)
+        grpDownloads.Location = New Point(769, 303)
+        grpDownloads.Name = "grpDownloads"
+        grpDownloads.Size = New Size(168, 158)
+        grpDownloads.TabIndex = 22
+        grpDownloads.TabStop = False
+        grpDownloads.Text = "Downloads"
         ' 
         ' Button5
         ' 
-        Button5.Location = New Point(15, 128)
+        Button5.Location = New Point(32, 118)
         Button5.Name = "Button5"
         Button5.Size = New Size(105, 23)
         Button5.TabIndex = 15
@@ -718,7 +720,7 @@ Partial Class frmMain
         ' 
         ' Button6
         ' 
-        Button6.Location = New Point(15, 97)
+        Button6.Location = New Point(32, 87)
         Button6.Name = "Button6"
         Button6.Size = New Size(105, 23)
         Button6.TabIndex = 14
@@ -727,7 +729,7 @@ Partial Class frmMain
         ' 
         ' Button7
         ' 
-        Button7.Location = New Point(15, 66)
+        Button7.Location = New Point(32, 56)
         Button7.Name = "Button7"
         Button7.Size = New Size(105, 23)
         Button7.TabIndex = 13
@@ -736,7 +738,7 @@ Partial Class frmMain
         ' 
         ' Button8
         ' 
-        Button8.Location = New Point(15, 35)
+        Button8.Location = New Point(32, 25)
         Button8.Name = "Button8"
         Button8.Size = New Size(105, 23)
         Button8.TabIndex = 12
@@ -753,216 +755,236 @@ Partial Class frmMain
         cbFilter.Name = "cbFilter"
         cbFilter.Size = New Size(305, 26)
         cbFilter.TabIndex = 23
+        cbFilter.Text = "<Filter ... >"
         ' 
         ' tpSingles
         ' 
-        tpSingles.Controls.Add(CheckBox4)
-        tpSingles.Controls.Add(chkCatGraveyard)
-        tpSingles.Controls.Add(chkCatPersonal)
-        tpSingles.Controls.Add(chkCatWorkInProgress)
-        tpSingles.Controls.Add(chkCatLeaderBoard)
-        tpSingles.Controls.Add(chkCatPending)
-        tpSingles.Controls.Add(chkCatQualified)
-        tpSingles.Controls.Add(chkCatLoved)
-        tpSingles.Controls.Add(chkCatRanked)
-        tpSingles.Controls.Add(chkCatFaves)
-        tpSingles.Location = New Point(4, 27)
+        tpSingles.Controls.Add(chkSingleAll)
+        tpSingles.Controls.Add(chkSingleGraveyard)
+        tpSingles.Controls.Add(chkSinglePersonal)
+        tpSingles.Controls.Add(chkSingleWIP)
+        tpSingles.Controls.Add(chkSingleLeaderBoard)
+        tpSingles.Controls.Add(chkSinglePending)
+        tpSingles.Controls.Add(chkSingleQualified)
+        tpSingles.Controls.Add(chkSingleLoved)
+        tpSingles.Controls.Add(chkSingleRanked)
+        tpSingles.Controls.Add(chkSingleFaves)
+        tpSingles.Location = New Point(4, 24)
         tpSingles.Name = "tpSingles"
         tpSingles.Padding = New Padding(3)
-        tpSingles.Size = New Size(229, 301)
+        tpSingles.Size = New Size(245, 318)
         tpSingles.TabIndex = 1
         tpSingles.Text = "Singles"
         tpSingles.UseVisualStyleBackColor = True
         ' 
-        ' CheckBox4
+        ' chkSingleAll
         ' 
-        CheckBox4.Appearance = Appearance.Button
-        CheckBox4.BackColor = SystemColors.Control
-        CheckBox4.FlatAppearance.BorderColor = Color.FromArgb(CByte(64), CByte(64), CByte(64))
-        CheckBox4.FlatAppearance.CheckedBackColor = SystemColors.ActiveCaption
-        CheckBox4.FlatStyle = FlatStyle.Flat
-        CheckBox4.Font = New Font("Quicksand", 8.25F)
-        CheckBox4.ImageKey = "icons8-all-24.png"
-        CheckBox4.ImageList = imlCategories
-        CheckBox4.Location = New Point(9, 6)
-        CheckBox4.Name = "CheckBox4"
-        CheckBox4.Size = New Size(210, 45)
-        CheckBox4.TabIndex = 29
-        CheckBox4.Text = "All Packs"
-        CheckBox4.TextAlign = ContentAlignment.MiddleRight
-        CheckBox4.TextImageRelation = TextImageRelation.ImageBeforeText
-        CheckBox4.UseVisualStyleBackColor = False
+        chkSingleAll.Appearance = Appearance.Button
+        chkSingleAll.BackColor = SystemColors.Control
+        chkSingleAll.FlatAppearance.BorderColor = Color.FromArgb(CByte(64), CByte(64), CByte(64))
+        chkSingleAll.FlatAppearance.CheckedBackColor = SystemColors.ActiveCaption
+        chkSingleAll.FlatStyle = FlatStyle.Flat
+        chkSingleAll.Font = New Font("Quicksand", 8.25F)
+        chkSingleAll.ImageKey = "icons8-all-24.png"
+        chkSingleAll.ImageList = imlCategories
+        chkSingleAll.Location = New Point(9, 9)
+        chkSingleAll.Name = "chkSingleAll"
+        chkSingleAll.Size = New Size(226, 45)
+        chkSingleAll.TabIndex = 29
+        chkSingleAll.Text = "All Packs"
+        chkSingleAll.TextAlign = ContentAlignment.MiddleRight
+        chkSingleAll.TextImageRelation = TextImageRelation.ImageBeforeText
+        chkSingleAll.UseVisualStyleBackColor = False
         ' 
-        ' chkCatGraveyard
+        ' chkSingleGraveyard
         ' 
-        chkCatGraveyard.Appearance = Appearance.Button
-        chkCatGraveyard.BackColor = SystemColors.Control
-        chkCatGraveyard.FlatAppearance.BorderColor = Color.FromArgb(CByte(64), CByte(64), CByte(64))
-        chkCatGraveyard.FlatAppearance.CheckedBackColor = SystemColors.ActiveCaption
-        chkCatGraveyard.FlatStyle = FlatStyle.Flat
-        chkCatGraveyard.Font = New Font("Quicksand", 8.25F)
-        chkCatGraveyard.ImageKey = "icons8-cemetery-24.png"
-        chkCatGraveyard.ImageList = imlCategories
-        chkCatGraveyard.Location = New Point(149, 173)
-        chkCatGraveyard.Name = "chkCatGraveyard"
-        chkCatGraveyard.Size = New Size(70, 62)
-        chkCatGraveyard.TabIndex = 22
-        chkCatGraveyard.Text = "Grvyrd"
-        chkCatGraveyard.TextAlign = ContentAlignment.MiddleCenter
-        chkCatGraveyard.TextImageRelation = TextImageRelation.ImageAboveText
-        chkCatGraveyard.UseVisualStyleBackColor = False
+        chkSingleGraveyard.Appearance = Appearance.Button
+        chkSingleGraveyard.BackColor = SystemColors.Control
+        chkSingleGraveyard.FlatAppearance.BorderColor = Color.FromArgb(CByte(64), CByte(64), CByte(64))
+        chkSingleGraveyard.FlatAppearance.CheckedBackColor = SystemColors.ActiveCaption
+        chkSingleGraveyard.FlatStyle = FlatStyle.Flat
+        chkSingleGraveyard.Font = New Font("Quicksand", 8.25F)
+        chkSingleGraveyard.ImageKey = "icons8-tombstone-32.png"
+        chkSingleGraveyard.ImageList = ilCategoriesColor
+        chkSingleGraveyard.Location = New Point(165, 228)
+        chkSingleGraveyard.Name = "chkSingleGraveyard"
+        chkSingleGraveyard.Size = New Size(70, 77)
+        chkSingleGraveyard.TabIndex = 22
+        chkSingleGraveyard.Text = "Grvyrd"
+        chkSingleGraveyard.TextAlign = ContentAlignment.MiddleCenter
+        chkSingleGraveyard.TextImageRelation = TextImageRelation.ImageAboveText
+        chkSingleGraveyard.UseVisualStyleBackColor = False
         ' 
-        ' chkCatPersonal
+        ' ilCategoriesColor
         ' 
-        chkCatPersonal.Appearance = Appearance.Button
-        chkCatPersonal.BackColor = SystemColors.Control
-        chkCatPersonal.FlatAppearance.BorderColor = Color.FromArgb(CByte(64), CByte(64), CByte(64))
-        chkCatPersonal.FlatAppearance.CheckedBackColor = SystemColors.ActiveCaption
-        chkCatPersonal.FlatStyle = FlatStyle.Flat
-        chkCatPersonal.Font = New Font("Quicksand", 8.25F)
-        chkCatPersonal.ImageKey = "icons8-test-account-24.png"
-        chkCatPersonal.ImageList = imlCategories
-        chkCatPersonal.Location = New Point(79, 49)
-        chkCatPersonal.Name = "chkCatPersonal"
-        chkCatPersonal.Size = New Size(70, 62)
-        chkCatPersonal.TabIndex = 21
-        chkCatPersonal.Text = "Mine"
-        chkCatPersonal.TextAlign = ContentAlignment.MiddleCenter
-        chkCatPersonal.TextImageRelation = TextImageRelation.ImageAboveText
-        chkCatPersonal.UseVisualStyleBackColor = False
+        ilCategoriesColor.ColorDepth = ColorDepth.Depth32Bit
+        ilCategoriesColor.ImageStream = CType(resources.GetObject("ilCategoriesColor.ImageStream"), ImageListStreamer)
+        ilCategoriesColor.TransparentColor = Color.Transparent
+        ilCategoriesColor.Images.SetKeyName(0, "icons8-star-filled-24.png")
+        ilCategoriesColor.Images.SetKeyName(1, "icons8-spotlight-24-col.png")
+        ilCategoriesColor.Images.SetKeyName(2, "icons8-love-24.png")
+        ilCategoriesColor.Images.SetKeyName(3, "icons8-osu-24-col.png")
+        ilCategoriesColor.Images.SetKeyName(4, "icons8-album-24.png")
+        ilCategoriesColor.Images.SetKeyName(5, "icons8-theme-32.png")
+        ilCategoriesColor.Images.SetKeyName(6, "icons8-tournament-32.png")
+        ilCategoriesColor.Images.SetKeyName(7, "icons8-tombstone-32.png")
+        ilCategoriesColor.Images.SetKeyName(8, "icons8-qualified-32.png")
+        ilCategoriesColor.Images.SetKeyName(9, "icons8-progress-indicator-32.png")
+        ilCategoriesColor.Images.SetKeyName(10, "icons8-pending-32.png")
+        ilCategoriesColor.Images.SetKeyName(11, "icons8-rank-32.png")
+        ilCategoriesColor.Images.SetKeyName(12, "icons8-mine-32.png")
         ' 
-        ' chkCatWorkInProgress
+        ' chkSinglePersonal
         ' 
-        chkCatWorkInProgress.Appearance = Appearance.Button
-        chkCatWorkInProgress.BackColor = SystemColors.Control
-        chkCatWorkInProgress.FlatAppearance.BorderColor = Color.FromArgb(CByte(64), CByte(64), CByte(64))
-        chkCatWorkInProgress.FlatAppearance.CheckedBackColor = SystemColors.ActiveCaption
-        chkCatWorkInProgress.FlatStyle = FlatStyle.Flat
-        chkCatWorkInProgress.Font = New Font("Quicksand", 8.25F)
-        chkCatWorkInProgress.ImageKey = "icons8-in-progress-24.png"
-        chkCatWorkInProgress.ImageList = imlCategories
-        chkCatWorkInProgress.Location = New Point(79, 173)
-        chkCatWorkInProgress.Name = "chkCatWorkInProgress"
-        chkCatWorkInProgress.Size = New Size(70, 62)
-        chkCatWorkInProgress.TabIndex = 23
-        chkCatWorkInProgress.Text = "WIP"
-        chkCatWorkInProgress.TextAlign = ContentAlignment.MiddleCenter
-        chkCatWorkInProgress.TextImageRelation = TextImageRelation.ImageAboveText
-        chkCatWorkInProgress.UseVisualStyleBackColor = False
+        chkSinglePersonal.Appearance = Appearance.Button
+        chkSinglePersonal.BackColor = SystemColors.Control
+        chkSinglePersonal.FlatAppearance.BorderColor = Color.FromArgb(CByte(64), CByte(64), CByte(64))
+        chkSinglePersonal.FlatAppearance.CheckedBackColor = SystemColors.ActiveCaption
+        chkSinglePersonal.FlatStyle = FlatStyle.Flat
+        chkSinglePersonal.Font = New Font("Quicksand", 8.25F)
+        chkSinglePersonal.ImageKey = "icons8-mine-32.png"
+        chkSinglePersonal.ImageList = ilCategoriesColor
+        chkSinglePersonal.Location = New Point(87, 64)
+        chkSinglePersonal.Name = "chkSinglePersonal"
+        chkSinglePersonal.Size = New Size(70, 77)
+        chkSinglePersonal.TabIndex = 21
+        chkSinglePersonal.Text = "Mine"
+        chkSinglePersonal.TextAlign = ContentAlignment.MiddleCenter
+        chkSinglePersonal.TextImageRelation = TextImageRelation.ImageAboveText
+        chkSinglePersonal.UseVisualStyleBackColor = False
         ' 
-        ' chkCatLeaderBoard
+        ' chkSingleWIP
         ' 
-        chkCatLeaderBoard.Appearance = Appearance.Button
-        chkCatLeaderBoard.BackColor = SystemColors.Control
-        chkCatLeaderBoard.FlatAppearance.BorderColor = Color.FromArgb(CByte(64), CByte(64), CByte(64))
-        chkCatLeaderBoard.FlatAppearance.CheckedBackColor = SystemColors.ActiveCaption
-        chkCatLeaderBoard.FlatStyle = FlatStyle.Flat
-        chkCatLeaderBoard.Font = New Font("Quicksand", 8.25F)
-        chkCatLeaderBoard.ImageKey = "icons8-leaderboard-24.png"
-        chkCatLeaderBoard.ImageList = imlCategories
-        chkCatLeaderBoard.Location = New Point(9, 111)
-        chkCatLeaderBoard.Name = "chkCatLeaderBoard"
-        chkCatLeaderBoard.Size = New Size(70, 62)
-        chkCatLeaderBoard.TabIndex = 20
-        chkCatLeaderBoard.Text = "Ldr. Board"
-        chkCatLeaderBoard.TextAlign = ContentAlignment.MiddleCenter
-        chkCatLeaderBoard.TextImageRelation = TextImageRelation.ImageAboveText
-        chkCatLeaderBoard.UseVisualStyleBackColor = False
+        chkSingleWIP.Appearance = Appearance.Button
+        chkSingleWIP.BackColor = SystemColors.Control
+        chkSingleWIP.FlatAppearance.BorderColor = Color.FromArgb(CByte(64), CByte(64), CByte(64))
+        chkSingleWIP.FlatAppearance.CheckedBackColor = SystemColors.ActiveCaption
+        chkSingleWIP.FlatStyle = FlatStyle.Flat
+        chkSingleWIP.Font = New Font("Quicksand", 8.25F)
+        chkSingleWIP.ImageKey = "icons8-progress-indicator-32.png"
+        chkSingleWIP.ImageList = ilCategoriesColor
+        chkSingleWIP.Location = New Point(87, 228)
+        chkSingleWIP.Name = "chkSingleWIP"
+        chkSingleWIP.Size = New Size(70, 77)
+        chkSingleWIP.TabIndex = 23
+        chkSingleWIP.Text = "WIP"
+        chkSingleWIP.TextAlign = ContentAlignment.MiddleCenter
+        chkSingleWIP.TextImageRelation = TextImageRelation.ImageAboveText
+        chkSingleWIP.UseVisualStyleBackColor = False
         ' 
-        ' chkCatPending
+        ' chkSingleLeaderBoard
         ' 
-        chkCatPending.Appearance = Appearance.Button
-        chkCatPending.BackColor = SystemColors.Control
-        chkCatPending.FlatAppearance.BorderColor = Color.FromArgb(CByte(64), CByte(64), CByte(64))
-        chkCatPending.FlatAppearance.CheckedBackColor = SystemColors.ActiveCaption
-        chkCatPending.FlatStyle = FlatStyle.Flat
-        chkCatPending.Font = New Font("Quicksand", 8.25F)
-        chkCatPending.ImageKey = "icons8-pending-24.png"
-        chkCatPending.ImageList = imlCategories
-        chkCatPending.Location = New Point(9, 173)
-        chkCatPending.Name = "chkCatPending"
-        chkCatPending.Size = New Size(70, 62)
-        chkCatPending.TabIndex = 24
-        chkCatPending.Text = "Pending"
-        chkCatPending.TextAlign = ContentAlignment.MiddleCenter
-        chkCatPending.TextImageRelation = TextImageRelation.ImageAboveText
-        chkCatPending.UseVisualStyleBackColor = False
+        chkSingleLeaderBoard.Appearance = Appearance.Button
+        chkSingleLeaderBoard.BackColor = SystemColors.Control
+        chkSingleLeaderBoard.FlatAppearance.BorderColor = Color.FromArgb(CByte(64), CByte(64), CByte(64))
+        chkSingleLeaderBoard.FlatAppearance.CheckedBackColor = SystemColors.ActiveCaption
+        chkSingleLeaderBoard.FlatStyle = FlatStyle.Flat
+        chkSingleLeaderBoard.Font = New Font("Quicksand", 8.25F)
+        chkSingleLeaderBoard.ImageKey = "icons8-tournament-32.png"
+        chkSingleLeaderBoard.ImageList = ilCategoriesColor
+        chkSingleLeaderBoard.Location = New Point(9, 146)
+        chkSingleLeaderBoard.Name = "chkSingleLeaderBoard"
+        chkSingleLeaderBoard.Size = New Size(70, 77)
+        chkSingleLeaderBoard.TabIndex = 20
+        chkSingleLeaderBoard.Text = "Ldr. Board"
+        chkSingleLeaderBoard.TextAlign = ContentAlignment.MiddleCenter
+        chkSingleLeaderBoard.TextImageRelation = TextImageRelation.ImageAboveText
+        chkSingleLeaderBoard.UseVisualStyleBackColor = False
         ' 
-        ' chkCatQualified
+        ' chkSinglePending
         ' 
-        chkCatQualified.Appearance = Appearance.Button
-        chkCatQualified.BackColor = SystemColors.Control
-        chkCatQualified.FlatAppearance.BorderColor = Color.FromArgb(CByte(64), CByte(64), CByte(64))
-        chkCatQualified.FlatAppearance.CheckedBackColor = SystemColors.ActiveCaption
-        chkCatQualified.FlatStyle = FlatStyle.Flat
-        chkCatQualified.Font = New Font("Quicksand", 8.25F)
-        chkCatQualified.ImageKey = "icons8-qualified-24.png"
-        chkCatQualified.ImageList = imlCategories
-        chkCatQualified.Location = New Point(149, 111)
-        chkCatQualified.Name = "chkCatQualified"
-        chkCatQualified.Size = New Size(70, 62)
-        chkCatQualified.TabIndex = 27
-        chkCatQualified.Text = "Qualified"
-        chkCatQualified.TextAlign = ContentAlignment.MiddleCenter
-        chkCatQualified.TextImageRelation = TextImageRelation.ImageAboveText
-        chkCatQualified.UseVisualStyleBackColor = False
+        chkSinglePending.Appearance = Appearance.Button
+        chkSinglePending.BackColor = SystemColors.Control
+        chkSinglePending.FlatAppearance.BorderColor = Color.FromArgb(CByte(64), CByte(64), CByte(64))
+        chkSinglePending.FlatAppearance.CheckedBackColor = SystemColors.ActiveCaption
+        chkSinglePending.FlatStyle = FlatStyle.Flat
+        chkSinglePending.Font = New Font("Quicksand", 8.25F)
+        chkSinglePending.ImageKey = "icons8-pending-32.png"
+        chkSinglePending.ImageList = ilCategoriesColor
+        chkSinglePending.Location = New Point(9, 228)
+        chkSinglePending.Name = "chkSinglePending"
+        chkSinglePending.Size = New Size(70, 77)
+        chkSinglePending.TabIndex = 24
+        chkSinglePending.Text = "Pending"
+        chkSinglePending.TextAlign = ContentAlignment.MiddleCenter
+        chkSinglePending.TextImageRelation = TextImageRelation.ImageAboveText
+        chkSinglePending.UseVisualStyleBackColor = False
         ' 
-        ' chkCatLoved
+        ' chkSingleQualified
         ' 
-        chkCatLoved.Appearance = Appearance.Button
-        chkCatLoved.BackColor = SystemColors.Control
-        chkCatLoved.FlatAppearance.BorderColor = Color.FromArgb(CByte(64), CByte(64), CByte(64))
-        chkCatLoved.FlatAppearance.CheckedBackColor = SystemColors.ActiveCaption
-        chkCatLoved.FlatStyle = FlatStyle.Flat
-        chkCatLoved.Font = New Font("Quicksand", 8.25F)
-        chkCatLoved.ImageKey = "icons8-heart-24.png"
-        chkCatLoved.ImageList = imlCategories
-        chkCatLoved.Location = New Point(149, 49)
-        chkCatLoved.Name = "chkCatLoved"
-        chkCatLoved.Size = New Size(70, 62)
-        chkCatLoved.TabIndex = 26
-        chkCatLoved.Text = "Loved"
-        chkCatLoved.TextAlign = ContentAlignment.MiddleCenter
-        chkCatLoved.TextImageRelation = TextImageRelation.ImageAboveText
-        chkCatLoved.UseVisualStyleBackColor = False
+        chkSingleQualified.Appearance = Appearance.Button
+        chkSingleQualified.BackColor = SystemColors.Control
+        chkSingleQualified.FlatAppearance.BorderColor = Color.FromArgb(CByte(64), CByte(64), CByte(64))
+        chkSingleQualified.FlatAppearance.CheckedBackColor = SystemColors.ActiveCaption
+        chkSingleQualified.FlatStyle = FlatStyle.Flat
+        chkSingleQualified.Font = New Font("Quicksand", 8.25F)
+        chkSingleQualified.ImageKey = "icons8-qualified-32.png"
+        chkSingleQualified.ImageList = ilCategoriesColor
+        chkSingleQualified.Location = New Point(165, 146)
+        chkSingleQualified.Name = "chkSingleQualified"
+        chkSingleQualified.Size = New Size(70, 77)
+        chkSingleQualified.TabIndex = 27
+        chkSingleQualified.Text = "Qualified"
+        chkSingleQualified.TextAlign = ContentAlignment.MiddleCenter
+        chkSingleQualified.TextImageRelation = TextImageRelation.ImageAboveText
+        chkSingleQualified.UseVisualStyleBackColor = False
         ' 
-        ' chkCatRanked
+        ' chkSingleLoved
         ' 
-        chkCatRanked.Appearance = Appearance.Button
-        chkCatRanked.BackColor = SystemColors.Control
-        chkCatRanked.FlatAppearance.BorderColor = Color.FromArgb(CByte(64), CByte(64), CByte(64))
-        chkCatRanked.FlatAppearance.CheckedBackColor = SystemColors.ActiveCaption
-        chkCatRanked.FlatStyle = FlatStyle.Flat
-        chkCatRanked.Font = New Font("Quicksand", 8.25F)
-        chkCatRanked.ImageKey = "icons8-leaderboard-24.png"
-        chkCatRanked.ImageList = imlCategories
-        chkCatRanked.Location = New Point(79, 111)
-        chkCatRanked.Name = "chkCatRanked"
-        chkCatRanked.Size = New Size(70, 62)
-        chkCatRanked.TabIndex = 28
-        chkCatRanked.Text = "Ranked"
-        chkCatRanked.TextAlign = ContentAlignment.MiddleCenter
-        chkCatRanked.TextImageRelation = TextImageRelation.ImageAboveText
-        chkCatRanked.UseVisualStyleBackColor = False
+        chkSingleLoved.Appearance = Appearance.Button
+        chkSingleLoved.BackColor = SystemColors.Control
+        chkSingleLoved.FlatAppearance.BorderColor = Color.FromArgb(CByte(64), CByte(64), CByte(64))
+        chkSingleLoved.FlatAppearance.CheckedBackColor = SystemColors.ActiveCaption
+        chkSingleLoved.FlatStyle = FlatStyle.Flat
+        chkSingleLoved.Font = New Font("Quicksand", 8.25F)
+        chkSingleLoved.ImageKey = "icons8-love-24.png"
+        chkSingleLoved.ImageList = ilCategoriesColor
+        chkSingleLoved.Location = New Point(165, 64)
+        chkSingleLoved.Name = "chkSingleLoved"
+        chkSingleLoved.Size = New Size(70, 77)
+        chkSingleLoved.TabIndex = 26
+        chkSingleLoved.Text = "Loved"
+        chkSingleLoved.TextAlign = ContentAlignment.MiddleCenter
+        chkSingleLoved.TextImageRelation = TextImageRelation.ImageAboveText
+        chkSingleLoved.UseVisualStyleBackColor = False
         ' 
-        ' chkCatFaves
+        ' chkSingleRanked
         ' 
-        chkCatFaves.Appearance = Appearance.Button
-        chkCatFaves.BackColor = SystemColors.Control
-        chkCatFaves.FlatAppearance.BorderColor = Color.FromArgb(CByte(64), CByte(64), CByte(64))
-        chkCatFaves.FlatAppearance.CheckedBackColor = SystemColors.ActiveCaption
-        chkCatFaves.FlatStyle = FlatStyle.Flat
-        chkCatFaves.Font = New Font("Quicksand", 8.25F)
-        chkCatFaves.ImageKey = "icons8-favorite-24.png"
-        chkCatFaves.ImageList = imlCategories
-        chkCatFaves.Location = New Point(9, 49)
-        chkCatFaves.Name = "chkCatFaves"
-        chkCatFaves.Size = New Size(70, 62)
-        chkCatFaves.TabIndex = 25
-        chkCatFaves.Text = "Faves"
-        chkCatFaves.TextAlign = ContentAlignment.MiddleCenter
-        chkCatFaves.TextImageRelation = TextImageRelation.ImageAboveText
-        chkCatFaves.UseVisualStyleBackColor = False
+        chkSingleRanked.Appearance = Appearance.Button
+        chkSingleRanked.BackColor = SystemColors.Control
+        chkSingleRanked.FlatAppearance.BorderColor = Color.FromArgb(CByte(64), CByte(64), CByte(64))
+        chkSingleRanked.FlatAppearance.CheckedBackColor = SystemColors.ActiveCaption
+        chkSingleRanked.FlatStyle = FlatStyle.Flat
+        chkSingleRanked.Font = New Font("Quicksand", 8.25F)
+        chkSingleRanked.ImageKey = "icons8-rank-32.png"
+        chkSingleRanked.ImageList = ilCategoriesColor
+        chkSingleRanked.Location = New Point(87, 146)
+        chkSingleRanked.Name = "chkSingleRanked"
+        chkSingleRanked.Size = New Size(70, 77)
+        chkSingleRanked.TabIndex = 28
+        chkSingleRanked.Text = "Ranked"
+        chkSingleRanked.TextAlign = ContentAlignment.MiddleCenter
+        chkSingleRanked.TextImageRelation = TextImageRelation.ImageAboveText
+        chkSingleRanked.UseVisualStyleBackColor = False
+        ' 
+        ' chkSingleFaves
+        ' 
+        chkSingleFaves.Appearance = Appearance.Button
+        chkSingleFaves.BackColor = SystemColors.Control
+        chkSingleFaves.FlatAppearance.BorderColor = Color.FromArgb(CByte(64), CByte(64), CByte(64))
+        chkSingleFaves.FlatAppearance.CheckedBackColor = SystemColors.ActiveCaption
+        chkSingleFaves.FlatStyle = FlatStyle.Flat
+        chkSingleFaves.Font = New Font("Quicksand", 8.25F)
+        chkSingleFaves.ImageKey = "icons8-star-filled-24.png"
+        chkSingleFaves.ImageList = ilCategoriesColor
+        chkSingleFaves.Location = New Point(9, 64)
+        chkSingleFaves.Name = "chkSingleFaves"
+        chkSingleFaves.Size = New Size(70, 77)
+        chkSingleFaves.TabIndex = 25
+        chkSingleFaves.Text = "Faves"
+        chkSingleFaves.TextAlign = ContentAlignment.MiddleCenter
+        chkSingleFaves.TextImageRelation = TextImageRelation.ImageAboveText
+        chkSingleFaves.UseVisualStyleBackColor = False
         ' 
         ' tpPacks
         ' 
@@ -973,11 +995,11 @@ Partial Class frmMain
         tpPacks.Controls.Add(chkPackLoved)
         tpPacks.Controls.Add(chkPackSpotlights)
         tpPacks.Controls.Add(chkPackStandard)
-        tpPacks.Controls.Add(chkCatAny)
+        tpPacks.Controls.Add(chkPackAll)
         tpPacks.Location = New Point(4, 27)
         tpPacks.Name = "tpPacks"
         tpPacks.Padding = New Padding(3)
-        tpPacks.Size = New Size(229, 301)
+        tpPacks.Size = New Size(245, 315)
         tpPacks.TabIndex = 0
         tpPacks.Text = "Packs"
         tpPacks.UseVisualStyleBackColor = True
@@ -985,147 +1007,179 @@ Partial Class frmMain
         ' chkPackAlArt
         ' 
         chkPackAlArt.Appearance = Appearance.Button
-        chkPackAlArt.Font = New Font("Quicksand", 8.25F)
-        chkPackAlArt.ImageKey = "icons8-heart-24.png"
-        chkPackAlArt.ImageList = imlCategories
-        chkPackAlArt.Location = New Point(9, 214)
+        chkPackAlArt.BackColor = SystemColors.Control
+        chkPackAlArt.FlatAppearance.BorderColor = Color.FromArgb(CByte(64), CByte(64), CByte(64))
+        chkPackAlArt.FlatAppearance.CheckedBackColor = SystemColors.ActiveCaption
+        chkPackAlArt.FlatStyle = FlatStyle.Flat
+        chkPackAlArt.Font = New Font("Quicksand", 6.75F, FontStyle.Regular, GraphicsUnit.Point, CByte(0))
+        chkPackAlArt.ImageKey = "icons8-album-24.png"
+        chkPackAlArt.ImageList = ilCategoriesColor
+        chkPackAlArt.Location = New Point(9, 71)
         chkPackAlArt.Name = "chkPackAlArt"
-        chkPackAlArt.Size = New Size(82, 62)
+        chkPackAlArt.Size = New Size(70, 113)
         chkPackAlArt.TabIndex = 33
-        chkPackAlArt.Text = "Album/Artist"
-        chkPackAlArt.TextAlign = ContentAlignment.MiddleCenter
+        chkPackAlArt.Text = "Abm/Artst"
+        chkPackAlArt.TextAlign = ContentAlignment.BottomCenter
         chkPackAlArt.TextImageRelation = TextImageRelation.ImageAboveText
-        chkPackAlArt.UseVisualStyleBackColor = True
+        chkPackAlArt.UseVisualStyleBackColor = False
         ' 
         ' chkPackTheme
         ' 
         chkPackTheme.Appearance = Appearance.Button
+        chkPackTheme.BackColor = SystemColors.Control
+        chkPackTheme.FlatAppearance.BorderColor = Color.FromArgb(CByte(64), CByte(64), CByte(64))
+        chkPackTheme.FlatAppearance.CheckedBackColor = SystemColors.ActiveCaption
+        chkPackTheme.FlatStyle = FlatStyle.Flat
         chkPackTheme.Font = New Font("Quicksand", 8.25F)
-        chkPackTheme.ImageKey = "icons8-heart-24.png"
-        chkPackTheme.ImageList = imlCategories
-        chkPackTheme.Location = New Point(154, 146)
+        chkPackTheme.ImageKey = "icons8-theme-32.png"
+        chkPackTheme.ImageList = ilCategoriesColor
+        chkPackTheme.Location = New Point(165, 193)
         chkPackTheme.Name = "chkPackTheme"
-        chkPackTheme.Size = New Size(82, 62)
+        chkPackTheme.Size = New Size(70, 113)
         chkPackTheme.TabIndex = 32
         chkPackTheme.Text = "Theme"
-        chkPackTheme.TextAlign = ContentAlignment.MiddleCenter
+        chkPackTheme.TextAlign = ContentAlignment.BottomCenter
         chkPackTheme.TextImageRelation = TextImageRelation.ImageAboveText
-        chkPackTheme.UseVisualStyleBackColor = True
+        chkPackTheme.UseVisualStyleBackColor = False
         ' 
         ' chkPackFeatured
         ' 
         chkPackFeatured.Appearance = Appearance.Button
+        chkPackFeatured.BackColor = SystemColors.Control
+        chkPackFeatured.FlatAppearance.BorderColor = Color.FromArgb(CByte(64), CByte(64), CByte(64))
+        chkPackFeatured.FlatAppearance.CheckedBackColor = SystemColors.ActiveCaption
+        chkPackFeatured.FlatStyle = FlatStyle.Flat
         chkPackFeatured.Font = New Font("Quicksand", 8.25F)
-        chkPackFeatured.ImageKey = "icons8-heart-24.png"
-        chkPackFeatured.ImageList = imlCategories
-        chkPackFeatured.Location = New Point(82, 78)
+        chkPackFeatured.ImageKey = "icons8-star-filled-24.png"
+        chkPackFeatured.ImageList = ilCategoriesColor
+        chkPackFeatured.Location = New Point(87, 71)
         chkPackFeatured.Name = "chkPackFeatured"
-        chkPackFeatured.Size = New Size(82, 62)
+        chkPackFeatured.Size = New Size(70, 113)
         chkPackFeatured.TabIndex = 31
         chkPackFeatured.Text = "Featured"
-        chkPackFeatured.TextAlign = ContentAlignment.MiddleCenter
+        chkPackFeatured.TextAlign = ContentAlignment.BottomCenter
         chkPackFeatured.TextImageRelation = TextImageRelation.ImageAboveText
-        chkPackFeatured.UseVisualStyleBackColor = True
+        chkPackFeatured.UseVisualStyleBackColor = False
         ' 
         ' chkPackTournament
         ' 
         chkPackTournament.Appearance = Appearance.Button
+        chkPackTournament.BackColor = SystemColors.Control
+        chkPackTournament.FlatAppearance.BorderColor = Color.FromArgb(CByte(64), CByte(64), CByte(64))
+        chkPackTournament.FlatAppearance.CheckedBackColor = SystemColors.ActiveCaption
+        chkPackTournament.FlatStyle = FlatStyle.Flat
         chkPackTournament.Font = New Font("Quicksand", 8.25F)
-        chkPackTournament.ImageKey = "icons8-heart-24.png"
-        chkPackTournament.ImageList = imlCategories
-        chkPackTournament.Location = New Point(157, 78)
+        chkPackTournament.ImageKey = "icons8-tournament-32.png"
+        chkPackTournament.ImageList = ilCategoriesColor
+        chkPackTournament.Location = New Point(165, 71)
         chkPackTournament.Name = "chkPackTournament"
-        chkPackTournament.Size = New Size(82, 62)
+        chkPackTournament.Size = New Size(70, 113)
         chkPackTournament.TabIndex = 30
-        chkPackTournament.Text = "Tournament"
-        chkPackTournament.TextAlign = ContentAlignment.MiddleCenter
+        chkPackTournament.Text = "Tourny"
+        chkPackTournament.TextAlign = ContentAlignment.BottomCenter
         chkPackTournament.TextImageRelation = TextImageRelation.ImageAboveText
-        chkPackTournament.UseVisualStyleBackColor = True
+        chkPackTournament.UseVisualStyleBackColor = False
         ' 
         ' chkPackLoved
         ' 
         chkPackLoved.Appearance = Appearance.Button
+        chkPackLoved.BackColor = SystemColors.Control
+        chkPackLoved.FlatAppearance.BorderColor = Color.FromArgb(CByte(64), CByte(64), CByte(64))
+        chkPackLoved.FlatAppearance.CheckedBackColor = SystemColors.ActiveCaption
+        chkPackLoved.FlatStyle = FlatStyle.Flat
         chkPackLoved.Font = New Font("Quicksand", 8.25F)
-        chkPackLoved.ImageKey = "icons8-heart-24.png"
-        chkPackLoved.ImageList = imlCategories
-        chkPackLoved.Location = New Point(9, 147)
+        chkPackLoved.ImageKey = "icons8-love-24.png"
+        chkPackLoved.ImageList = ilCategoriesColor
+        chkPackLoved.Location = New Point(9, 193)
         chkPackLoved.Name = "chkPackLoved"
-        chkPackLoved.Size = New Size(82, 62)
+        chkPackLoved.Size = New Size(70, 113)
         chkPackLoved.TabIndex = 29
         chkPackLoved.Text = "Loved"
-        chkPackLoved.TextAlign = ContentAlignment.MiddleCenter
+        chkPackLoved.TextAlign = ContentAlignment.BottomCenter
         chkPackLoved.TextImageRelation = TextImageRelation.ImageAboveText
-        chkPackLoved.UseVisualStyleBackColor = True
+        chkPackLoved.UseVisualStyleBackColor = False
         ' 
         ' chkPackSpotlights
         ' 
         chkPackSpotlights.Appearance = Appearance.Button
+        chkPackSpotlights.BackColor = SystemColors.Control
+        chkPackSpotlights.FlatAppearance.BorderColor = Color.FromArgb(CByte(64), CByte(64), CByte(64))
+        chkPackSpotlights.FlatAppearance.CheckedBackColor = SystemColors.ActiveCaption
+        chkPackSpotlights.FlatStyle = FlatStyle.Flat
         chkPackSpotlights.Font = New Font("Quicksand", 8.25F)
-        chkPackSpotlights.ImageKey = "icons8-heart-24.png"
-        chkPackSpotlights.ImageList = imlCategories
-        chkPackSpotlights.Location = New Point(85, 146)
+        chkPackSpotlights.ImageKey = "icons8-spotlight-24-col.png"
+        chkPackSpotlights.ImageList = ilCategoriesColor
+        chkPackSpotlights.Location = New Point(87, 193)
         chkPackSpotlights.Name = "chkPackSpotlights"
-        chkPackSpotlights.Size = New Size(82, 62)
+        chkPackSpotlights.Size = New Size(70, 113)
         chkPackSpotlights.TabIndex = 28
         chkPackSpotlights.Text = "Spotlights"
-        chkPackSpotlights.TextAlign = ContentAlignment.MiddleCenter
+        chkPackSpotlights.TextAlign = ContentAlignment.BottomCenter
         chkPackSpotlights.TextImageRelation = TextImageRelation.ImageAboveText
-        chkPackSpotlights.UseVisualStyleBackColor = True
+        chkPackSpotlights.UseVisualStyleBackColor = False
         ' 
         ' chkPackStandard
         ' 
         chkPackStandard.Appearance = Appearance.Button
+        chkPackStandard.BackColor = SystemColors.Control
+        chkPackStandard.FlatAppearance.BorderColor = Color.FromArgb(CByte(64), CByte(64), CByte(64))
+        chkPackStandard.FlatAppearance.CheckedBackColor = SystemColors.ActiveCaption
+        chkPackStandard.FlatStyle = FlatStyle.Flat
         chkPackStandard.Font = New Font("Quicksand", 8.25F)
-        chkPackStandard.ImageKey = "icons8-heart-24.png"
-        chkPackStandard.ImageList = imlCategories
-        chkPackStandard.Location = New Point(9, 78)
+        chkPackStandard.ImageKey = "icons8-osu-24-col.png"
+        chkPackStandard.ImageList = ilCategoriesColor
+        chkPackStandard.Location = New Point(124, 9)
         chkPackStandard.Name = "chkPackStandard"
-        chkPackStandard.Size = New Size(82, 62)
+        chkPackStandard.Size = New Size(112, 53)
         chkPackStandard.TabIndex = 27
         chkPackStandard.Text = "Standard"
         chkPackStandard.TextAlign = ContentAlignment.MiddleCenter
         chkPackStandard.TextImageRelation = TextImageRelation.ImageAboveText
-        chkPackStandard.UseVisualStyleBackColor = True
+        chkPackStandard.UseVisualStyleBackColor = False
         ' 
-        ' chkCatAny
+        ' chkPackAll
         ' 
-        chkCatAny.Appearance = Appearance.Button
-        chkCatAny.Font = New Font("Quicksand", 8.25F)
-        chkCatAny.ImageKey = "icons8-all-24.png"
-        chkCatAny.ImageList = imlCategories
-        chkCatAny.Location = New Point(78, 19)
-        chkCatAny.Name = "chkCatAny"
-        chkCatAny.Size = New Size(97, 53)
-        chkCatAny.TabIndex = 20
-        chkCatAny.Text = "All Packs"
-        chkCatAny.TextAlign = ContentAlignment.MiddleCenter
-        chkCatAny.TextImageRelation = TextImageRelation.ImageAboveText
-        chkCatAny.UseVisualStyleBackColor = True
+        chkPackAll.Appearance = Appearance.Button
+        chkPackAll.BackColor = SystemColors.Control
+        chkPackAll.FlatAppearance.BorderColor = Color.FromArgb(CByte(64), CByte(64), CByte(64))
+        chkPackAll.FlatAppearance.CheckedBackColor = SystemColors.ActiveCaption
+        chkPackAll.FlatStyle = FlatStyle.Flat
+        chkPackAll.Font = New Font("Quicksand", 8.25F)
+        chkPackAll.ImageKey = "icons8-all-24.png"
+        chkPackAll.ImageList = imlCategories
+        chkPackAll.Location = New Point(9, 9)
+        chkPackAll.Name = "chkPackAll"
+        chkPackAll.Size = New Size(112, 53)
+        chkPackAll.TabIndex = 20
+        chkPackAll.Text = "All Packs"
+        chkPackAll.TextAlign = ContentAlignment.MiddleCenter
+        chkPackAll.TextImageRelation = TextImageRelation.ImageAboveText
+        chkPackAll.UseVisualStyleBackColor = False
         ' 
-        ' TabControl1
+        ' tcMainTabs
         ' 
-        TabControl1.Controls.Add(tpPacks)
-        TabControl1.Controls.Add(tpSingles)
-        TabControl1.Location = New Point(198, 244)
-        TabControl1.Multiline = True
-        TabControl1.Name = "TabControl1"
-        TabControl1.SelectedIndex = 0
-        TabControl1.Size = New Size(237, 332)
-        TabControl1.TabIndex = 6
+        tcMainTabs.Controls.Add(tpPacks)
+        tcMainTabs.Controls.Add(tpSingles)
+        tcMainTabs.Location = New Point(198, 244)
+        tcMainTabs.Multiline = True
+        tcMainTabs.Name = "tcMainTabs"
+        tcMainTabs.SelectedIndex = 0
+        tcMainTabs.Size = New Size(253, 346)
+        tcMainTabs.TabIndex = 6
         ' 
         ' frmMain
         ' 
         AutoScaleDimensions = New SizeF(7F, 18F)
         AutoScaleMode = AutoScaleMode.Font
         AutoSize = True
-        ClientSize = New Size(901, 675)
+        ClientSize = New Size(949, 629)
         Controls.Add(cbFilter)
-        Controls.Add(GroupBox2)
-        Controls.Add(GroupBox1)
+        Controls.Add(grpDownloads)
+        Controls.Add(grpListings)
         Controls.Add(grpOptions)
         Controls.Add(grpSession)
         Controls.Add(tvListings)
-        Controls.Add(TabControl1)
+        Controls.Add(tcMainTabs)
         Controls.Add(StatusStrip1)
         Controls.Add(grpConfiguration)
         Controls.Add(grpModes)
@@ -1140,7 +1194,6 @@ Partial Class frmMain
         Name = "frmMain"
         SizeGripStyle = SizeGripStyle.Hide
         StartPosition = FormStartPosition.CenterScreen
-        Text = "Osu!Scraper"
         CType(pbLogo, ComponentModel.ISupportInitialize).EndInit()
         grpModes.ResumeLayout(False)
         msMainMenu.ResumeLayout(False)
@@ -1156,11 +1209,11 @@ Partial Class frmMain
         grpSession.PerformLayout()
         grpOptions.ResumeLayout(False)
         grpOptions.PerformLayout()
-        GroupBox1.ResumeLayout(False)
-        GroupBox2.ResumeLayout(False)
+        grpListings.ResumeLayout(False)
+        grpDownloads.ResumeLayout(False)
         tpSingles.ResumeLayout(False)
         tpPacks.ResumeLayout(False)
-        TabControl1.ResumeLayout(False)
+        tcMainTabs.ResumeLayout(False)
         ResumeLayout(False)
         PerformLayout()
 
@@ -1211,7 +1264,6 @@ Partial Class frmMain
     Friend WithEvents tslSep2 As ToolStripStatusLabel
     Friend WithEvents tslSpacer As ToolStripStatusLabel
     Friend WithEvents tspbProgressBar As ToolStripProgressBar
-    Friend WithEvents CheckBox1 As CheckBox
     Friend WithEvents lblBatchSizeValue As Label
     Friend WithEvents lblBatchSizeLabel As Label
     Friend WithEvents tbBatchSize As TrackBar
@@ -1221,11 +1273,11 @@ Partial Class frmMain
     Friend WithEvents Button1 As Button
     Friend WithEvents grpSession As GroupBox
     Friend WithEvents grpOptions As GroupBox
-    Friend WithEvents GroupBox1 As GroupBox
+    Friend WithEvents grpListings As GroupBox
     Friend WithEvents Button4 As Button
     Friend WithEvents Button3 As Button
     Friend WithEvents Button2 As Button
-    Friend WithEvents GroupBox2 As GroupBox
+    Friend WithEvents grpDownloads As GroupBox
     Friend WithEvents Button5 As Button
     Friend WithEvents Button6 As Button
     Friend WithEvents Button7 As Button
@@ -1233,16 +1285,16 @@ Partial Class frmMain
     Friend WithEvents cbFilter As ComboBox
     Friend WithEvents ilLists As ImageList
     Friend WithEvents tpSingles As TabPage
-    Friend WithEvents CheckBox4 As CheckBox
-    Friend WithEvents chkCatGraveyard As CheckBox
-    Friend WithEvents chkCatPersonal As CheckBox
-    Friend WithEvents chkCatWorkInProgress As CheckBox
-    Friend WithEvents chkCatLeaderBoard As CheckBox
-    Friend WithEvents chkCatPending As CheckBox
-    Friend WithEvents chkCatQualified As CheckBox
-    Friend WithEvents chkCatLoved As CheckBox
-    Friend WithEvents chkCatRanked As CheckBox
-    Friend WithEvents chkCatFaves As CheckBox
+    Friend WithEvents chkSingleAll As CheckBox
+    Friend WithEvents chkSingleGraveyard As CheckBox
+    Friend WithEvents chkSinglePersonal As CheckBox
+    Friend WithEvents chkSingleWIP As CheckBox
+    Friend WithEvents chkSingleLeaderBoard As CheckBox
+    Friend WithEvents chkSinglePending As CheckBox
+    Friend WithEvents chkSingleQualified As CheckBox
+    Friend WithEvents chkSingleLoved As CheckBox
+    Friend WithEvents chkSingleRanked As CheckBox
+    Friend WithEvents chkSingleFaves As CheckBox
     Friend WithEvents tpPacks As TabPage
     Friend WithEvents chkPackAlArt As CheckBox
     Friend WithEvents chkPackTheme As CheckBox
@@ -1251,6 +1303,7 @@ Partial Class frmMain
     Friend WithEvents chkPackLoved As CheckBox
     Friend WithEvents chkPackSpotlights As CheckBox
     Friend WithEvents chkPackStandard As CheckBox
-    Friend WithEvents chkCatAny As CheckBox
-    Friend WithEvents TabControl1 As TabControl
+    Friend WithEvents chkPackAll As CheckBox
+    Friend WithEvents tcMainTabs As TabControl
+    Friend WithEvents ilCategoriesColor As ImageList
 End Class

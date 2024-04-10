@@ -12,27 +12,19 @@ Public Class frmMain
     Public Sub New()
         InitializeComponent()
 
+        Dim version As String = Application.ProductVersion.Split("+")(0)
+        Dim progName As String = Application.ProductName
+
         frmHelp = New frmHelp
         frmHelp.Show()
         frmHelp.Visible = False
 
-        Dim arrCategories As String() = [Enum].GetNames(GetType(CommonUse.GamePackCategories))
+        frmHelp.Text = $"Help - {progName} v{version}"
+        Text = $"Help - {progName} v{version}"
 
-
-        For Each category As String In arrCategories
-            tvListings.Nodes(0).Nodes _
-                      .Add(category.ToString())
-        Next
+        
     End Sub
 
-    Private Sub CheckBox14_Click(sender As Object, e As EventArgs)
-        If chkCatAny.Checked = True Then
-            For Each cb In tpPacks.Controls.OfType(Of CheckBox)
-                cb.Checked = False
-            Next
-            chkCatAny.Checked = True
-        End If
-    End Sub
     Private Sub Button2_Click(sender As Object, e As EventArgs)
         Dim xsrf_regex = "[a-zA-Z0-9]{40}"
         Dim osu_session_regex = "[a-zA-Z0-9]{100,}.*?%3D"
@@ -46,7 +38,7 @@ Public Class frmMain
                 MessageBox.Show("XSRF Token does not appear to be valid - Should be in the format: XSRF-TOKEN=" & Chr(34) & StrDup(40, "X").ToString, "Error!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             End If
         Else
-            MessageBox.Show("Osu Session Token does not appear to be valid - Should be in the format: osu-session=" & Chr(34) & StrDup(300, "X").ToString & "%3D", "Error!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            MessageBox.Show("Osu Session Token does not appear to be valid - Should be in the format: osu_session=" & Chr(34) & StrDup(300, "X").ToString & "%3D", "Error!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End If
     End Sub
 
@@ -82,7 +74,7 @@ Public Class frmMain
 
         response = HTTPGet("https://osu.ppy.sh/beatmaps/packs")
         PullPacks()
-        
+
     End Sub
 
     Private Sub txtSessionToken_TextChanged(sender As Object, e As EventArgs) Handles txtSessionToken.TextChanged
@@ -119,14 +111,15 @@ Public Class frmMain
 
     Private Sub frmMain_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim default_browser As BrowserType = GetDefaultBrowser()
+        Dim arrCategories As String() = [Enum].GetNames(GetType(CommonUse.GamePackCategories))
+        Dim arrSingles As String() = [Enum].GetNames(GetType(CommonUse.GameSingleCategories))
+        Dim arrModes As String() = [Enum].GetNames(GetType(CommonUse.GameModes))
 
         MaximizeBox = False
 
-        For Each control As Control In tpPacks.Controls
-            If TypeOf control Is CheckBox Then
-                If StrComp(control.Name, "chkCatAny") <> 0 Then
-                    AddHandler control.Click, AddressOf uncheckAllCategories
-                End If
+        For Each control As CheckBox In tpPacks.Controls
+            If StrComp(control.Name, "chkCatAny") <> 0 Then
+                AddHandler control.Click, AddressOf uncheckAllCategories
             End If
         Next
 
@@ -136,15 +129,34 @@ Public Class frmMain
             tslBrowser.Image = My.Resources.icons8_firefox_24
         ElseIf default_browser = BrowserType.MSEdge Then
             tslBrowser.Image = My.Resources.icons8_edge_24
-        Else
-
-
         End If
+
+        For Each category As String In arrCategories
+            Dim categoryEnum = StringToEnum(Of CommonUse.GamePackCategories)(category)
+
+            tvListings.Nodes(0).Nodes.Add(category.ToString())
+            tvListings.Nodes(1).Nodes.Add(category.ToString())
+            For Each mode As String In arrModes
+                Dim currentEnum = StringToEnum(Of CommonUse.GameModes)(mode)
+                tvListings.Nodes(0).Nodes(categoryEnum).Nodes.Add(mode)
+            Next
+        Next
+
+        For Each category As String In arrSingles
+            Dim categoryEnum = StringToEnum(Of CommonUse.GameSingleCategories)(category)
+
+            For Each mode As String In arrModes
+                Dim currentEnum = StringToEnum(Of CommonUse.GameModes)(mode)
+                tvListings.Nodes(0).Nodes(categoryEnum).Nodes.Add(mode)
+            Next
+        Next
+        
+        LoadCacheFile()
     End Sub
 
     Private Sub uncheckAllCategories(sender As Object, e As EventArgs)
-        If chkCatAny.Checked = True Then
-            chkCatAny.Checked = False
+        If chkPackAll.Checked = True Then
+            chkPackAll.Checked = False
         End If
     End Sub
 
@@ -174,8 +186,6 @@ Public Class frmMain
         If frmHelp IsNot Nothing Then
             frmHelp.Dispose
         End If
-
-        Close()
     End Sub
 
     Private Function HTTPGet(url As String) As HttpResponseMessage
@@ -194,7 +204,7 @@ Public Class frmMain
 
         Dim response As HttpResponseMessage = client.SendAsync(request).Result
         response.EnsureSuccessStatusCode()
-        
+
         Return response
     End Function
 
@@ -203,14 +213,14 @@ Public Class frmMain
         Dim response As HttpResponseMessage
         Dim content As String
         Dim lines() As String
-        
+
         If chkPackStandard.Checked = True
             type = "standard"
         End If
 
         response = HTTPGet($"https://osu.ppy.sh/beatmaps/packs?type={type}")
         content = response.Content.ReadAsStringAsync.Result.ToString()
-        
+
         'content = content.Replace(vbCr, "").Replace(vbLf, "").Replace(vbCrLf, "")
         content = Regex.Replace(content, "(?:[\r\n]+|\s{2,})", " ")
         lines = content.Split("class=" & Chr(34) & "beatmap-pack js-beatmap-pack js-accordion__item")
@@ -224,15 +234,28 @@ Public Class frmMain
 
             If pack_title IsNot Nothing Then
                 Dim pack As ListViewItem = New ListViewItem(pack_title)
-                tvListings.Nodes(0).Nodes(0).Nodes.Add(pack_title)
-                
+                tvListings.Nodes(0).Nodes(GamePackCategories.Standard).Nodes.Add(pack_title)
             End If
-
         Next
-
-        
-        'Regex.Replace(content, "\s{2,}", " ",RegexOptions.Multiline)
-
-        MessageBox.Show(CStr(content.length()))
     End Sub
+
+    Private Sub chkPackAll_CheckedChanged(sender As Object, e As EventArgs) Handles chkPackAll.CheckedChanged
+        For Each control As CheckBox In tpPacks.Controls
+            If Not control.Name = "chkPackAll" Then
+                control.Checked = False
+            End IF
+        Next
+        chkPackAll.Checked = True
+    End Sub
+
+    Private Sub cbFilter_Click(sender As Object, e As EventArgs) Handles cbFilter.Click
+        cbFilter.Text = ""
+    End Sub
+
+    Private Sub cbFilter_LostFocus(sender As Object, e As EventArgs) Handles cbFilter.LostFocus
+        If cbFilter.Text = "" Then
+            cbFilter.Text = "<Filter ... >"
+        End If
+    End Sub
+
 End Class
