@@ -1,5 +1,9 @@
-﻿Imports System.Text.RegularExpressions
+﻿Imports System.Dynamic
+Imports System.IO
+Imports System.IO.Compression
 Imports System.Net.Http
+Imports System.Text.RegularExpressions
+Imports Windows.Management.Deployment
 
 
 Module CommonUse
@@ -10,121 +14,119 @@ Module CommonUse
         Mania
     End Enum
 
-
     Public Enum GameSingleCategories
-        Any
         Ranked
         Qualified
         Loved
+        Favorites
         Pending
+        Wip
         Graveyard
         Leaderboards
-        Favorites
         Mine
-        WorkInProgress
     End Enum
 
     Public Enum GamePackCategories
-        Any
         Standard
         Featured
         Tournament
-        Project
         Loved
-        Spotlight
+        Chart
         Theme
         Artist
-        Album 
+    End Enum
+
+    Public Enum GameType
+        Packs
+        Singles
     End Enum
 
     Public Enum BrowserType
-        MSEdge
+        MsEdge
         Chrome
         Firefox
         Other
     End Enum
 
     Public Sub LoadCacheFile()
-        Dim cache_file As String = ".packs_cache"
-        Dim cache_filepath = My.Application.Info.DirectoryPath & $"\{cache_file}"
-        Dim cache_contents As String() = Nothing
+        Dim cacheFile As String = ".packs_cache"
+        Dim cacheFilepath = Path.Combine(My.Application.Info.DirectoryPath, cacheFile)
+        Dim cacheContents As String() = Nothing
 
-        If IO.File.Exists(cache_filepath) Then
-            cache_contents = IO.File.ReadAllText(cache_filepath).Split(vbCrLf)
-            frmMain.tslCacheValue.ForeColor = Color.Green
+        If File.Exists(cacheFilepath) Then
+            cacheContents = File.ReadAllLines(cacheFilepath)
+            FrmMain.tslCacheValue.ForeColor = Color.Green
         End If
 
-        For Each pack As String In cache_contents
-            Dim packData As String()
-            packData = pack.Split(":::")
-
+        For Each pack As String In cacheContents
+            Dim packData As String() = pack.Split(":::")
             Dim packCategory As String = packData(0)
             Dim packMode As String = packData(1)
-            Dim packURL As String = packData(2)
+            Dim packUrl As String = packData(2)
             Dim packName As String = packData(3)
 
             Dim modeEnum As GameModes = StringToEnum(Of GameModes)(packMode)
             Dim categoryEnum As GamePackCategories = StringToEnum(Of GamePackCategories)(packCategory)
+
             Try
-                frmMain.tvListings.Nodes(0).Nodes(modeEnum).Nodes(categoryEnum).Nodes.Add(packName)
+                FrmMain.tvListings.Nodes(0).Nodes(modeEnum).Nodes(categoryEnum).Nodes.Add(packName)
             Catch ex As Exception
-                MessageBox.Show(ex.Message)
+                FrmMain.log.Information($"Error adding {packName} to the treeview. {ex.Message}")
             End Try
-            
         Next
     End Sub
 
-    Public Function GetDefaultBrowser As BrowserType
-        Dim browser_regex As Match
-        Dim default_browser As String = "None"
-        Dim browser_check_regkey As String = My.Computer.Registry.GetValue(
+    Public Function GetDefaultBrowser() As BrowserType
+        Dim browserRegex As Match
+        Dim defaultBrowser As String = "None"
+        Dim browserCheckRegkey As String = My.Computer.Registry.GetValue(
             "HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\Shell\Associations\UrlAssociations\https\UserChoice",
             "ProgId",
             Nothing
         ).ToString()
 
-        browser_regex = Regex.Match(browser_check_regkey, "(ChromeHTML|FirefoxURL|MSEdge).*?")
-        
-        If browser_regex.Success Then
-            default_browser = browser_regex.Groups(1).Value
+        browserRegex = Regex.Match(browserCheckRegkey, "(ChromeHTML|FirefoxURL|MSEdge).*?")
+
+        If browserRegex.Success Then
+            defaultBrowser = browserRegex.Groups(1).Value
         End If
 
-        If default_browser = "ChromeHTML" Then
+        If defaultBrowser = "ChromeHTML" Then
             Return BrowserType.Chrome
-        Else If default_browser = "FirefoxURL" Then
+        ElseIf defaultBrowser = "FirefoxURL" Then
             Return BrowserType.Firefox
-        Else If default_browser = "MSEdge" Then
-            Return BrowserType.MSEdge
-        Else          
+        ElseIf defaultBrowser = "MSEdge" Then
+            Return BrowserType.MsEdge
+        Else
             Return BrowserType.Other
         End If
     End Function
 
-    Public Sub KillOpenBrowser(ByRef browser_type As BrowserType)
-        Dim browser_name As String = ""
+    Public Sub KillOpenBrowser(ByRef browserType As BrowserType)
+        Dim browserName As String = ""
         Dim processes() As Process
 
-        Select Case browser_type
+        Select Case browserType
             Case BrowserType.Chrome
-                browser_name = "chrome"
+                browserName = "chrome"
             Case BrowserType.Firefox
-                browser_name = "firefox"
-            Case BrowserType.MSEdge
-                browser_name = "msedge"
+                browserName = "firefox"
+            Case BrowserType.MsEdge
+                browserName = "msedge"
             Case BrowserType.Other
 
         End Select
 
-        processes = Process.GetProcessesByName(browser_name)
-        
+        processes = Process.GetProcessesByName(browserName)
+
         If processes.Length() > 0 Then
-            Dim user_answer As DialogResult = MessageBox.Show(
-                "Found an open " & browser_name & " process. Would you like to close it?",
+            Dim userAnswer As DialogResult = MessageBox.Show(
+                "Found an open " & browserName & " process. Would you like to close it?",
                 "Found Open Browser",
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Question
             )
-            If user_answer = DialogResult.Yes Then
+            If userAnswer = DialogResult.Yes Then
                 For Each process As Process In processes
                     process.Kill()
                 Next
@@ -133,18 +135,18 @@ Module CommonUse
     End Sub
 
     Public Function VerifySession() As Boolean
-        Dim response As HttpResponseMessage = HTTPGet("https://osu.ppy.sh/beatmapsets")
-        Dim response_text As String = response.Content.ReadAsStringAsync().Result.ToString()
-        Dim check_string As Match = Regex.Match(response_text, "Sign in to search")
+        Dim response As HttpResponseMessage = HttpGet("https://osu.ppy.sh/beatmapsets")
+        Dim responseText As String = response.Content.ReadAsStringAsync().Result.ToString()
+        Dim checkString As Match = Regex.Match(responseText, "Sign in to search", RegexOptions.Multiline)
 
-        If check_string.Success Then
+        If checkString.Success Then
             Return False
         End If
 
-        Return True        
+        Return True
     End Function
 
-    Public Function HTTPGet(url As String) As HttpResponseMessage
+    Public Function HttpGet(url As String) As HttpResponseMessage
         Dim client As HttpClient = New HttpClient()
         Dim request As HttpRequestMessage = New HttpRequestMessage(HttpMethod.[Get], url)
 
@@ -153,18 +155,33 @@ Module CommonUse
         request.Headers.Add("Accept-Language", "en-CA,en-US;q=0.7,en;q=0.3")
         request.Headers.Add("Connection", "keep-alive")
         request.Headers.Add("Referer", "https://osu.ppy.sh/")
-        request.Headers.Add("Cookie", $"XSRF-TOKEN={frmMain.txtXSRFToken.Text}; osu_session={frmMain.txtSessionToken.Text};")
+        request.Headers.Add("Cookie", $"XSRF-TOKEN={FrmMain.txtXSRFToken.Text}; osu_session={FrmMain.txtSessionToken.Text};")
         request.Headers.Add("Sec-Fetch-Dest", "empty")
         request.Headers.Add("Sec-Fetch-Mode", "cors")
         request.Headers.Add("Sec-Fetch-Site", "same-origin")
 
         Dim response As HttpResponseMessage = client.SendAsync(request).Result
         response.EnsureSuccessStatusCode()
-        
+
         Return response
     End Function
 
     Public Function StringToEnum(Of T)(value As String) As T
         Return DirectCast([Enum].Parse(GetType(T), value), T)
     End Function
+
+    Public Function GetSHA256Hash(filePath As String) As String
+        Dim sha256 As Security.Cryptography.SHA256 = Security.Cryptography.SHA256.Create()
+        Dim stream As FileStream = File.OpenRead(filePath)
+        Dim hash As Byte() = sha256.ComputeHash(stream)
+        stream.Close()
+
+        Return BitConverter.ToString(hash).Replace("-", String.Empty)
+    End Function
+
+    Public Sub ProcessBeatmap(filePath As String)
+        ZipFile.ExtractToDirectory(filePath, Path.Combine(CStr(Environment.SpecialFolder.Windows), "temp"))
+                
+
+    End Sub
 End Module

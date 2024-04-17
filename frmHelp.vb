@@ -1,4 +1,4 @@
-﻿Public Class frmHelp
+﻿Public Class FrmHelp
 
     Public Sub New()
         InitializeComponent()
@@ -11,4 +11,5 @@
     Private Sub llOsuSite_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles llOsuSite.LinkClicked
         Process.Start("firefox https://osu.ppy.sh")
     End Sub
+
 End Class

@@ -1,5 +1,5 @@
 ﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
-Partial Class frmMain
+Partial Class FrmMain
     Inherits System.Windows.Forms.Form
 
     'Form overrides dispose to clean up the component list.
@@ -23,9 +23,9 @@ Partial Class frmMain
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         components = New ComponentModel.Container()
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmMain))
-        Dim TreeNode1 As TreeNode = New TreeNode("Packs")
-        Dim TreeNode2 As TreeNode = New TreeNode("Singles")
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FrmMain))
+        Dim TreeNode3 As TreeNode = New TreeNode("Packs", 0, 1)
+        Dim TreeNode4 As TreeNode = New TreeNode("Singles")
         pbLogo = New PictureBox()
         grpModes = New GroupBox()
         chkModeTaiko = New CheckBox()
@@ -68,28 +68,30 @@ Partial Class frmMain
         StatusStrip1 = New StatusStrip()
         tslBrowser = New ToolStripStatusLabel()
         tslSep3 = New ToolStripStatusLabel()
-        tssAuthenticatedValue = New ToolStripStatusLabel()
+        tslAuthenticatedValue = New ToolStripStatusLabel()
         tssSep1 = New ToolStripStatusLabel()
+        tslDatabase = New ToolStripStatusLabel()
+        tslSep4 = New ToolStripStatusLabel()
         tslCacheValue = New ToolStripStatusLabel()
         tslSep2 = New ToolStripStatusLabel()
         tslPulledValue = New ToolStripStatusLabel()
         tslSpacer = New ToolStripStatusLabel()
-        tspbProgressBar = New ToolStripProgressBar()
+        tslStatus = New ToolStripStatusLabel()
         ilBrowsers = New ImageList(components)
         tvListings = New TreeView()
-        ilLists = New ImageList(components)
-        Button1 = New Button()
+        imlLists = New ImageList(components)
+        btnPullSelected = New Button()
         grpSession = New GroupBox()
+        btnCheckSession = New Button()
+        lblProgressSecondaryLabel = New Label()
+        lblProgressPrimaryLabel = New Label()
+        prgPrimaryTask = New ProgressBar()
+        prgSecondaryTask = New ProgressBar()
         grpOptions = New GroupBox()
         grpListings = New GroupBox()
-        Button4 = New Button()
         Button3 = New Button()
         Button2 = New Button()
         grpDownloads = New GroupBox()
-        Button5 = New Button()
-        Button6 = New Button()
-        Button7 = New Button()
-        Button8 = New Button()
         cbFilter = New ComboBox()
         tpSingles = New TabPage()
         chkSingleAll = New CheckBox()
@@ -104,15 +106,26 @@ Partial Class frmMain
         chkSingleRanked = New CheckBox()
         chkSingleFaves = New CheckBox()
         tpPacks = New TabPage()
-        chkPackAlArt = New CheckBox()
+        chkPackArtist = New CheckBox()
         chkPackTheme = New CheckBox()
         chkPackFeatured = New CheckBox()
         chkPackTournament = New CheckBox()
         chkPackLoved = New CheckBox()
-        chkPackSpotlights = New CheckBox()
+        chkPackSpotlight = New CheckBox()
         chkPackStandard = New CheckBox()
-        chkPackAll = New CheckBox()
         tcMainTabs = New TabControl()
+        fbdDownloadFolder = New FolderBrowserDialog()
+        Button1 = New Button()
+        Label1 = New Label()
+        Label2 = New Label()
+        Label3 = New Label()
+        Label4 = New Label()
+        Button5 = New Button()
+        Label5 = New Label()
+        Label6 = New Label()
+        Button6 = New Button()
+        fdbTempFolder = New FolderBrowserDialog()
+        fdbOsuFolder = New FolderBrowserDialog()
         CType(pbLogo, ComponentModel.ISupportInitialize).BeginInit()
         grpModes.SuspendLayout()
         msMainMenu.SuspendLayout()
@@ -160,7 +173,7 @@ Partial Class frmMain
         ' chkModeTaiko
         ' 
         chkModeTaiko.Appearance = Appearance.Button
-        chkModeTaiko.ImageKey = "Taiko.png"
+        chkModeTaiko.ImageIndex = 7
         chkModeTaiko.ImageList = imlModes
         chkModeTaiko.Location = New Point(191, 21)
         chkModeTaiko.Margin = New Padding(3, 4, 3, 4)
@@ -181,11 +194,15 @@ Partial Class frmMain
         imlModes.Images.SetKeyName(1, "Mania.png")
         imlModes.Images.SetKeyName(2, "Osu.png")
         imlModes.Images.SetKeyName(3, "Taiko.png")
+        imlModes.Images.SetKeyName(4, "catch.png")
+        imlModes.Images.SetKeyName(5, "mania.png")
+        imlModes.Images.SetKeyName(6, "standard.png")
+        imlModes.Images.SetKeyName(7, "taiko.png")
         ' 
         ' chkModeMania
         ' 
         chkModeMania.Appearance = Appearance.Button
-        chkModeMania.ImageKey = "Mania.png"
+        chkModeMania.ImageIndex = 5
         chkModeMania.ImageList = imlModes
         chkModeMania.Location = New Point(133, 21)
         chkModeMania.Margin = New Padding(3, 4, 3, 4)
@@ -200,7 +217,7 @@ Partial Class frmMain
         ' chkModeCatch
         ' 
         chkModeCatch.Appearance = Appearance.Button
-        chkModeCatch.ImageKey = "FruitDrop.png"
+        chkModeCatch.ImageKey = "catch.png"
         chkModeCatch.ImageList = imlModes
         chkModeCatch.Location = New Point(75, 21)
         chkModeCatch.Margin = New Padding(3, 4, 3, 4)
@@ -215,7 +232,7 @@ Partial Class frmMain
         ' chkModeOsu
         ' 
         chkModeOsu.Appearance = Appearance.Button
-        chkModeOsu.ImageKey = "Osu.png"
+        chkModeOsu.ImageIndex = 6
         chkModeOsu.ImageList = imlModes
         chkModeOsu.Location = New Point(17, 21)
         chkModeOsu.Margin = New Padding(3, 4, 3, 4)
@@ -447,18 +464,19 @@ Partial Class frmMain
         btnAutoFill.FlatStyle = FlatStyle.Popup
         btnAutoFill.Font = New Font("Quicksand", 9F)
         btnAutoFill.Image = My.Resources.Resources.icons8_wand_24
-        btnAutoFill.ImageAlign = ContentAlignment.MiddleLeft
-        btnAutoFill.Location = New Point(13, 130)
+        btnAutoFill.Location = New Point(13, 114)
         btnAutoFill.Name = "btnAutoFill"
-        btnAutoFill.Size = New Size(150, 40)
+        btnAutoFill.Size = New Size(67, 32)
         btnAutoFill.TabIndex = 5
-        btnAutoFill.Text = "Auto-Fill"
+        btnAutoFill.Text = "Fill"
+        btnAutoFill.TextAlign = ContentAlignment.MiddleRight
+        btnAutoFill.TextImageRelation = TextImageRelation.ImageBeforeText
         btnAutoFill.UseVisualStyleBackColor = True
         ' 
         ' lblXSRFTokenLabel
         ' 
         lblXSRFTokenLabel.AutoSize = True
-        lblXSRFTokenLabel.Location = New Point(86, 72)
+        lblXSRFTokenLabel.Location = New Point(86, 60)
         lblXSRFTokenLabel.Name = "lblXSRFTokenLabel"
         lblXSRFTokenLabel.Size = New Size(75, 18)
         lblXSRFTokenLabel.TabIndex = 12
@@ -467,7 +485,7 @@ Partial Class frmMain
         ' lblSessionLabel
         ' 
         lblSessionLabel.AutoSize = True
-        lblSessionLabel.Location = New Point(40, 16)
+        lblSessionLabel.Location = New Point(40, 20)
         lblSessionLabel.Name = "lblSessionLabel"
         lblSessionLabel.Size = New Size(121, 18)
         lblSessionLabel.TabIndex = 11
@@ -475,7 +493,7 @@ Partial Class frmMain
         ' 
         ' txtXSRFToken
         ' 
-        txtXSRFToken.Location = New Point(14, 93)
+        txtXSRFToken.Location = New Point(14, 77)
         txtXSRFToken.Name = "txtXSRFToken"
         txtXSRFToken.PlaceholderText = "XSRF-TOKEN:""<TOKEN>"""
         txtXSRFToken.Size = New Size(147, 22)
@@ -525,7 +543,7 @@ Partial Class frmMain
         ' StatusStrip1
         ' 
         StatusStrip1.ImageScalingSize = New Size(24, 24)
-        StatusStrip1.Items.AddRange(New ToolStripItem() {tslBrowser, tslSep3, tssAuthenticatedValue, tssSep1, tslCacheValue, tslSep2, tslPulledValue, tslSpacer, tspbProgressBar})
+        StatusStrip1.Items.AddRange(New ToolStripItem() {tslBrowser, tslSep3, tslAuthenticatedValue, tssSep1, tslDatabase, tslSep4, tslCacheValue, tslSep2, tslPulledValue, tslSpacer, tslStatus})
         StatusStrip1.Location = New Point(0, 600)
         StatusStrip1.Name = "StatusStrip1"
         StatusStrip1.Size = New Size(949, 29)
@@ -535,9 +553,9 @@ Partial Class frmMain
         ' tslBrowser
         ' 
         tslBrowser.Image = My.Resources.Resources.icons8_browser_24
-        tslBrowser.Margin = New Padding(5, 0, 0, 2)
+        tslBrowser.Margin = New Padding(5, 3, 0, 2)
         tslBrowser.Name = "tslBrowser"
-        tslBrowser.Size = New Size(24, 27)
+        tslBrowser.Size = New Size(24, 24)
         ' 
         ' tslSep3
         ' 
@@ -545,13 +563,15 @@ Partial Class frmMain
         tslSep3.Size = New Size(10, 24)
         tslSep3.Text = "|"
         ' 
-        ' tssAuthenticatedValue
+        ' tslAuthenticatedValue
         ' 
-        tssAuthenticatedValue.BorderStyle = Border3DStyle.Etched
-        tssAuthenticatedValue.ForeColor = Color.Red
-        tssAuthenticatedValue.Image = My.Resources.Resources.icons8_lock_24_red
-        tssAuthenticatedValue.Name = "tssAuthenticatedValue"
-        tssAuthenticatedValue.Size = New Size(24, 24)
+        tslAuthenticatedValue.BorderStyle = Border3DStyle.Etched
+        tslAuthenticatedValue.Font = New Font("Quicksand", 9F)
+        tslAuthenticatedValue.ForeColor = Color.Red
+        tslAuthenticatedValue.Image = My.Resources.Resources.icons8_lock_24_red
+        tslAuthenticatedValue.Name = "tslAuthenticatedValue"
+        tslAuthenticatedValue.Size = New Size(65, 24)
+        tslAuthenticatedValue.Text = "AUTH"
         ' 
         ' tssSep1
         ' 
@@ -559,12 +579,29 @@ Partial Class frmMain
         tssSep1.Size = New Size(10, 24)
         tssSep1.Text = "|"
         ' 
+        ' tslDatabase
+        ' 
+        tslDatabase.Font = New Font("Quicksand", 9F)
+        tslDatabase.ForeColor = Color.Red
+        tslDatabase.Image = My.Resources.Resources.icons8_database_24
+        tslDatabase.Name = "tslDatabase"
+        tslDatabase.Size = New Size(62, 24)
+        tslDatabase.Text = "DATA"
+        ' 
+        ' tslSep4
+        ' 
+        tslSep4.Name = "tslSep4"
+        tslSep4.Size = New Size(10, 24)
+        tslSep4.Text = "|"
+        ' 
         ' tslCacheValue
         ' 
+        tslCacheValue.Font = New Font("Quicksand", 9F)
         tslCacheValue.ForeColor = Color.Red
         tslCacheValue.Image = My.Resources.Resources.icons8_cache_24_red
         tslCacheValue.Name = "tslCacheValue"
-        tslCacheValue.Size = New Size(24, 24)
+        tslCacheValue.Size = New Size(72, 24)
+        tslCacheValue.Text = "CACHE"
         ' 
         ' tslSep2
         ' 
@@ -574,21 +611,26 @@ Partial Class frmMain
         ' 
         ' tslPulledValue
         ' 
+        tslPulledValue.Font = New Font("Quicksand", 9F)
         tslPulledValue.ForeColor = Color.Red
         tslPulledValue.Image = My.Resources.Resources.icons8_update_24_red
         tslPulledValue.Name = "tslPulledValue"
-        tslPulledValue.Size = New Size(24, 24)
+        tslPulledValue.Size = New Size(87, 24)
+        tslPulledValue.Text = "UPDATED"
         ' 
         ' tslSpacer
         ' 
         tslSpacer.Name = "tslSpacer"
-        tslSpacer.Size = New Size(701, 24)
+        tslSpacer.Size = New Size(379, 24)
         tslSpacer.Spring = True
         ' 
-        ' tspbProgressBar
+        ' tslStatus
         ' 
-        tspbProgressBar.Name = "tspbProgressBar"
-        tspbProgressBar.Size = New Size(100, 23)
+        tslStatus.AutoSize = False
+        tslStatus.BackColor = SystemColors.ControlLight
+        tslStatus.BorderSides = ToolStripStatusLabelBorderSides.Left Or ToolStripStatusLabelBorderSides.Top Or ToolStripStatusLabelBorderSides.Right Or ToolStripStatusLabelBorderSides.Bottom
+        tslStatus.Name = "tslStatus"
+        tslStatus.Size = New Size(200, 24)
         ' 
         ' ilBrowsers
         ' 
@@ -599,38 +641,48 @@ Partial Class frmMain
         ' tvListings
         ' 
         tvListings.ImageIndex = 0
-        tvListings.ImageList = ilLists
+        tvListings.ImageList = imlLists
         tvListings.Location = New Point(457, 177)
         tvListings.Name = "tvListings"
-        TreeNode1.ImageIndex = 1
-        TreeNode1.Name = "tvnPacks"
-        TreeNode1.Text = "Packs"
-        TreeNode2.Name = "tvnSingles"
-        TreeNode2.Text = "Singles"
-        tvListings.Nodes.AddRange(New TreeNode() {TreeNode1, TreeNode2})
+        TreeNode3.ImageIndex = 0
+        TreeNode3.Name = "tvnPacks"
+        TreeNode3.SelectedImageIndex = 1
+        TreeNode3.Text = "Packs"
+        TreeNode4.Name = "tvnSingles"
+        TreeNode4.Text = "Singles"
+        tvListings.Nodes.AddRange(New TreeNode() {TreeNode3, TreeNode4})
         tvListings.SelectedImageIndex = 0
         tvListings.Size = New Size(306, 413)
         tvListings.TabIndex = 7
         ' 
-        ' ilLists
+        ' imlLists
         ' 
-        ilLists.ColorDepth = ColorDepth.Depth32Bit
-        ilLists.ImageStream = CType(resources.GetObject("ilLists.ImageStream"), ImageListStreamer)
-        ilLists.TransparentColor = Color.Transparent
-        ilLists.Images.SetKeyName(0, "icons8-one-page-16.png")
-        ilLists.Images.SetKeyName(1, "icons8-package-16.png")
+        imlLists.ColorDepth = ColorDepth.Depth32Bit
+        imlLists.ImageStream = CType(resources.GetObject("imlLists.ImageStream"), ImageListStreamer)
+        imlLists.TransparentColor = Color.Transparent
+        imlLists.Images.SetKeyName(0, "icons8-one-page-16.png")
+        imlLists.Images.SetKeyName(1, "icons8-package-16.png")
+        imlLists.Images.SetKeyName(2, "catch.png")
+        imlLists.Images.SetKeyName(3, "mania.png")
+        imlLists.Images.SetKeyName(4, "standard.png")
+        imlLists.Images.SetKeyName(5, "taiko.png")
         ' 
-        ' Button1
+        ' btnPullSelected
         ' 
-        Button1.Location = New Point(32, 25)
-        Button1.Name = "Button1"
-        Button1.Size = New Size(105, 23)
-        Button1.TabIndex = 8
-        Button1.Text = "Pull Selected"
-        Button1.UseVisualStyleBackColor = True
+        btnPullSelected.Location = New Point(32, 25)
+        btnPullSelected.Name = "btnPullSelected"
+        btnPullSelected.Size = New Size(105, 23)
+        btnPullSelected.TabIndex = 8
+        btnPullSelected.Text = "Pull Selected"
+        btnPullSelected.UseVisualStyleBackColor = True
         ' 
         ' grpSession
         ' 
+        grpSession.Controls.Add(btnCheckSession)
+        grpSession.Controls.Add(lblProgressSecondaryLabel)
+        grpSession.Controls.Add(lblProgressPrimaryLabel)
+        grpSession.Controls.Add(prgPrimaryTask)
+        grpSession.Controls.Add(prgSecondaryTask)
         grpSession.Controls.Add(txtSessionToken)
         grpSession.Controls.Add(txtXSRFToken)
         grpSession.Controls.Add(lblSessionLabel)
@@ -642,6 +694,55 @@ Partial Class frmMain
         grpSession.TabIndex = 19
         grpSession.TabStop = False
         grpSession.Text = "Session"
+        ' 
+        ' btnCheckSession
+        ' 
+        btnCheckSession.AutoSize = True
+        btnCheckSession.FlatStyle = FlatStyle.Popup
+        btnCheckSession.Font = New Font("Quicksand", 9F)
+        btnCheckSession.Image = My.Resources.Resources.icons8_login_24
+        btnCheckSession.ImageAlign = ContentAlignment.MiddleLeft
+        btnCheckSession.Location = New Point(86, 114)
+        btnCheckSession.Name = "btnCheckSession"
+        btnCheckSession.Size = New Size(75, 32)
+        btnCheckSession.TabIndex = 17
+        btnCheckSession.Text = "Check"
+        btnCheckSession.TextAlign = ContentAlignment.MiddleRight
+        btnCheckSession.UseVisualStyleBackColor = True
+        ' 
+        ' lblProgressSecondaryLabel
+        ' 
+        lblProgressSecondaryLabel.AutoSize = True
+        lblProgressSecondaryLabel.Font = New Font("Quicksand", 8.25F)
+        lblProgressSecondaryLabel.Location = New Point(70, 222)
+        lblProgressSecondaryLabel.Name = "lblProgressSecondaryLabel"
+        lblProgressSecondaryLabel.Size = New Size(91, 16)
+        lblProgressSecondaryLabel.TabIndex = 16
+        lblProgressSecondaryLabel.Text = "Secondary Task:"
+        ' 
+        ' lblProgressPrimaryLabel
+        ' 
+        lblProgressPrimaryLabel.AutoSize = True
+        lblProgressPrimaryLabel.Font = New Font("Quicksand", 8.25F)
+        lblProgressPrimaryLabel.Location = New Point(85, 183)
+        lblProgressPrimaryLabel.Name = "lblProgressPrimaryLabel"
+        lblProgressPrimaryLabel.Size = New Size(76, 16)
+        lblProgressPrimaryLabel.TabIndex = 15
+        lblProgressPrimaryLabel.Text = "Primary Task:"
+        ' 
+        ' prgPrimaryTask
+        ' 
+        prgPrimaryTask.Location = New Point(14, 202)
+        prgPrimaryTask.Name = "prgPrimaryTask"
+        prgPrimaryTask.Size = New Size(147, 10)
+        prgPrimaryTask.TabIndex = 14
+        ' 
+        ' prgSecondaryTask
+        ' 
+        prgSecondaryTask.Location = New Point(14, 241)
+        prgSecondaryTask.Name = "prgSecondaryTask"
+        prgSecondaryTask.Size = New Size(147, 10)
+        prgSecondaryTask.TabIndex = 13
         ' 
         ' grpOptions
         ' 
@@ -658,25 +759,15 @@ Partial Class frmMain
         ' 
         ' grpListings
         ' 
-        grpListings.Controls.Add(Button4)
         grpListings.Controls.Add(Button3)
         grpListings.Controls.Add(Button2)
-        grpListings.Controls.Add(Button1)
+        grpListings.Controls.Add(btnPullSelected)
         grpListings.Location = New Point(769, 139)
         grpListings.Name = "grpListings"
-        grpListings.Size = New Size(168, 158)
+        grpListings.Size = New Size(168, 125)
         grpListings.TabIndex = 21
         grpListings.TabStop = False
         grpListings.Text = "Listings"
-        ' 
-        ' Button4
-        ' 
-        Button4.Location = New Point(32, 118)
-        Button4.Name = "Button4"
-        Button4.Size = New Size(105, 23)
-        Button4.TabIndex = 11
-        Button4.Text = "Button4"
-        Button4.UseVisualStyleBackColor = True
         ' 
         ' Button3
         ' 
@@ -698,57 +789,26 @@ Partial Class frmMain
         ' 
         ' grpDownloads
         ' 
-        grpDownloads.Controls.Add(Button5)
+        grpDownloads.Controls.Add(Label5)
+        grpDownloads.Controls.Add(Label6)
         grpDownloads.Controls.Add(Button6)
-        grpDownloads.Controls.Add(Button7)
-        grpDownloads.Controls.Add(Button8)
-        grpDownloads.Location = New Point(769, 303)
+        grpDownloads.Controls.Add(Label3)
+        grpDownloads.Controls.Add(Label4)
+        grpDownloads.Controls.Add(Button5)
+        grpDownloads.Controls.Add(Label2)
+        grpDownloads.Controls.Add(Label1)
+        grpDownloads.Controls.Add(Button1)
+        grpDownloads.Location = New Point(769, 270)
         grpDownloads.Name = "grpDownloads"
-        grpDownloads.Size = New Size(168, 158)
+        grpDownloads.Size = New Size(168, 191)
         grpDownloads.TabIndex = 22
         grpDownloads.TabStop = False
-        grpDownloads.Text = "Downloads"
-        ' 
-        ' Button5
-        ' 
-        Button5.Location = New Point(32, 118)
-        Button5.Name = "Button5"
-        Button5.Size = New Size(105, 23)
-        Button5.TabIndex = 15
-        Button5.Text = "Button5"
-        Button5.UseVisualStyleBackColor = True
-        ' 
-        ' Button6
-        ' 
-        Button6.Location = New Point(32, 87)
-        Button6.Name = "Button6"
-        Button6.Size = New Size(105, 23)
-        Button6.TabIndex = 14
-        Button6.Text = "Button6"
-        Button6.UseVisualStyleBackColor = True
-        ' 
-        ' Button7
-        ' 
-        Button7.Location = New Point(32, 56)
-        Button7.Name = "Button7"
-        Button7.Size = New Size(105, 23)
-        Button7.TabIndex = 13
-        Button7.Text = "Button7"
-        Button7.UseVisualStyleBackColor = True
-        ' 
-        ' Button8
-        ' 
-        Button8.Location = New Point(32, 25)
-        Button8.Name = "Button8"
-        Button8.Size = New Size(105, 23)
-        Button8.TabIndex = 12
-        Button8.Text = "Button8"
-        Button8.UseVisualStyleBackColor = True
+        grpDownloads.Text = "Paths"
         ' 
         ' cbFilter
         ' 
         cbFilter.AutoCompleteMode = AutoCompleteMode.Suggest
-        cbFilter.AutoCompleteSource = AutoCompleteSource.ListItems
+        cbFilter.AutoCompleteSource = AutoCompleteSource.CustomSource
         cbFilter.FormattingEnabled = True
         cbFilter.Location = New Point(458, 145)
         cbFilter.MaxDropDownItems = 15
@@ -769,10 +829,10 @@ Partial Class frmMain
         tpSingles.Controls.Add(chkSingleLoved)
         tpSingles.Controls.Add(chkSingleRanked)
         tpSingles.Controls.Add(chkSingleFaves)
-        tpSingles.Location = New Point(4, 24)
+        tpSingles.Location = New Point(4, 27)
         tpSingles.Name = "tpSingles"
         tpSingles.Padding = New Padding(3)
-        tpSingles.Size = New Size(245, 318)
+        tpSingles.Size = New Size(245, 315)
         tpSingles.TabIndex = 1
         tpSingles.Text = "Singles"
         tpSingles.UseVisualStyleBackColor = True
@@ -988,14 +1048,13 @@ Partial Class frmMain
         ' 
         ' tpPacks
         ' 
-        tpPacks.Controls.Add(chkPackAlArt)
+        tpPacks.Controls.Add(chkPackArtist)
         tpPacks.Controls.Add(chkPackTheme)
         tpPacks.Controls.Add(chkPackFeatured)
         tpPacks.Controls.Add(chkPackTournament)
         tpPacks.Controls.Add(chkPackLoved)
-        tpPacks.Controls.Add(chkPackSpotlights)
+        tpPacks.Controls.Add(chkPackSpotlight)
         tpPacks.Controls.Add(chkPackStandard)
-        tpPacks.Controls.Add(chkPackAll)
         tpPacks.Location = New Point(4, 27)
         tpPacks.Name = "tpPacks"
         tpPacks.Padding = New Padding(3)
@@ -1004,24 +1063,24 @@ Partial Class frmMain
         tpPacks.Text = "Packs"
         tpPacks.UseVisualStyleBackColor = True
         ' 
-        ' chkPackAlArt
+        ' chkPackArtist
         ' 
-        chkPackAlArt.Appearance = Appearance.Button
-        chkPackAlArt.BackColor = SystemColors.Control
-        chkPackAlArt.FlatAppearance.BorderColor = Color.FromArgb(CByte(64), CByte(64), CByte(64))
-        chkPackAlArt.FlatAppearance.CheckedBackColor = SystemColors.ActiveCaption
-        chkPackAlArt.FlatStyle = FlatStyle.Flat
-        chkPackAlArt.Font = New Font("Quicksand", 6.75F, FontStyle.Regular, GraphicsUnit.Point, CByte(0))
-        chkPackAlArt.ImageKey = "icons8-album-24.png"
-        chkPackAlArt.ImageList = ilCategoriesColor
-        chkPackAlArt.Location = New Point(9, 71)
-        chkPackAlArt.Name = "chkPackAlArt"
-        chkPackAlArt.Size = New Size(70, 113)
-        chkPackAlArt.TabIndex = 33
-        chkPackAlArt.Text = "Abm/Artst"
-        chkPackAlArt.TextAlign = ContentAlignment.BottomCenter
-        chkPackAlArt.TextImageRelation = TextImageRelation.ImageAboveText
-        chkPackAlArt.UseVisualStyleBackColor = False
+        chkPackArtist.Appearance = Appearance.Button
+        chkPackArtist.BackColor = SystemColors.Control
+        chkPackArtist.FlatAppearance.BorderColor = Color.FromArgb(CByte(64), CByte(64), CByte(64))
+        chkPackArtist.FlatAppearance.CheckedBackColor = SystemColors.ActiveCaption
+        chkPackArtist.FlatStyle = FlatStyle.Flat
+        chkPackArtist.Font = New Font("Quicksand", 9F)
+        chkPackArtist.ImageKey = "icons8-album-24.png"
+        chkPackArtist.ImageList = ilCategoriesColor
+        chkPackArtist.Location = New Point(9, 71)
+        chkPackArtist.Name = "chkPackArtist"
+        chkPackArtist.Size = New Size(70, 113)
+        chkPackArtist.TabIndex = 33
+        chkPackArtist.Text = "Artst"
+        chkPackArtist.TextAlign = ContentAlignment.BottomCenter
+        chkPackArtist.TextImageRelation = TextImageRelation.ImageAboveText
+        chkPackArtist.UseVisualStyleBackColor = False
         ' 
         ' chkPackTheme
         ' 
@@ -1030,7 +1089,7 @@ Partial Class frmMain
         chkPackTheme.FlatAppearance.BorderColor = Color.FromArgb(CByte(64), CByte(64), CByte(64))
         chkPackTheme.FlatAppearance.CheckedBackColor = SystemColors.ActiveCaption
         chkPackTheme.FlatStyle = FlatStyle.Flat
-        chkPackTheme.Font = New Font("Quicksand", 8.25F)
+        chkPackTheme.Font = New Font("Quicksand", 9F)
         chkPackTheme.ImageKey = "icons8-theme-32.png"
         chkPackTheme.ImageList = ilCategoriesColor
         chkPackTheme.Location = New Point(165, 193)
@@ -1049,7 +1108,7 @@ Partial Class frmMain
         chkPackFeatured.FlatAppearance.BorderColor = Color.FromArgb(CByte(64), CByte(64), CByte(64))
         chkPackFeatured.FlatAppearance.CheckedBackColor = SystemColors.ActiveCaption
         chkPackFeatured.FlatStyle = FlatStyle.Flat
-        chkPackFeatured.Font = New Font("Quicksand", 8.25F)
+        chkPackFeatured.Font = New Font("Quicksand", 9F)
         chkPackFeatured.ImageKey = "icons8-star-filled-24.png"
         chkPackFeatured.ImageList = ilCategoriesColor
         chkPackFeatured.Location = New Point(87, 71)
@@ -1068,7 +1127,7 @@ Partial Class frmMain
         chkPackTournament.FlatAppearance.BorderColor = Color.FromArgb(CByte(64), CByte(64), CByte(64))
         chkPackTournament.FlatAppearance.CheckedBackColor = SystemColors.ActiveCaption
         chkPackTournament.FlatStyle = FlatStyle.Flat
-        chkPackTournament.Font = New Font("Quicksand", 8.25F)
+        chkPackTournament.Font = New Font("Quicksand", 9F)
         chkPackTournament.ImageKey = "icons8-tournament-32.png"
         chkPackTournament.ImageList = ilCategoriesColor
         chkPackTournament.Location = New Point(165, 71)
@@ -1087,7 +1146,7 @@ Partial Class frmMain
         chkPackLoved.FlatAppearance.BorderColor = Color.FromArgb(CByte(64), CByte(64), CByte(64))
         chkPackLoved.FlatAppearance.CheckedBackColor = SystemColors.ActiveCaption
         chkPackLoved.FlatStyle = FlatStyle.Flat
-        chkPackLoved.Font = New Font("Quicksand", 8.25F)
+        chkPackLoved.Font = New Font("Quicksand", 9F)
         chkPackLoved.ImageKey = "icons8-love-24.png"
         chkPackLoved.ImageList = ilCategoriesColor
         chkPackLoved.Location = New Point(9, 193)
@@ -1099,24 +1158,24 @@ Partial Class frmMain
         chkPackLoved.TextImageRelation = TextImageRelation.ImageAboveText
         chkPackLoved.UseVisualStyleBackColor = False
         ' 
-        ' chkPackSpotlights
+        ' chkPackSpotlight
         ' 
-        chkPackSpotlights.Appearance = Appearance.Button
-        chkPackSpotlights.BackColor = SystemColors.Control
-        chkPackSpotlights.FlatAppearance.BorderColor = Color.FromArgb(CByte(64), CByte(64), CByte(64))
-        chkPackSpotlights.FlatAppearance.CheckedBackColor = SystemColors.ActiveCaption
-        chkPackSpotlights.FlatStyle = FlatStyle.Flat
-        chkPackSpotlights.Font = New Font("Quicksand", 8.25F)
-        chkPackSpotlights.ImageKey = "icons8-spotlight-24-col.png"
-        chkPackSpotlights.ImageList = ilCategoriesColor
-        chkPackSpotlights.Location = New Point(87, 193)
-        chkPackSpotlights.Name = "chkPackSpotlights"
-        chkPackSpotlights.Size = New Size(70, 113)
-        chkPackSpotlights.TabIndex = 28
-        chkPackSpotlights.Text = "Spotlights"
-        chkPackSpotlights.TextAlign = ContentAlignment.BottomCenter
-        chkPackSpotlights.TextImageRelation = TextImageRelation.ImageAboveText
-        chkPackSpotlights.UseVisualStyleBackColor = False
+        chkPackSpotlight.Appearance = Appearance.Button
+        chkPackSpotlight.BackColor = SystemColors.Control
+        chkPackSpotlight.FlatAppearance.BorderColor = Color.FromArgb(CByte(64), CByte(64), CByte(64))
+        chkPackSpotlight.FlatAppearance.CheckedBackColor = SystemColors.ActiveCaption
+        chkPackSpotlight.FlatStyle = FlatStyle.Flat
+        chkPackSpotlight.Font = New Font("Quicksand", 9F)
+        chkPackSpotlight.ImageKey = "icons8-spotlight-24-col.png"
+        chkPackSpotlight.ImageList = ilCategoriesColor
+        chkPackSpotlight.Location = New Point(87, 193)
+        chkPackSpotlight.Name = "chkPackSpotlight"
+        chkPackSpotlight.Size = New Size(70, 113)
+        chkPackSpotlight.TabIndex = 28
+        chkPackSpotlight.Text = "Spotlight"
+        chkPackSpotlight.TextAlign = ContentAlignment.BottomCenter
+        chkPackSpotlight.TextImageRelation = TextImageRelation.ImageAboveText
+        chkPackSpotlight.UseVisualStyleBackColor = False
         ' 
         ' chkPackStandard
         ' 
@@ -1125,36 +1184,17 @@ Partial Class frmMain
         chkPackStandard.FlatAppearance.BorderColor = Color.FromArgb(CByte(64), CByte(64), CByte(64))
         chkPackStandard.FlatAppearance.CheckedBackColor = SystemColors.ActiveCaption
         chkPackStandard.FlatStyle = FlatStyle.Flat
-        chkPackStandard.Font = New Font("Quicksand", 8.25F)
+        chkPackStandard.Font = New Font("Quicksand", 9.75F)
         chkPackStandard.ImageKey = "icons8-osu-24-col.png"
         chkPackStandard.ImageList = ilCategoriesColor
-        chkPackStandard.Location = New Point(124, 9)
+        chkPackStandard.Location = New Point(9, 9)
         chkPackStandard.Name = "chkPackStandard"
-        chkPackStandard.Size = New Size(112, 53)
+        chkPackStandard.Size = New Size(227, 53)
         chkPackStandard.TabIndex = 27
         chkPackStandard.Text = "Standard"
         chkPackStandard.TextAlign = ContentAlignment.MiddleCenter
         chkPackStandard.TextImageRelation = TextImageRelation.ImageAboveText
         chkPackStandard.UseVisualStyleBackColor = False
-        ' 
-        ' chkPackAll
-        ' 
-        chkPackAll.Appearance = Appearance.Button
-        chkPackAll.BackColor = SystemColors.Control
-        chkPackAll.FlatAppearance.BorderColor = Color.FromArgb(CByte(64), CByte(64), CByte(64))
-        chkPackAll.FlatAppearance.CheckedBackColor = SystemColors.ActiveCaption
-        chkPackAll.FlatStyle = FlatStyle.Flat
-        chkPackAll.Font = New Font("Quicksand", 8.25F)
-        chkPackAll.ImageKey = "icons8-all-24.png"
-        chkPackAll.ImageList = imlCategories
-        chkPackAll.Location = New Point(9, 9)
-        chkPackAll.Name = "chkPackAll"
-        chkPackAll.Size = New Size(112, 53)
-        chkPackAll.TabIndex = 20
-        chkPackAll.Text = "All Packs"
-        chkPackAll.TextAlign = ContentAlignment.MiddleCenter
-        chkPackAll.TextImageRelation = TextImageRelation.ImageAboveText
-        chkPackAll.UseVisualStyleBackColor = False
         ' 
         ' tcMainTabs
         ' 
@@ -1167,7 +1207,118 @@ Partial Class frmMain
         tcMainTabs.Size = New Size(253, 346)
         tcMainTabs.TabIndex = 6
         ' 
-        ' frmMain
+        ' fbdDownloadFolder
+        ' 
+        fbdDownloadFolder.InitialDirectory = "C:\"
+        ' 
+        ' Button1
+        ' 
+        Button1.Image = My.Resources.Resources.icons8_browse_folder_20
+        Button1.ImageAlign = ContentAlignment.MiddleLeft
+        Button1.Location = New Point(14, 41)
+        Button1.Name = "Button1"
+        Button1.Size = New Size(79, 23)
+        Button1.TabIndex = 0
+        Button1.Text = "Browse"
+        Button1.TextAlign = ContentAlignment.MiddleRight
+        Button1.UseVisualStyleBackColor = True
+        ' 
+        ' Label1
+        ' 
+        Label1.AutoSize = True
+        Label1.Location = New Point(47, 25)
+        Label1.Name = "Label1"
+        Label1.Size = New Size(105, 18)
+        Label1.TabIndex = 1
+        Label1.Text = "Download Folder:"
+        ' 
+        ' Label2
+        ' 
+        Label2.AutoSize = True
+        Label2.FlatStyle = FlatStyle.Flat
+        Label2.Font = New Font("Quicksand", 9F)
+        Label2.ForeColor = Color.CornflowerBlue
+        Label2.Location = New Point(99, 44)
+        Label2.Name = "Label2"
+        Label2.Size = New Size(63, 18)
+        Label2.TabIndex = 2
+        Label2.Text = "Defaulted"
+        ' 
+        ' Label3
+        ' 
+        Label3.AutoSize = True
+        Label3.FlatStyle = FlatStyle.Flat
+        Label3.Font = New Font("Quicksand", 9F)
+        Label3.ForeColor = Color.CornflowerBlue
+        Label3.Location = New Point(99, 102)
+        Label3.Name = "Label3"
+        Label3.Size = New Size(63, 18)
+        Label3.TabIndex = 5
+        Label3.Text = "Defaulted"
+        ' 
+        ' Label4
+        ' 
+        Label4.AutoSize = True
+        Label4.Location = New Point(72, 80)
+        Label4.Name = "Label4"
+        Label4.Size = New Size(80, 18)
+        Label4.TabIndex = 4
+        Label4.Text = "Temp Folder:"
+        ' 
+        ' Button5
+        ' 
+        Button5.Image = My.Resources.Resources.icons8_browse_folder_20
+        Button5.ImageAlign = ContentAlignment.MiddleLeft
+        Button5.Location = New Point(14, 99)
+        Button5.Name = "Button5"
+        Button5.Size = New Size(79, 23)
+        Button5.TabIndex = 3
+        Button5.Text = "Browse"
+        Button5.TextAlign = ContentAlignment.MiddleRight
+        Button5.UseVisualStyleBackColor = True
+        ' 
+        ' Label5
+        ' 
+        Label5.AutoSize = True
+        Label5.FlatStyle = FlatStyle.Flat
+        Label5.Font = New Font("Quicksand", 9F)
+        Label5.ForeColor = Color.CornflowerBlue
+        Label5.Location = New Point(99, 157)
+        Label5.Name = "Label5"
+        Label5.Size = New Size(63, 18)
+        Label5.TabIndex = 8
+        Label5.Text = "Defaulted"
+        ' 
+        ' Label6
+        ' 
+        Label6.AutoSize = True
+        Label6.Location = New Point(79, 135)
+        Label6.Name = "Label6"
+        Label6.Size = New Size(73, 18)
+        Label6.TabIndex = 7
+        Label6.Text = "Osu! Folder:"
+        ' 
+        ' Button6
+        ' 
+        Button6.Image = My.Resources.Resources.icons8_browse_folder_20
+        Button6.ImageAlign = ContentAlignment.MiddleLeft
+        Button6.Location = New Point(14, 154)
+        Button6.Name = "Button6"
+        Button6.Size = New Size(79, 23)
+        Button6.TabIndex = 6
+        Button6.Text = "Browse"
+        Button6.TextAlign = ContentAlignment.MiddleRight
+        Button6.UseVisualStyleBackColor = True
+        ' 
+        ' fdbTempFolder
+        ' 
+        fdbTempFolder.InitialDirectory = "C:\"
+        ' 
+        ' fdbOsuFolder
+        ' 
+        fdbOsuFolder.InitialDirectory = "C:\"
+        ' 
+        ' FrmMain
         ' 
         AutoScaleDimensions = New SizeF(7F, 18F)
         AutoScaleMode = AutoScaleMode.Font
@@ -1191,7 +1342,7 @@ Partial Class frmMain
         Icon = CType(resources.GetObject("$this.Icon"), Icon)
         MainMenuStrip = msMainMenu
         Margin = New Padding(3, 4, 3, 4)
-        Name = "frmMain"
+        Name = "FrmMain"
         SizeGripStyle = SizeGripStyle.Hide
         StartPosition = FormStartPosition.CenterScreen
         CType(pbLogo, ComponentModel.ISupportInitialize).EndInit()
@@ -1211,6 +1362,7 @@ Partial Class frmMain
         grpOptions.PerformLayout()
         grpListings.ResumeLayout(False)
         grpDownloads.ResumeLayout(False)
+        grpDownloads.PerformLayout()
         tpSingles.ResumeLayout(False)
         tpPacks.ResumeLayout(False)
         tcMainTabs.ResumeLayout(False)
@@ -1257,33 +1409,27 @@ Partial Class frmMain
     Friend WithEvents btnAutoFill As Button
     Friend WithEvents StatusStrip1 As StatusStrip
     Friend WithEvents tslSep3 As ToolStripStatusLabel
-    Friend WithEvents tssAuthenticatedValue As ToolStripStatusLabel
+    Friend WithEvents tslAuthenticatedValue As ToolStripStatusLabel
     Friend WithEvents tssSep1 As ToolStripStatusLabel
     Friend WithEvents tslCacheValue As ToolStripStatusLabel
     Friend WithEvents tslPulledValue As ToolStripStatusLabel
     Friend WithEvents tslSep2 As ToolStripStatusLabel
     Friend WithEvents tslSpacer As ToolStripStatusLabel
-    Friend WithEvents tspbProgressBar As ToolStripProgressBar
     Friend WithEvents lblBatchSizeValue As Label
     Friend WithEvents lblBatchSizeLabel As Label
     Friend WithEvents tbBatchSize As TrackBar
     Friend WithEvents tslBrowser As ToolStripStatusLabel
     Friend WithEvents ilBrowsers As ImageList
     Friend WithEvents tvListings As TreeView
-    Friend WithEvents Button1 As Button
+    Friend WithEvents btnPullSelected As Button
     Friend WithEvents grpSession As GroupBox
     Friend WithEvents grpOptions As GroupBox
     Friend WithEvents grpListings As GroupBox
-    Friend WithEvents Button4 As Button
     Friend WithEvents Button3 As Button
     Friend WithEvents Button2 As Button
     Friend WithEvents grpDownloads As GroupBox
-    Friend WithEvents Button5 As Button
-    Friend WithEvents Button6 As Button
-    Friend WithEvents Button7 As Button
-    Friend WithEvents Button8 As Button
     Friend WithEvents cbFilter As ComboBox
-    Friend WithEvents ilLists As ImageList
+    Friend WithEvents imlLists As ImageList
     Friend WithEvents tpSingles As TabPage
     Friend WithEvents chkSingleAll As CheckBox
     Friend WithEvents chkSingleGraveyard As CheckBox
@@ -1296,14 +1442,33 @@ Partial Class frmMain
     Friend WithEvents chkSingleRanked As CheckBox
     Friend WithEvents chkSingleFaves As CheckBox
     Friend WithEvents tpPacks As TabPage
-    Friend WithEvents chkPackAlArt As CheckBox
+    Friend WithEvents chkPackArtist As CheckBox
     Friend WithEvents chkPackTheme As CheckBox
     Friend WithEvents chkPackFeatured As CheckBox
     Friend WithEvents chkPackTournament As CheckBox
     Friend WithEvents chkPackLoved As CheckBox
-    Friend WithEvents chkPackSpotlights As CheckBox
+    Friend WithEvents chkPackSpotlight As CheckBox
     Friend WithEvents chkPackStandard As CheckBox
-    Friend WithEvents chkPackAll As CheckBox
     Friend WithEvents tcMainTabs As TabControl
     Friend WithEvents ilCategoriesColor As ImageList
+    Friend WithEvents prgPrimaryTask As ProgressBar
+    Friend WithEvents prgSecondaryTask As ProgressBar
+    Friend WithEvents lblProgressSecondaryLabel As Label
+    Friend WithEvents lblProgressPrimaryLabel As Label
+    Friend WithEvents tslDatabase As ToolStripStatusLabel
+    Friend WithEvents tslSep4 As ToolStripStatusLabel
+    Friend WithEvents btnCheckSession As Button
+    Friend WithEvents tslStatus As ToolStripStatusLabel
+    Friend WithEvents Label1 As Label
+    Friend WithEvents Button1 As Button
+    Friend WithEvents fbdDownloadFolder As FolderBrowserDialog
+    Friend WithEvents Label5 As Label
+    Friend WithEvents Label6 As Label
+    Friend WithEvents Button6 As Button
+    Friend WithEvents Label3 As Label
+    Friend WithEvents Label4 As Label
+    Friend WithEvents Button5 As Button
+    Friend WithEvents Label2 As Label
+    Friend WithEvents fdbTempFolder As FolderBrowserDialog
+    Friend WithEvents fdbOsuFolder As FolderBrowserDialog
 End Class
