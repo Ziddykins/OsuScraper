@@ -22,7 +22,7 @@ Module CommonUse
         Pending
         Wip
         Graveyard
-        Leaderboards
+        Leaderboard
         Mine
     End Enum
 
@@ -56,6 +56,7 @@ Module CommonUse
         If File.Exists(cacheFilepath) Then
             cacheContents = File.ReadAllLines(cacheFilepath)
             FrmMain.tslCacheValue.ForeColor = Color.Green
+            FrmMain.tslCacheValue.Image = My.Resources.icons8_cache_24_green
         End If
 
         For Each pack As String In cacheContents
@@ -170,7 +171,7 @@ Module CommonUse
         Return DirectCast([Enum].Parse(GetType(T), value), T)
     End Function
 
-    Public Function GetSHA256Hash(filePath As String) As String
+    Private Function GetSha256Hash(filePath As String) As String
         Dim sha256 As Security.Cryptography.SHA256 = Security.Cryptography.SHA256.Create()
         Dim stream As FileStream = File.OpenRead(filePath)
         Dim hash As Byte() = sha256.ComputeHash(stream)
@@ -179,9 +180,62 @@ Module CommonUse
         Return BitConverter.ToString(hash).Replace("-", String.Empty)
     End Function
 
-    Public Sub ProcessBeatmap(filePath As String)
-        ZipFile.ExtractToDirectory(filePath, Path.Combine(CStr(Environment.SpecialFolder.Windows), "temp"))
-                
+    Public Sub ProcessBeatmaps(filePath As String, all As Boolean)
+        Dim extractionFolder As String = FrmMain.settings.GetValue("Paths", "TempFolder")
+        Dim downloadFolder As String = FrmMain.settings.GetValue("Paths", "DownloadFolder")
+        Dim osuFolder As String = FrmMain.settings.GetValue("Paths", "OsuFolder")
 
+        If Not Directory.Exists(extractionFolder) Then
+            Directory.CreateDirectory(extractionFolder)
+        End If
+
+        If all = True Then
+            For Each file In Directory.GetFiles(downloadFolder)
+                If file.Contains(".osz") Then
+                    Dim fileSplit = file.Split("\")(4)
+                    extractionFolder = Path.Combine(extractionFolder, fileSplit)
+
+                    If Not Directory.Exists(extractionFolder) Then
+                        Directory.CreateDirectory(extractionFolder)
+                    End If
+
+                    
+                    ZipFile.ExtractToDirectory(file, extractionFolder, True)
+                    MoveBeatmaps(extractionFolder)
+                End If
+            Next
+        Else
+            ZipFile.ExtractToDirectory(filePath, extractionFolder)
+            MoveBeatmaps(extractionFolder)
+        End If
+
+    End Sub
+
+    Private Sub MoveBeatmaps(extractionFolder As String)
+        Dim osuExtractedFiles = New DirectoryInfo(extractionFolder).GetFiles()
+        Dim osuFolder As String = FrmMain.settings.GetValue("Paths", "OsuFolder")
+
+        FrmMain.log.Information($"Moving {osuExtractedFiles.Length} processed files to osu! folder.")
+
+        For each curFile In osuExtractedFiles
+            Dim fileHash = GetSha256Hash(curFile.FullName)
+            Dim hashParent As String = fileHash.Substring(0, 1).ToLower()
+            Dim hashChild As String = fileHash.Substring(0, 2).ToLower()
+            Dim finalFileName As String
+
+            If Not Directory.Exists(Path.Combine(osuFolder, "files", hashParent)) Then
+                Directory.CreateDirectory(Path.Combine(osuFolder, "files", hashParent))
+            End If
+
+            If Not Directory.Exists(Path.Combine(osuFolder, "files", hashParent, hashChild)) Then
+                Directory.CreateDirectory(Path.Combine(osuFolder, "files", hashParent, hashChild))
+            End If
+
+            finalFileName = Path.Combine(osuFolder, "files", hashParent, hashChild, fileHash.ToLower())
+
+            If Not File.Exists(finalFileName) Then
+                curFile.MoveTo(finalFileName)
+            End If
+        Next
     End Sub
 End Module

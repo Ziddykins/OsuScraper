@@ -92,9 +92,14 @@ Partial Class FrmMain
         Button3 = New Button()
         Button2 = New Button()
         grpDownloads = New GroupBox()
+        Label6 = New Label()
+        btnSetOsuFolder = New Button()
+        Label4 = New Label()
+        btnSetTempFolder = New Button()
+        Label1 = New Label()
+        btnSetDownloadFolder = New Button()
         cbFilter = New ComboBox()
         tpSingles = New TabPage()
-        chkSingleAll = New CheckBox()
         chkSingleGraveyard = New CheckBox()
         ilCategoriesColor = New ImageList(components)
         chkSinglePersonal = New CheckBox()
@@ -114,18 +119,10 @@ Partial Class FrmMain
         chkPackSpotlight = New CheckBox()
         chkPackStandard = New CheckBox()
         tcMainTabs = New TabControl()
-        fbdDownloadFolder = New FolderBrowserDialog()
-        Button1 = New Button()
-        Label1 = New Label()
-        Label2 = New Label()
-        Label3 = New Label()
-        Label4 = New Label()
-        Button5 = New Button()
-        Label5 = New Label()
-        Label6 = New Label()
-        Button6 = New Button()
+        fdbDownloadFolder = New FolderBrowserDialog()
         fdbTempFolder = New FolderBrowserDialog()
         fdbOsuFolder = New FolderBrowserDialog()
+        Label2 = New Label()
         CType(pbLogo, ComponentModel.ISupportInitialize).BeginInit()
         grpModes.SuspendLayout()
         msMainMenu.SuspendLayout()
@@ -789,21 +786,85 @@ Partial Class FrmMain
         ' 
         ' grpDownloads
         ' 
-        grpDownloads.Controls.Add(Label5)
-        grpDownloads.Controls.Add(Label6)
-        grpDownloads.Controls.Add(Button6)
-        grpDownloads.Controls.Add(Label3)
-        grpDownloads.Controls.Add(Label4)
-        grpDownloads.Controls.Add(Button5)
         grpDownloads.Controls.Add(Label2)
+        grpDownloads.Controls.Add(Label6)
+        grpDownloads.Controls.Add(btnSetOsuFolder)
+        grpDownloads.Controls.Add(Label4)
+        grpDownloads.Controls.Add(btnSetTempFolder)
         grpDownloads.Controls.Add(Label1)
-        grpDownloads.Controls.Add(Button1)
+        grpDownloads.Controls.Add(btnSetDownloadFolder)
         grpDownloads.Location = New Point(769, 270)
         grpDownloads.Name = "grpDownloads"
         grpDownloads.Size = New Size(168, 191)
         grpDownloads.TabIndex = 22
         grpDownloads.TabStop = False
         grpDownloads.Text = "Paths"
+        ' 
+        ' Label6
+        ' 
+        Label6.AutoSize = True
+        Label6.Font = New Font("Quicksand", 8.25F)
+        Label6.Location = New Point(87, 133)
+        Label6.Name = "Label6"
+        Label6.Size = New Size(69, 16)
+        Label6.TabIndex = 7
+        Label6.Text = "Osu! Folder :"
+        ' 
+        ' btnSetOsuFolder
+        ' 
+        btnSetOsuFolder.Image = My.Resources.Resources.icons8_browse_folder_20
+        btnSetOsuFolder.ImageAlign = ContentAlignment.MiddleLeft
+        btnSetOsuFolder.Location = New Point(84, 149)
+        btnSetOsuFolder.Name = "btnSetOsuFolder"
+        btnSetOsuFolder.Size = New Size(79, 23)
+        btnSetOsuFolder.TabIndex = 6
+        btnSetOsuFolder.Text = "Browse"
+        btnSetOsuFolder.TextAlign = ContentAlignment.MiddleRight
+        btnSetOsuFolder.UseVisualStyleBackColor = True
+        ' 
+        ' Label4
+        ' 
+        Label4.AutoSize = True
+        Label4.Font = New Font("Quicksand", 8.25F)
+        Label4.Location = New Point(80, 73)
+        Label4.Name = "Label4"
+        Label4.Size = New Size(77, 16)
+        Label4.TabIndex = 4
+        Label4.Text = "Temp Folder :"
+        ' 
+        ' btnSetTempFolder
+        ' 
+        btnSetTempFolder.Image = My.Resources.Resources.icons8_browse_folder_20
+        btnSetTempFolder.ImageAlign = ContentAlignment.MiddleLeft
+        btnSetTempFolder.Location = New Point(84, 97)
+        btnSetTempFolder.Name = "btnSetTempFolder"
+        btnSetTempFolder.Size = New Size(79, 23)
+        btnSetTempFolder.TabIndex = 3
+        btnSetTempFolder.Text = "Browse"
+        btnSetTempFolder.TextAlign = ContentAlignment.MiddleRight
+        btnSetTempFolder.UseVisualStyleBackColor = True
+        ' 
+        ' Label1
+        ' 
+        Label1.AutoSize = True
+        Label1.Font = New Font("Quicksand", 8.25F)
+        Label1.Location = New Point(63, 14)
+        Label1.Name = "Label1"
+        Label1.Size = New Size(101, 16)
+        Label1.TabIndex = 1
+        Label1.Text = "Download Folder :"
+        ' 
+        ' btnSetDownloadFolder
+        ' 
+        btnSetDownloadFolder.Image = My.Resources.Resources.icons8_browse_folder_20
+        btnSetDownloadFolder.ImageAlign = ContentAlignment.MiddleLeft
+        btnSetDownloadFolder.Location = New Point(84, 30)
+        btnSetDownloadFolder.Name = "btnSetDownloadFolder"
+        btnSetDownloadFolder.Size = New Size(79, 23)
+        btnSetDownloadFolder.TabIndex = 0
+        btnSetDownloadFolder.Text = "Browse"
+        btnSetDownloadFolder.TextAlign = ContentAlignment.MiddleRight
+        btnSetDownloadFolder.UseVisualStyleBackColor = True
         ' 
         ' cbFilter
         ' 
@@ -819,7 +880,6 @@ Partial Class FrmMain
         ' 
         ' tpSingles
         ' 
-        tpSingles.Controls.Add(chkSingleAll)
         tpSingles.Controls.Add(chkSingleGraveyard)
         tpSingles.Controls.Add(chkSinglePersonal)
         tpSingles.Controls.Add(chkSingleWIP)
@@ -829,32 +889,13 @@ Partial Class FrmMain
         tpSingles.Controls.Add(chkSingleLoved)
         tpSingles.Controls.Add(chkSingleRanked)
         tpSingles.Controls.Add(chkSingleFaves)
-        tpSingles.Location = New Point(4, 27)
+        tpSingles.Location = New Point(4, 24)
         tpSingles.Name = "tpSingles"
         tpSingles.Padding = New Padding(3)
-        tpSingles.Size = New Size(245, 315)
+        tpSingles.Size = New Size(245, 318)
         tpSingles.TabIndex = 1
         tpSingles.Text = "Singles"
         tpSingles.UseVisualStyleBackColor = True
-        ' 
-        ' chkSingleAll
-        ' 
-        chkSingleAll.Appearance = Appearance.Button
-        chkSingleAll.BackColor = SystemColors.Control
-        chkSingleAll.FlatAppearance.BorderColor = Color.FromArgb(CByte(64), CByte(64), CByte(64))
-        chkSingleAll.FlatAppearance.CheckedBackColor = SystemColors.ActiveCaption
-        chkSingleAll.FlatStyle = FlatStyle.Flat
-        chkSingleAll.Font = New Font("Quicksand", 8.25F)
-        chkSingleAll.ImageKey = "icons8-all-24.png"
-        chkSingleAll.ImageList = imlCategories
-        chkSingleAll.Location = New Point(9, 9)
-        chkSingleAll.Name = "chkSingleAll"
-        chkSingleAll.Size = New Size(226, 45)
-        chkSingleAll.TabIndex = 29
-        chkSingleAll.Text = "All Packs"
-        chkSingleAll.TextAlign = ContentAlignment.MiddleRight
-        chkSingleAll.TextImageRelation = TextImageRelation.ImageBeforeText
-        chkSingleAll.UseVisualStyleBackColor = False
         ' 
         ' chkSingleGraveyard
         ' 
@@ -866,9 +907,9 @@ Partial Class FrmMain
         chkSingleGraveyard.Font = New Font("Quicksand", 8.25F)
         chkSingleGraveyard.ImageKey = "icons8-tombstone-32.png"
         chkSingleGraveyard.ImageList = ilCategoriesColor
-        chkSingleGraveyard.Location = New Point(165, 228)
+        chkSingleGraveyard.Location = New Point(165, 214)
         chkSingleGraveyard.Name = "chkSingleGraveyard"
-        chkSingleGraveyard.Size = New Size(70, 77)
+        chkSingleGraveyard.Size = New Size(70, 90)
         chkSingleGraveyard.TabIndex = 22
         chkSingleGraveyard.Text = "Grvyrd"
         chkSingleGraveyard.TextAlign = ContentAlignment.MiddleCenter
@@ -904,9 +945,9 @@ Partial Class FrmMain
         chkSinglePersonal.Font = New Font("Quicksand", 8.25F)
         chkSinglePersonal.ImageKey = "icons8-mine-32.png"
         chkSinglePersonal.ImageList = ilCategoriesColor
-        chkSinglePersonal.Location = New Point(87, 64)
+        chkSinglePersonal.Location = New Point(87, 10)
         chkSinglePersonal.Name = "chkSinglePersonal"
-        chkSinglePersonal.Size = New Size(70, 77)
+        chkSinglePersonal.Size = New Size(70, 90)
         chkSinglePersonal.TabIndex = 21
         chkSinglePersonal.Text = "Mine"
         chkSinglePersonal.TextAlign = ContentAlignment.MiddleCenter
@@ -923,9 +964,9 @@ Partial Class FrmMain
         chkSingleWIP.Font = New Font("Quicksand", 8.25F)
         chkSingleWIP.ImageKey = "icons8-progress-indicator-32.png"
         chkSingleWIP.ImageList = ilCategoriesColor
-        chkSingleWIP.Location = New Point(87, 228)
+        chkSingleWIP.Location = New Point(87, 214)
         chkSingleWIP.Name = "chkSingleWIP"
-        chkSingleWIP.Size = New Size(70, 77)
+        chkSingleWIP.Size = New Size(70, 90)
         chkSingleWIP.TabIndex = 23
         chkSingleWIP.Text = "WIP"
         chkSingleWIP.TextAlign = ContentAlignment.MiddleCenter
@@ -942,9 +983,9 @@ Partial Class FrmMain
         chkSingleLeaderBoard.Font = New Font("Quicksand", 8.25F)
         chkSingleLeaderBoard.ImageKey = "icons8-tournament-32.png"
         chkSingleLeaderBoard.ImageList = ilCategoriesColor
-        chkSingleLeaderBoard.Location = New Point(9, 146)
+        chkSingleLeaderBoard.Location = New Point(9, 112)
         chkSingleLeaderBoard.Name = "chkSingleLeaderBoard"
-        chkSingleLeaderBoard.Size = New Size(70, 77)
+        chkSingleLeaderBoard.Size = New Size(70, 90)
         chkSingleLeaderBoard.TabIndex = 20
         chkSingleLeaderBoard.Text = "Ldr. Board"
         chkSingleLeaderBoard.TextAlign = ContentAlignment.MiddleCenter
@@ -961,9 +1002,9 @@ Partial Class FrmMain
         chkSinglePending.Font = New Font("Quicksand", 8.25F)
         chkSinglePending.ImageKey = "icons8-pending-32.png"
         chkSinglePending.ImageList = ilCategoriesColor
-        chkSinglePending.Location = New Point(9, 228)
+        chkSinglePending.Location = New Point(9, 214)
         chkSinglePending.Name = "chkSinglePending"
-        chkSinglePending.Size = New Size(70, 77)
+        chkSinglePending.Size = New Size(70, 90)
         chkSinglePending.TabIndex = 24
         chkSinglePending.Text = "Pending"
         chkSinglePending.TextAlign = ContentAlignment.MiddleCenter
@@ -980,9 +1021,9 @@ Partial Class FrmMain
         chkSingleQualified.Font = New Font("Quicksand", 8.25F)
         chkSingleQualified.ImageKey = "icons8-qualified-32.png"
         chkSingleQualified.ImageList = ilCategoriesColor
-        chkSingleQualified.Location = New Point(165, 146)
+        chkSingleQualified.Location = New Point(165, 112)
         chkSingleQualified.Name = "chkSingleQualified"
-        chkSingleQualified.Size = New Size(70, 77)
+        chkSingleQualified.Size = New Size(70, 90)
         chkSingleQualified.TabIndex = 27
         chkSingleQualified.Text = "Qualified"
         chkSingleQualified.TextAlign = ContentAlignment.MiddleCenter
@@ -999,9 +1040,9 @@ Partial Class FrmMain
         chkSingleLoved.Font = New Font("Quicksand", 8.25F)
         chkSingleLoved.ImageKey = "icons8-love-24.png"
         chkSingleLoved.ImageList = ilCategoriesColor
-        chkSingleLoved.Location = New Point(165, 64)
+        chkSingleLoved.Location = New Point(165, 10)
         chkSingleLoved.Name = "chkSingleLoved"
-        chkSingleLoved.Size = New Size(70, 77)
+        chkSingleLoved.Size = New Size(70, 90)
         chkSingleLoved.TabIndex = 26
         chkSingleLoved.Text = "Loved"
         chkSingleLoved.TextAlign = ContentAlignment.MiddleCenter
@@ -1018,9 +1059,9 @@ Partial Class FrmMain
         chkSingleRanked.Font = New Font("Quicksand", 8.25F)
         chkSingleRanked.ImageKey = "icons8-rank-32.png"
         chkSingleRanked.ImageList = ilCategoriesColor
-        chkSingleRanked.Location = New Point(87, 146)
+        chkSingleRanked.Location = New Point(87, 112)
         chkSingleRanked.Name = "chkSingleRanked"
-        chkSingleRanked.Size = New Size(70, 77)
+        chkSingleRanked.Size = New Size(70, 90)
         chkSingleRanked.TabIndex = 28
         chkSingleRanked.Text = "Ranked"
         chkSingleRanked.TextAlign = ContentAlignment.MiddleCenter
@@ -1037,9 +1078,9 @@ Partial Class FrmMain
         chkSingleFaves.Font = New Font("Quicksand", 8.25F)
         chkSingleFaves.ImageKey = "icons8-star-filled-24.png"
         chkSingleFaves.ImageList = ilCategoriesColor
-        chkSingleFaves.Location = New Point(9, 64)
+        chkSingleFaves.Location = New Point(9, 10)
         chkSingleFaves.Name = "chkSingleFaves"
-        chkSingleFaves.Size = New Size(70, 77)
+        chkSingleFaves.Size = New Size(70, 90)
         chkSingleFaves.TabIndex = 25
         chkSingleFaves.Text = "Faves"
         chkSingleFaves.TextAlign = ContentAlignment.MiddleCenter
@@ -1207,108 +1248,9 @@ Partial Class FrmMain
         tcMainTabs.Size = New Size(253, 346)
         tcMainTabs.TabIndex = 6
         ' 
-        ' fbdDownloadFolder
+        ' fdbDownloadFolder
         ' 
-        fbdDownloadFolder.InitialDirectory = "C:\"
-        ' 
-        ' Button1
-        ' 
-        Button1.Image = My.Resources.Resources.icons8_browse_folder_20
-        Button1.ImageAlign = ContentAlignment.MiddleLeft
-        Button1.Location = New Point(14, 41)
-        Button1.Name = "Button1"
-        Button1.Size = New Size(79, 23)
-        Button1.TabIndex = 0
-        Button1.Text = "Browse"
-        Button1.TextAlign = ContentAlignment.MiddleRight
-        Button1.UseVisualStyleBackColor = True
-        ' 
-        ' Label1
-        ' 
-        Label1.AutoSize = True
-        Label1.Location = New Point(47, 25)
-        Label1.Name = "Label1"
-        Label1.Size = New Size(105, 18)
-        Label1.TabIndex = 1
-        Label1.Text = "Download Folder:"
-        ' 
-        ' Label2
-        ' 
-        Label2.AutoSize = True
-        Label2.FlatStyle = FlatStyle.Flat
-        Label2.Font = New Font("Quicksand", 9F)
-        Label2.ForeColor = Color.CornflowerBlue
-        Label2.Location = New Point(99, 44)
-        Label2.Name = "Label2"
-        Label2.Size = New Size(63, 18)
-        Label2.TabIndex = 2
-        Label2.Text = "Defaulted"
-        ' 
-        ' Label3
-        ' 
-        Label3.AutoSize = True
-        Label3.FlatStyle = FlatStyle.Flat
-        Label3.Font = New Font("Quicksand", 9F)
-        Label3.ForeColor = Color.CornflowerBlue
-        Label3.Location = New Point(99, 102)
-        Label3.Name = "Label3"
-        Label3.Size = New Size(63, 18)
-        Label3.TabIndex = 5
-        Label3.Text = "Defaulted"
-        ' 
-        ' Label4
-        ' 
-        Label4.AutoSize = True
-        Label4.Location = New Point(72, 80)
-        Label4.Name = "Label4"
-        Label4.Size = New Size(80, 18)
-        Label4.TabIndex = 4
-        Label4.Text = "Temp Folder:"
-        ' 
-        ' Button5
-        ' 
-        Button5.Image = My.Resources.Resources.icons8_browse_folder_20
-        Button5.ImageAlign = ContentAlignment.MiddleLeft
-        Button5.Location = New Point(14, 99)
-        Button5.Name = "Button5"
-        Button5.Size = New Size(79, 23)
-        Button5.TabIndex = 3
-        Button5.Text = "Browse"
-        Button5.TextAlign = ContentAlignment.MiddleRight
-        Button5.UseVisualStyleBackColor = True
-        ' 
-        ' Label5
-        ' 
-        Label5.AutoSize = True
-        Label5.FlatStyle = FlatStyle.Flat
-        Label5.Font = New Font("Quicksand", 9F)
-        Label5.ForeColor = Color.CornflowerBlue
-        Label5.Location = New Point(99, 157)
-        Label5.Name = "Label5"
-        Label5.Size = New Size(63, 18)
-        Label5.TabIndex = 8
-        Label5.Text = "Defaulted"
-        ' 
-        ' Label6
-        ' 
-        Label6.AutoSize = True
-        Label6.Location = New Point(79, 135)
-        Label6.Name = "Label6"
-        Label6.Size = New Size(73, 18)
-        Label6.TabIndex = 7
-        Label6.Text = "Osu! Folder:"
-        ' 
-        ' Button6
-        ' 
-        Button6.Image = My.Resources.Resources.icons8_browse_folder_20
-        Button6.ImageAlign = ContentAlignment.MiddleLeft
-        Button6.Location = New Point(14, 154)
-        Button6.Name = "Button6"
-        Button6.Size = New Size(79, 23)
-        Button6.TabIndex = 6
-        Button6.Text = "Browse"
-        Button6.TextAlign = ContentAlignment.MiddleRight
-        Button6.UseVisualStyleBackColor = True
+        fdbDownloadFolder.InitialDirectory = "C:\"
         ' 
         ' fdbTempFolder
         ' 
@@ -1317,6 +1259,16 @@ Partial Class FrmMain
         ' fdbOsuFolder
         ' 
         fdbOsuFolder.InitialDirectory = "C:\"
+        ' 
+        ' Label2
+        ' 
+        Label2.AutoSize = True
+        Label2.Font = New Font("Quicksand", 6.75F, FontStyle.Regular, GraphicsUnit.Point, CByte(0))
+        Label2.Location = New Point(13, 52)
+        Label2.Name = "Label2"
+        Label2.Size = New Size(143, 14)
+        Label2.TabIndex = 8
+        Label2.Text = "C:\users\butt\wee\omgwoo.png"
         ' 
         ' FrmMain
         ' 
@@ -1431,7 +1383,6 @@ Partial Class FrmMain
     Friend WithEvents cbFilter As ComboBox
     Friend WithEvents imlLists As ImageList
     Friend WithEvents tpSingles As TabPage
-    Friend WithEvents chkSingleAll As CheckBox
     Friend WithEvents chkSingleGraveyard As CheckBox
     Friend WithEvents chkSinglePersonal As CheckBox
     Friend WithEvents chkSingleWIP As CheckBox
@@ -1460,15 +1411,13 @@ Partial Class FrmMain
     Friend WithEvents btnCheckSession As Button
     Friend WithEvents tslStatus As ToolStripStatusLabel
     Friend WithEvents Label1 As Label
-    Friend WithEvents Button1 As Button
-    Friend WithEvents fbdDownloadFolder As FolderBrowserDialog
-    Friend WithEvents Label5 As Label
+    Friend WithEvents btnSetDownloadFolder As Button
+    Friend WithEvents fdbDownloadFolder As FolderBrowserDialog
     Friend WithEvents Label6 As Label
-    Friend WithEvents Button6 As Button
-    Friend WithEvents Label3 As Label
+    Friend WithEvents btnSetOsuFolder As Button
     Friend WithEvents Label4 As Label
-    Friend WithEvents Button5 As Button
-    Friend WithEvents Label2 As Label
+    Friend WithEvents btnSetTempFolder As Button
     Friend WithEvents fdbTempFolder As FolderBrowserDialog
     Friend WithEvents fdbOsuFolder As FolderBrowserDialog
+    Friend WithEvents Label2 As Label
 End Class
