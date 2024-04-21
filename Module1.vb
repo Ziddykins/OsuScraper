@@ -1,4 +1,5 @@
-﻿Imports System.Dynamic
+﻿Imports System.Diagnostics.Eventing.Reader
+Imports System.Dynamic
 Imports System.IO
 Imports System.IO.Compression
 Imports System.Net.Http
@@ -7,45 +8,18 @@ Imports Windows.Management.Deployment
 
 
 Module CommonUse
-    Public Enum GameModes
-        Osu
-        Taiko
-        CatchTheBeat
-        Mania
-    End Enum
 
-    Public Enum GameSingleCategories
-        Ranked
-        Qualified
-        Loved
-        Favorites
-        Pending
-        Wip
-        Graveyard
-        Leaderboard
-        Mine
-    End Enum
-
-    Public Enum GamePackCategories
-        Standard
-        Featured
-        Tournament
-        Loved
-        Chart
-        Theme
-        Artist
-    End Enum
-
-    Public Enum GameType
-        Packs
-        Singles
-    End Enum
 
     Public Enum BrowserType
         MsEdge
         Chrome
         Firefox
         Other
+    End Enum
+
+    Public Enum OsuSession
+        Valid
+        Invalid
     End Enum
 
     Public Sub LoadCacheFile()
@@ -70,7 +44,7 @@ Module CommonUse
             Dim categoryEnum As GamePackCategories = StringToEnum(Of GamePackCategories)(packCategory)
 
             Try
-                FrmMain.tvListings.Nodes(0).Nodes(modeEnum).Nodes(categoryEnum).Nodes.Add(packName)
+                'FrmMain.tvListings.Nodes(0).Nodes(modeEnum).Nodes(categoryEnum).Nodes.Add(packName)
             Catch ex As Exception
                 FrmMain.log.Information($"Error adding {packName} to the treeview. {ex.Message}")
             End Try
@@ -122,8 +96,8 @@ Module CommonUse
 
         If processes.Length() > 0 Then
             Dim userAnswer As DialogResult = MessageBox.Show(
-                "Found an open " & browserName & " process. Would you like to close it?",
-                "Found Open Browser",
+                $"Found an open {browserName} process. Would you like to close it?",
+                $"Found Open Browser",
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Question
             )
@@ -135,16 +109,32 @@ Module CommonUse
         End If
     End Sub
 
-    Public Function VerifySession() As Boolean
-        Dim response As HttpResponseMessage = HttpGet("https://osu.ppy.sh/beatmapsets")
-        Dim responseText As String = response.Content.ReadAsStringAsync().Result.ToString()
-        Dim checkString As Match = Regex.Match(responseText, "Sign in to search", RegexOptions.Multiline)
+    Public Function VerifySession() As OsuSession
+        Dim response As HttpResponseMessage
+        Dim responseText() As String
+        Dim checkString As Match
+        Dim sourceLines As Integer
+        
+        response = HttpGet("https://osu.ppy.sh/beatmapsets")
+        responseText = response.Content.ReadAsStringAsync().Result.ToString().Split(vbLf)
+        sourceLines = responseText.Length()
+        
+        FrmMain.prgPrimaryTask.Value = 0
+        FrmMain.prgPrimaryTask.Maximum = sourceLines
 
-        If checkString.Success Then
-            Return False
-        End If
-
-        Return True
+        For Each line As String In responseText
+            FrmMain.prgPrimaryTask.Increment(1)
+            
+            checkString = Regex.Match(line, ".*?click to sign in.*?")
+            
+            If checkString.Success Then
+                FrmMain.prgPrimaryTask.Value = 0
+                Return OsuSession.Invalid
+            End If
+        Next
+        
+        FrmMain.prgPrimaryTask.Value = 0
+        Return OsuSession.Valid
     End Function
 
     Public Function HttpGet(url As String) As HttpResponseMessage

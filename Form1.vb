@@ -1,9 +1,12 @@
-﻿Imports System.Data.SQLite
+﻿Imports System.ComponentModel
+Imports System.Data.SQLite
 Imports System.IO
 Imports System.Net.Http
 Imports System.Text.RegularExpressions
+Imports Guna.UI2.WinForms
 Imports PeanutButter.INI
 Imports Serilog
+Imports Windows.Storage
 
 Public Class FrmMain
     Public log As Core.Logger = New LoggerConfiguration().WriteTo.File("log.txt").CreateLogger()
@@ -20,7 +23,7 @@ Public Class FrmMain
         Dim defaultBrowser As BrowserType
         Dim cookies As Dictionary(Of String, String)
 
-        defaultBrowser = GetDefaultBrowser()
+        defaultBrowser = GetDefaultBrowser
         cookies = GetCookieJar("'%ppy.sh%'", defaultBrowser)
 
         If cookies IsNot Nothing Then
@@ -55,7 +58,7 @@ Public Class FrmMain
         )
 
         If sessionToken.Success Then
-            txtSessionToken.Text = sessionToken.Groups(1).Value.ToString()
+            txtSessionToken.Text = sessionToken.Groups(1).Value.ToString
             txtSessionToken.ForeColor = Color.DarkGreen
         Else
             txtSessionToken.ForeColor = Color.IndianRed
@@ -71,7 +74,7 @@ Public Class FrmMain
         )
 
         If xsrfToken.Success Then
-            txtXSRFToken.Text = xsrfToken.Groups(1).Value.ToString()
+            txtXSRFToken.Text = xsrfToken.Groups(1).Value.ToString
             txtXSRFToken.ForeColor = Color.DarkGreen
         Else
             txtXSRFToken.ForeColor = Color.IndianRed
@@ -102,27 +105,10 @@ Public Class FrmMain
             tslBrowser.Image = My.Resources.icons8_edge_24
         End If
 
-        For Each category As String In arrCategories
-            Dim categoryEnum = StringToEnum(Of GamePackCategories)(category)
+        If CInt(settings.GetValue("Statistics", "RunCount")) = 1 Then
+            CacheFileImport(databaseFile, "tbl_packs")
+        End If
 
-            tvListings.Nodes(0).Nodes.Add(category.ToString())
-            tvListings.Nodes(1).Nodes.Add(category.ToString())
-            For Each mode As String In arrModes
-                Dim currentEnum = StringToEnum(Of GameModes)(mode)
-                tvListings.Nodes(0).Nodes(categoryEnum).Nodes.Add(mode)
-            Next
-        Next
-
-        'For Each category As String In arrSingles
-        '    Dim categoryEnum = StringToEnum(Of GameSingleCategories)(category)
-        '
-        '            For Each mode As String In arrModes
-        '                Dim currentEnum = StringToEnum(Of GameModes)(mode)
-        '                tvListings.Nodes(0).Nodes(categoryEnum).Nodes.Add(mode)
-        '            Next
-        '       Next
-
-        LoadCacheFile()
         ProcessBeatmaps(Nothing, True)
 
         FrmHelp = New FrmHelp
@@ -131,8 +117,6 @@ Public Class FrmMain
 
         FrmHelp.Text = $"Help - {progName} v{version}"
         Text = $"{progName} v{version}"
-
-        databaseFile = Path.Combine(My.Application.Info.DirectoryPath, "osu_data.db")
     End Sub
 
     Private Sub PrintRecursive(n As TreeNode)
@@ -152,11 +136,11 @@ Public Class FrmMain
     End Sub
 
     Private Sub tbBatchSize_Scroll(sender As Object, e As EventArgs) Handles tbBatchSize.Scroll
-        lblBatchSizeValue.Text = tbBatchSize.Value.ToString()
+        lblBatchSizeValue.Text = tbBatchSize.Value.ToString
     End Sub
 
     Private Sub tbForkValue_Scroll(sender As Object, e As EventArgs) Handles tbForkValue.Scroll
-        lblForkValue.Text = tbForkValue.Value.ToString()
+        lblForkValue.Text = tbForkValue.Value.ToString
     End Sub
 
     Private Sub tbSleepInterval_Scroll(sender As Object, e As EventArgs) Handles tbSleepInterval.Scroll
@@ -174,6 +158,8 @@ Public Class FrmMain
     End Sub
 
     Private Sub frmMain_Closed(sender As Object, e As EventArgs) Handles Me.Closed
+        HandleIni("close")
+
         If FrmHelp IsNot Nothing Then
             FrmHelp.Dispose()
         End If
@@ -203,47 +189,44 @@ Public Class FrmMain
         Dim response As HttpResponseMessage
         Dim content As String
         Dim lines() As String
-        Dim dataSource As String
-        Dim conn As SQLiteConnection
-        Dim cmd As SQLiteCommand
+        'Dim dataSource As String
+        'Dim conn As SQLiteConnection
+        'Dim cmd As SQLiteCommand
         Dim count As Integer
 
         For Each cb As CheckBox In tpPacks.Controls
             If cb.Checked = True Then
-                types.Add(cb.Name.ToLower())
+                types.Add(cb.Name)
             End If
         Next
 
         count = types.Count()
 
         prgPrimaryTask.Maximum = count
-        prgPrimaryTask.Step = 1
         prgPrimaryTask.Value = 1
 
         For Each selected As String In types
-            prgPrimaryTask.PerformStep()
-            Dim type As String = selected.Split("pack")(1)
+            prgPrimaryTask.Increment(1)
+            Dim type As String = selected.Split("Pack")(1)
 
-            If type = "spotlight" Then
-                type = "chart"
+            If type = "Spotlight" Then
+                type = "Chart"
             End If
 
-            response = HttpGet($"https://osu.ppy.sh/beatmaps/packs?type={type}")
+            response = HttpGet($"https://osu.ppy.sh/beatmaps/packs?type={type.ToLower()}")
             content = response.Content.ReadAsStringAsync.Result.ToString()
 
             content = Regex.Replace(content, "(?:[\r\n]+|\s{2,})", " ")
             lines = content.Split($"class={Chr(34)}beatmap-pack js-beatmap-pack js-accordion__item")
 
-            dataSource = $"Data Source={databaseFile};"
-            conn = New SQLiteConnection(dataSource)
-            cmd = conn.CreateCommand()
+
+
 
             prgSecondaryTask.Maximum = lines.Length
-            prgSecondaryTask.Step = 1
             prgSecondaryTask.Value = 1
 
             For Each line As String In lines
-                prgSecondaryTask.PerformStep()
+                prgSecondaryTask.Increment(1)
                 Dim matched As Match = Regex.Match(line,
                                                    $"{Chr(34)} data-pack-tag={Chr(34)}(.*?){Chr(34)}.*?href={Chr(34) _
                                                       }(.*?){Chr(34)}.*?pack__name{Chr(34)}>(.*?)<\/div>.*?__date{ _
@@ -252,10 +235,10 @@ Public Class FrmMain
                 Dim packAuthor As String = matched.Groups(4).Value
                 Dim packDate As String = matched.Groups(2).Value
                 Dim packCode As String = matched.Groups(1).Value
-                StringToEnum(Of GamePackCategories)(type)
+                Dim packType As [Enum] = StringToEnum(Of GamePackCategories)(type)
 
                 If packTitle IsNot Nothing Then
-                    tvListings.Nodes(0).Nodes(GamePackCategories.Standard).Nodes.Add(packTitle)
+                    'tvListings.Nodes(0).Nodes(GamePackCategories.Standard).Nodes.Add(packTitle)
                 End If
             Next
         Next
@@ -267,19 +250,19 @@ Public Class FrmMain
 
     Private Sub cbFilter_LostFocus(sender As Object, e As EventArgs) Handles cbFilter.LostFocus
         If cbFilter.Text = "" Then
-            cbFilter.Text = "<Filter ... >"
+            cbFilter.Text = $"<Filter ... >"
         End If
     End Sub
 
-    Private Sub btnPullSelected_Click(sender As Object, e As EventArgs) Handles btnPullSelected.Click
-        PullPacks()
+    Private Sub btnPullSelected_Click(sender As Object, e As EventArgs) Handles btnSyncSelected.Click
+        PullPacks
     End Sub
 
     Private Sub btnCheckSession_Click(sender As Object, e As EventArgs) Handles btnCheckSession.Click
         Dim xsrfRegex = "[a-zA-Z0-9]{40}"
         Dim osuSessionRegex = "[a-zA-Z0-9]{100,}.*?%3D"
         Dim rgxCheck As New Regex(osuSessionRegex)
-
+        Dim sessionCheck As OsuSession
         If rgxCheck.IsMatch(txtSessionToken.Text) Then
             rgxCheck = New Regex(xsrfRegex)
             If rgxCheck.IsMatch(txtXSRFToken.Text) Then
@@ -287,19 +270,23 @@ Public Class FrmMain
             Else
                 MessageBox.Show(
                     $"XSRF Token does not appear to be valid - Should be in the format: XSRF-TOKEN={Chr(34)}{ _
-                                   StrDup(40, "X").ToString}", "Error!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                                   StrDup(40, "X").ToString}", $"Error!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             End If
         Else
             MessageBox.Show(
                 $"Osu Session Token does not appear to be valid - Should be in the format: osu_session={Chr(34)}{ _
-                               StrDup(300, "X").ToString}%3D", "Error!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                               StrDup(300, "X").ToString}%3D", $"Error!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End If
 
-        If VerifySession() = True Then
+        sessionCheck = VerifySession
+
+        If sessionCheck = OsuSession.Valid Then
             tslAuthenticatedValue.ForeColor = Color.DarkGreen
+            tslAuthenticatedValue.Image = My.Resources.icons8_lock_24_green
         Else
-            tslAuthenticatedValue.ForeColor = Color.Yellow
-            tslStatus.Text = My.Resources.MAIN_BTN_INVALID_SESSION
+            tslAuthenticatedValue.ForeColor = Color.GoldenRod
+            tslAuthenticatedValue.Text = My.Resources.MAIN_BTN_INVALID_SESSION
+            tslAuthenticatedValue.Image = My.Resources.icons8_lock_24_yellow
         End If
     End Sub
 
@@ -311,11 +298,11 @@ Public Class FrmMain
         fdbTempFolder.ShowDialog()
     End Sub
 
-    Private Sub btnSetOsuFolder_Click(sender As Object, e As EventArgs) Handles btnSetOsuFolder.Click
-        fdbOsuFolder.ShowDialog()
+    Private Sub btnSetOsuFolder_Click(sender As Object, e As EventArgs)
+        fdbOsuFolder.ShowDialog
     End Sub
 
-    Private Sub HandleINI(how As String)
+    Private Sub HandleIni(how As String)
         settings = New INIFile(iniFile)
 
         If how = "generate" Then
@@ -323,17 +310,18 @@ Public Class FrmMain
             Dim tempFolder = Path.Combine(Environment.ExpandEnvironmentVariables("%WINDIR%").ToString(), "temp", "beatfiles")
             Dim osuFolder = Path.Combine(Environment.ExpandEnvironmentVariables("%APPDATA%").ToString(), "osu")
 
-            Dim cacheFile = Path.Combine(My.Application.Info.DirectoryPath, ".cache_file")
+            Dim cacheFile = Path.Combine(My.Application.Info.DirectoryPath, ".packs_cache")
+            Dim databaseFile = Path.Combine(My.Application.Info.DirectoryPath, "osu_data.db")
 
             If settings.HasSection("Options") = False Then
                 settings.AddSection("Options")
                 settings.SetValue("Options", "BatchSize", "100")
                 settings.SetValue("Options", "ForkValue", "5")
                 settings.SetValue("Options", "SleepInterval", "25")
-                settings.SetValue("Options", "DontExtractArchives", "0")
-                settings.SetValue("Options", "DisregardCache", "0")
-                settings.SetValue("Options", "VerboseLogging", "0")
-                settings.SetValue("Options", "OverwriteExisting", "0")
+                settings.SetValue("Options", "DontExtractArchives", "False")
+                settings.SetValue("Options", "DisregardCache", "False")
+                settings.SetValue("Options", "VerboseLogging", "False")
+                settings.SetValue("Options", "OverwriteExisting", "False")
             End If
 
             If settings.HasSection("Paths") = False Then
@@ -350,16 +338,33 @@ Public Class FrmMain
                 settings.SetValue("Cookies", "osu_session", "")
             End If
 
+            If settings.HasSection("Database") = False Then
+                settings.AddSection("Database")
+                settings.SetValue("Database", "DatabaseFile", databaseFile)
+            End If
+
+            If settings.HasSection("Statistics") = False Then
+                settings.AddSection("Statistics")
+                settings.SetValue("Statistics", "TotalPacks", "0")
+                settings.SetValue("Statistics", "TotalSingles", "0")
+                settings.SetValue("Statistics", "RunCount", "1")
+            End If
+
             settings.Persist(iniFile)
         ElseIf how = "load" Then
             tbBatchSize.Value = CInt(settings.GetValue("Options", "BatchSize"))
-            tbForkValue.Value = CInt(settings.GetValue("Options", "ForkValue"))
-            tbSleepInterval.Value = CInt(settings.GetValue("Options", "SleepInterval"))
+            lblBatchSizeValue.Text = tbBatchSize.Value.ToString()
 
-            chkNoExtractArchives.Checked = CBool(CInt(settings.GetValue("Options", "DontExtractArchives")))
-            chkDisregardCache.Checked = CBool(CInt(settings.GetValue("Options", "DisregardCache")))
-            chkVerboseLogging.Checked = CBool(CInt(settings.GetValue("Options", "VerboseLogging")))
-            chkOverwriteExistingFiles.Checked = CBool(CInt(settings.GetValue("Options", "OverwriteExisting")))
+            tbForkValue.Value = CInt(settings.GetValue("Options", "ForkValue"))
+            lblForkValue.Text = tbForkValue.Value.ToString()
+
+            tbSleepInterval.Value = CInt(settings.GetValue("Options", "SleepInterval"))
+            lblSleepInterval.Text = tbSleepInterval.Value.ToString()
+
+            togDontExtractArchives.Checked = CBool((settings.GetValue("Options", "DontExtractArchives").ToString()))
+            togDisregardCache.Checked = CBool(settings.GetValue("Options", "DisregardCache"))
+            chkVerboseLogging.Checked = CBool(settings.GetValue("Options", "VerboseLogging"))
+            chkOverwriteExistingFiles.Checked = CBool(settings.GetValue("Options", "OverwriteExisting"))
 
             fdbOsuFolder.SelectedPath = settings.GetValue("Paths", "OsuFolder")
             fdbTempFolder.SelectedPath = settings.GetValue("Paths", "TempFolder")
@@ -367,7 +372,61 @@ Public Class FrmMain
 
             txtXSRFToken.Text = settings.GetValue("Cookies", "XSRF-TOKEN")
             txtSessionToken.Text = settings.GetValue("Cookies", "osu_session")
+            databaseFile = settings.GetValue("Database", "DatabaseFile")
+        ElseIf how = "close" Then
+            settings.SetValue("Options", "BatchSize", tbBatchSize.Value.ToString())
+            settings.SetValue("Options", "ForkValue", tbForkValue.Value.ToString())
+            settings.SetValue("Options", "SleepInterval", tbSleepInterval.Value.ToString())
+            settings.SetValue("Options", "DontExtractArchives", togDontExtractArchives.Checked.ToString())
+            settings.SetValue("Options", "DisregardCache", togDisregardCache.Checked.ToString())
+            settings.SetValue("Options", "VerboseLogging", chkVerboseLogging.Checked.ToString())
+            settings.SetValue("Options", "OverwriteExisting", chkOverwriteExistingFiles.Checked.ToString())
+
+            settings.SetValue("Paths", "DownloadFolder", fdbDownloadFolder.SelectedPath)
+            settings.SetValue("Paths", "TempFolder", fdbTempFolder.SelectedPath)
+            settings.SetValue("Paths", "OsuFolder", fdbOsuFolder.SelectedPath)
+
+            settings.SetValue("Cookies", "XSRF-TOKEN", txtXSRFToken.Text)
+            settings.SetValue("Cookies", "osu_session", txtSessionToken.Text)
+
+            settings.SetValue("Database", "DatabaseFile", databaseFile)
+            settings.SetValue("Statistics", "RunCount", (CInt(settings.GetValue("Statistics", "RunCount")) + 1).ToString())
+
+            settings.Persist(iniFile)
         End If
     End Sub
 
+    Private Sub btnCheckDownloadFolder_Click(sender As Object, e As EventArgs) Handles btnCheckDownloadFolder.Click
+        Guna2MessageDialog1.Caption = "Current Download Path"
+        Guna2MessageDialog1.Text = fdbDownloadFolder.SelectedPath
+        Guna2MessageDialog1.Show
+        Guna2MessageDialog1.Style = MessageDialogStyle.Dark
+    End Sub
+
+    Private Sub btnCheckTempFolder_Click(sender As Object, e As EventArgs) Handles btnCheckTempFolder.Click
+        Guna2MessageDialog1.Caption = "Current Temp Path"
+        Guna2MessageDialog1.Text = fdbTempFolder.SelectedPath
+        Guna2MessageDialog1.Show
+        Guna2MessageDialog1.Style = MessageDialogStyle.Dark
+    End Sub
+
+    Private Sub btnCheckOsuFolder_Click(sender As Object, e As EventArgs) Handles btnCheckOsuFolder.Click
+        Guna2MessageDialog1.Caption = "Current Osu! Path"
+        Guna2MessageDialog1.Text = fdbOsuFolder.SelectedPath
+        Guna2MessageDialog1.Show
+        Guna2MessageDialog1.Style = MessageDialogStyle.Dark
+
+    End Sub
+
+    Private Sub FrmMain_Closing(sender As Object, e As CancelEventArgs) Handles Me.Closing
+        HandleIni("close")
+    End Sub
+
+    Private Sub FrmMain_Disposed(sender As Object, e As EventArgs) Handles Me.Disposed
+        HandleIni("close")
+    End Sub
+
+    Private Sub Guna2GroupBox3_Click(sender As Object, e As EventArgs) Handles Guna2GroupBox3.Click
+
+    End Sub
 End Class

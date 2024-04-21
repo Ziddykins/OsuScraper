@@ -22,7 +22,7 @@ Partial Class FrmHelp
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmHelp))
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FrmHelp))
         btnClose = New Button()
         lblHelpText = New Label()
         pbHelpLogo = New PictureBox()
@@ -71,7 +71,7 @@ Partial Class FrmHelp
         llOsuSite.TabStop = True
         llOsuSite.Text = "Osu!"
         ' 
-        ' frmHelp
+        ' FrmHelp
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
@@ -83,7 +83,7 @@ Partial Class FrmHelp
         FormBorderStyle = FormBorderStyle.FixedSingle
         Icon = CType(resources.GetObject("$this.Icon"), Icon)
         MaximizeBox = False
-        Name = "frmHelp"
+        Name = "FrmHelp"
         SizeGripStyle = SizeGripStyle.Hide
         StartPosition = FormStartPosition.CenterScreen
         Text = "frmHelp"
