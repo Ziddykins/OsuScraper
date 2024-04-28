@@ -1,14 +1,9 @@
-﻿Imports System.Diagnostics.Eventing.Reader
-Imports System.Dynamic
-Imports System.IO
+﻿Imports System.IO
 Imports System.IO.Compression
 Imports System.Net.Http
 Imports System.Text.RegularExpressions
-Imports Windows.Management.Deployment
 
-
-Module CommonUse
-
+Module mdlCommonUse
 
     Public Enum BrowserType
         MsEdge
@@ -22,34 +17,10 @@ Module CommonUse
         Invalid
     End Enum
 
-    Public Sub LoadCacheFile()
-        Dim cacheFile As String = ".packs_cache"
-        Dim cacheFilepath = Path.Combine(My.Application.Info.DirectoryPath, cacheFile)
-        Dim cacheContents As String() = Nothing
-
-        If File.Exists(cacheFilepath) Then
-            cacheContents = File.ReadAllLines(cacheFilepath)
-            FrmMain.tslCacheValue.ForeColor = Color.Green
-            FrmMain.tslCacheValue.Image = My.Resources.icons8_cache_24_green
-        End If
-
-        For Each pack As String In cacheContents
-            Dim packData As String() = pack.Split(":::")
-            Dim packCategory As String = packData(0)
-            Dim packMode As String = packData(1)
-            Dim packUrl As String = packData(2)
-            Dim packName As String = packData(3)
-
-            Dim modeEnum As GameModes = StringToEnum(Of GameModes)(packMode)
-            Dim categoryEnum As GamePackCategories = StringToEnum(Of GamePackCategories)(packCategory)
-
-            Try
-                'FrmMain.tvListings.Nodes(0).Nodes(modeEnum).Nodes(categoryEnum).Nodes.Add(packName)
-            Catch ex As Exception
-                FrmMain.log.Information($"Error adding {packName} to the treeview. {ex.Message}")
-            End Try
-        Next
-    End Sub
+    Public Enum GroupColor
+        Color
+        Uncolor
+    End Enum
 
     Public Function GetDefaultBrowser() As BrowserType
         Dim browserRegex As Match
@@ -80,6 +51,7 @@ Module CommonUse
     Public Sub KillOpenBrowser(ByRef browserType As BrowserType)
         Dim browserName As String = ""
         Dim processes() As Process
+        Dim userAnswer As DialogResult
 
         Select Case browserType
             Case BrowserType.Chrome
@@ -95,13 +67,27 @@ Module CommonUse
         processes = Process.GetProcessesByName(browserName)
 
         If processes.Length() > 0 Then
-            Dim userAnswer As DialogResult = MessageBox.Show(
-                $"Found an open {browserName} process. Would you like to close it?",
-                $"Found Open Browser",
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Question
-            )
-            If userAnswer = DialogResult.Yes Then
+            If FrmMain.togSkipCheckBrowser.Checked = False Then
+                If browserType = BrowserType.MsEdge Then
+                    userAnswer = MessageBox.Show(
+                        "Found an open Edge process. The program must kill these to continue. Save any work you have in your tabs then click retry.",
+                        "Found Open Browser Process",
+                        MessageBoxButtons.RetryCancel,
+                        MessageBoxIcon.Exclamation
+                    )
+                Else
+                    userAnswer = MessageBox.Show(
+                        $"Found an open {browserName} process. Would you like to close it?",
+                        $"Found Open Browser Process",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Question
+                    )
+                End If
+            Else
+                userAnswer = DialogResult.Yes
+            End If
+
+            If userAnswer = DialogResult.Yes Or userAnswer = DialogResult.Retry Then
                 For Each process As Process In processes
                     process.Kill()
                 Next
@@ -114,25 +100,25 @@ Module CommonUse
         Dim responseText() As String
         Dim checkString As Match
         Dim sourceLines As Integer
-        
+
         response = HttpGet("https://osu.ppy.sh/beatmapsets")
         responseText = response.Content.ReadAsStringAsync().Result.ToString().Split(vbLf)
         sourceLines = responseText.Length()
-        
+
         FrmMain.prgPrimaryTask.Value = 0
         FrmMain.prgPrimaryTask.Maximum = sourceLines
 
         For Each line As String In responseText
             FrmMain.prgPrimaryTask.Increment(1)
-            
+
             checkString = Regex.Match(line, ".*?click to sign in.*?")
-            
+
             If checkString.Success Then
                 FrmMain.prgPrimaryTask.Value = 0
                 Return OsuSession.Invalid
             End If
         Next
-        
+
         FrmMain.prgPrimaryTask.Value = 0
         Return OsuSession.Valid
     End Function
@@ -161,7 +147,7 @@ Module CommonUse
         Return DirectCast([Enum].Parse(GetType(T), value), T)
     End Function
 
-    Private Function GetSha256Hash(filePath As String) As String
+    Public Function GetSha256Hash(filePath As String) As String
         Dim sha256 As Security.Cryptography.SHA256 = Security.Cryptography.SHA256.Create()
         Dim stream As FileStream = File.OpenRead(filePath)
         Dim hash As Byte() = sha256.ComputeHash(stream)
@@ -170,62 +156,14 @@ Module CommonUse
         Return BitConverter.ToString(hash).Replace("-", String.Empty)
     End Function
 
-    Public Sub ProcessBeatmaps(filePath As String, all As Boolean)
-        Dim extractionFolder As String = FrmMain.settings.GetValue("Paths", "TempFolder")
-        Dim downloadFolder As String = FrmMain.settings.GetValue("Paths", "DownloadFolder")
-        Dim osuFolder As String = FrmMain.settings.GetValue("Paths", "OsuFolder")
+    Public Function FirstToUpper(convString As String) As String
+        Dim chars() As Char = convString.ToCharArray()
+        Dim outString As String = Nothing
 
-        If Not Directory.Exists(extractionFolder) Then
-            Directory.CreateDirectory(extractionFolder)
-        End If
+        chars(0) = Char.ToUpper(chars(0))
+        outString = String.Join("", chars)
 
-        If all = True Then
-            For Each file In Directory.GetFiles(downloadFolder)
-                If file.Contains(".osz") Then
-                    Dim fileSplit = file.Split("\")(4)
-                    extractionFolder = Path.Combine(extractionFolder, fileSplit)
+        Return outString
+    End Function
 
-                    If Not Directory.Exists(extractionFolder) Then
-                        Directory.CreateDirectory(extractionFolder)
-                    End If
-
-                    
-                    ZipFile.ExtractToDirectory(file, extractionFolder, True)
-                    MoveBeatmaps(extractionFolder)
-                End If
-            Next
-        Else
-            ZipFile.ExtractToDirectory(filePath, extractionFolder)
-            MoveBeatmaps(extractionFolder)
-        End If
-
-    End Sub
-
-    Private Sub MoveBeatmaps(extractionFolder As String)
-        Dim osuExtractedFiles = New DirectoryInfo(extractionFolder).GetFiles()
-        Dim osuFolder As String = FrmMain.settings.GetValue("Paths", "OsuFolder")
-
-        FrmMain.log.Information($"Moving {osuExtractedFiles.Length} processed files to osu! folder.")
-
-        For each curFile In osuExtractedFiles
-            Dim fileHash = GetSha256Hash(curFile.FullName)
-            Dim hashParent As String = fileHash.Substring(0, 1).ToLower()
-            Dim hashChild As String = fileHash.Substring(0, 2).ToLower()
-            Dim finalFileName As String
-
-            If Not Directory.Exists(Path.Combine(osuFolder, "files", hashParent)) Then
-                Directory.CreateDirectory(Path.Combine(osuFolder, "files", hashParent))
-            End If
-
-            If Not Directory.Exists(Path.Combine(osuFolder, "files", hashParent, hashChild)) Then
-                Directory.CreateDirectory(Path.Combine(osuFolder, "files", hashParent, hashChild))
-            End If
-
-            finalFileName = Path.Combine(osuFolder, "files", hashParent, hashChild, fileHash.ToLower())
-
-            If Not File.Exists(finalFileName) Then
-                curFile.MoveTo(finalFileName)
-            End If
-        Next
-    End Sub
 End Module

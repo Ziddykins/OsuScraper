@@ -33,37 +33,42 @@ Partial Class SplashScreen
         ' 
         ' Version
         ' 
+        Version.Anchor = AnchorStyles.Top Or AnchorStyles.Right
         Version.AutoSize = True
         Version.BackColor = Color.Transparent
         Version.Font = New Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point, CByte(0))
-        Version.Location = New Point(240, 174)
+        Version.Location = New Point(325, 178)
         Version.Name = "Version"
         Version.Size = New Size(101, 15)
         Version.TabIndex = 4
         Version.Text = "Version {0}.{1:00}"
+        Version.TextAlign = ContentAlignment.MiddleRight
         ' 
         ' Copyright
         ' 
+        Copyright.Anchor = AnchorStyles.Top Or AnchorStyles.Right
         Copyright.AutoSize = True
         Copyright.BackColor = Color.Transparent
         Copyright.Font = New Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point, CByte(0))
-        Copyright.Location = New Point(240, 156)
+        Copyright.Location = New Point(317, 160)
         Copyright.Name = "Copyright"
-        Copyright.Size = New Size(58, 15)
+        Copyright.Size = New Size(101, 15)
         Copyright.TabIndex = 5
-        Copyright.Text = "Copyright"
+        Copyright.Text = "Copyright © 2024"
+        Copyright.TextAlign = ContentAlignment.MiddleRight
         ' 
         ' ApplicationTitle
         ' 
+        ApplicationTitle.Anchor = AnchorStyles.Top Or AnchorStyles.Right
         ApplicationTitle.AutoSize = True
         ApplicationTitle.BackColor = Color.Transparent
         ApplicationTitle.Font = New Font("Microsoft Sans Serif", 18F, FontStyle.Regular, GraphicsUnit.Point, CByte(0))
-        ApplicationTitle.Location = New Point(240, 127)
+        ApplicationTitle.Location = New Point(240, 131)
         ApplicationTitle.Name = "ApplicationTitle"
         ApplicationTitle.Size = New Size(186, 29)
         ApplicationTitle.TabIndex = 3
         ApplicationTitle.Text = "Application Title"
-        ApplicationTitle.TextAlign = ContentAlignment.BottomLeft
+        ApplicationTitle.TextAlign = ContentAlignment.MiddleRight
         ' 
         ' PictureBox1
         ' 

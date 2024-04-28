@@ -41,7 +41,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="os_icon.ico" />
+    <None Remove="frmMain.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="frmMain.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Resources\os_icon.ico" />
   </ItemGroup>
 
   <ItemGroup>
@@ -51,7 +59,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\..\..\Desktop\os_icon.png">
+    <None Include="..\..\..\Desktop\os_icon.png" Link="Resources\os_icon.png">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
@@ -60,6 +68,7 @@
 
   <ItemGroup>
     <PackageReference Include="EntityFramework" Version="6.4.4" />
+    <PackageReference Include="Guna.Charts.WinForms" Version="1.0.9" />
     <PackageReference Include="Guna.UI2.WinForms" Version="2.0.4.6" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="PeanutButter.INI" Version="3.0.291" />

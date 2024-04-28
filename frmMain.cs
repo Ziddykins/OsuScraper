@@ -6,14 +6,14 @@ Imports System.Text.RegularExpressions
 Imports Guna.UI2.WinForms
 Imports PeanutButter.INI
 Imports Serilog
-Imports Windows.Storage
 
 Public Class FrmMain
     Public log As Core.Logger = New LoggerConfiguration().WriteTo.File("log.txt").CreateLogger()
     Public settings As INIFile
+
     Private iniFile As String = Path.Combine(My.Application.Info.DirectoryPath, "settings.ini")
     Private FrmHelp As Form
-    Private databaseFile As String
+    Private databaseFile As String = Path.Combine(My.Application.Info.DirectoryPath, "osu_data.db")
 
     Public Sub New()
         InitializeComponent()
@@ -23,7 +23,7 @@ Public Class FrmMain
         Dim defaultBrowser As BrowserType
         Dim cookies As Dictionary(Of String, String)
 
-        defaultBrowser = GetDefaultBrowser
+        defaultBrowser = GetDefaultBrowser()
         cookies = GetCookieJar("'%ppy.sh%'", defaultBrowser)
 
         If cookies IsNot Nothing Then
@@ -42,10 +42,10 @@ Public Class FrmMain
                                }These cookies can be found in your browser after logging into your Osu! account.{vbCrLf _
                                }{vbCrLf}Chrome: F12 -> Storage -> Cookies{vbCrLf}Firefox: F12 -> Storage -> Cookies{ _
                                vbCrLf}Opera: CTRL + SHIFT + J -> Application -> Cookies",
-                "Error!",
+                $"Error!",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Exclamation
-            )
+                )
         End If
     End Sub
 
@@ -55,13 +55,13 @@ Public Class FrmMain
         sessionToken = Regex.Match(
             txtSessionToken.Text,
             Chr(34) & "?(?:osu_session[:=])?" & Chr(34) & "?([a-zA-Z0-9]{100,}%3D)" & Chr(34) & "?"
-        )
+            )
 
         If sessionToken.Success Then
             txtSessionToken.Text = sessionToken.Groups(1).Value.ToString
-            txtSessionToken.ForeColor = Color.DarkGreen
+            txtSessionToken.ForeColor = Drawing.Color.DarkGreen
         Else
-            txtSessionToken.ForeColor = Color.IndianRed
+            txtSessionToken.ForeColor = Drawing.Color.IndianRed
         End If
     End Sub
 
@@ -71,13 +71,13 @@ Public Class FrmMain
         xsrfToken = Regex.Match(
             txtXSRFToken.Text,
             Chr(34) & "?(?:XSRF-TOKEN[:=])?" & Chr(34) & "?([a-zA-Z0-9]{40})" & Chr(34) & "?"
-        )
+            )
 
         If xsrfToken.Success Then
             txtXSRFToken.Text = xsrfToken.Groups(1).Value.ToString
-            txtXSRFToken.ForeColor = Color.DarkGreen
+            txtXSRFToken.ForeColor = Drawing.Color.DarkGreen
         Else
-            txtXSRFToken.ForeColor = Color.IndianRed
+            txtXSRFToken.ForeColor = Drawing.Color.IndianRed
         End If
     End Sub
 
@@ -90,9 +90,9 @@ Public Class FrmMain
         Dim progName As String = Application.ProductName
 
         If File.Exists(iniFile) = True Then
-            HandleINI("load")
+            HandleIni("load")
         Else
-            HandleINI("generate")
+            HandleIni("generate")
         End If
 
         MaximizeBox = False
@@ -103,13 +103,15 @@ Public Class FrmMain
             tslBrowser.Image = My.Resources.icons8_firefox_24
         ElseIf defaultBrowser = BrowserType.MsEdge Then
             tslBrowser.Image = My.Resources.icons8_edge_24
+            togSkipCheckBrowser.Enabled = False
+            togSkipCheckBrowser.Checked = False
         End If
 
         If CInt(settings.GetValue("Statistics", "RunCount")) = 1 Then
             CacheFileImport(databaseFile, "tbl_packs")
         End If
 
-        ProcessBeatmaps(Nothing, True)
+        mdlBeatmaps.ProcessBeatmaps(Nothing, True)
 
         FrmHelp = New FrmHelp
         FrmHelp.Show()
@@ -117,6 +119,56 @@ Public Class FrmMain
 
         FrmHelp.Text = $"Help - {progName} v{version}"
         Text = $"{progName} v{version}"
+
+        For Each cntl As Control In Me.Controls
+            If TypeOf cntl Is Guna2GroupBox Then
+                AddHandler cntl.MouseEnter, AddressOf GroupHoverColor
+                AddHandler cntl.MouseLeave, AddressOf GroupHoverColor
+                log.Verbose($"Added focus/unfocus handlers for {cntl.Name}")
+            End If
+        Next
+
+        For Each tile As Guna2TileButton In grpModes.Controls
+            AddHandler tile.Click, AddressOf TileClick
+            log.Verbose($"Added click handler for {tile.Name}")
+        Next
+
+        PopulateDataGridView()
+
+        cbFilter.AutoCompleteSource = AutoCompleteSource.CustomSource
+    End Sub
+
+    Private Sub TileClick(sender As Object, e As EventArgs)
+        Dim tile As Guna2TileButton = DirectCast(sender, Guna2TileButton)
+
+        If tile.Checked = True Then
+            tile.Checked = False
+        Else
+            tile.Checked = True
+        End If
+    End Sub
+
+    Private Sub GroupHoverColor(sender As Object, e As EventArgs)
+        Dim grp As Guna2GroupBox = DirectCast(sender, Guna2GroupBox)
+
+        If grp.FillColor = Drawing.Color.White Then
+            grp.FillColor = Drawing.Color.FromArgb(213, 218, 223)
+        ElseIf grp.FillColor = Drawing.Color.FromArgb(213, 218, 223) Then
+            grp.FillColor = Drawing.Color.White
+        End If
+    End Sub
+
+    Private Sub PopulateDataGridView()
+        Dim dataSource As String = $"Datasource={databaseFile};"
+        Dim conn As New SQLiteConnection(dataSource)
+        Dim query As String = "SELECT * FROM tbl_packs"
+        Dim command As New SQLiteCommand(query, conn)
+        Dim adapter As New SQLiteDataAdapter(command)
+        Dim dataTable As New DataTable()
+
+        adapter.Fill(dataTable)
+        dgvListings.DataSource = dataTable
+        cbFilter.AutoCompleteCustomSource.AddRange(dataTable.Columns.Cast(Of DataColumn).Select(Function(x) x.ColumnName).ToArray())
     End Sub
 
     Private Sub PrintRecursive(n As TreeNode)
@@ -128,6 +180,7 @@ Public Class FrmMain
     End Sub
 
     ' Call the procedure using the top nodes of the treeview.
+
     Private Sub CallRecursive(aTreeView As TreeView)
         Dim n As TreeNode
         For Each n In aTreeView.Nodes
@@ -168,7 +221,8 @@ Public Class FrmMain
     Private Function HttpGet(url As String) As HttpResponseMessage
         Dim request As New HttpRequestMessage(HttpMethod.[Get], url)
 
-        request.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:124.0) Gecko/20100101 Firefox/124.0")
+        request.Headers.Add("User-Agent",
+                            "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:124.0) Gecko/20100101 Firefox/124.0")
         request.Headers.Add("Accept", "text/html, application/xhtml+xml")
         request.Headers.Add("Accept-Language", "en-CA,en-US;q=0.7,en;q=0.3")
         request.Headers.Add("Connection", "keep-alive")
@@ -184,68 +238,10 @@ Public Class FrmMain
         Return response
     End Function
 
-    Private Sub PullPacks()
-        Dim types As New List(Of String)
-        Dim response As HttpResponseMessage
-        Dim content As String
-        Dim lines() As String
-        'Dim dataSource As String
-        'Dim conn As SQLiteConnection
-        'Dim cmd As SQLiteCommand
-        Dim count As Integer
-
-        For Each cb As CheckBox In tpPacks.Controls
-            If cb.Checked = True Then
-                types.Add(cb.Name)
-            End If
-        Next
-
-        count = types.Count()
-
-        prgPrimaryTask.Maximum = count
-        prgPrimaryTask.Value = 1
-
-        For Each selected As String In types
-            prgPrimaryTask.Increment(1)
-            Dim type As String = selected.Split("Pack")(1)
-
-            If type = "Spotlight" Then
-                type = "Chart"
-            End If
-
-            response = HttpGet($"https://osu.ppy.sh/beatmaps/packs?type={type.ToLower()}")
-            content = response.Content.ReadAsStringAsync.Result.ToString()
-
-            content = Regex.Replace(content, "(?:[\r\n]+|\s{2,})", " ")
-            lines = content.Split($"class={Chr(34)}beatmap-pack js-beatmap-pack js-accordion__item")
-
-
-
-
-            prgSecondaryTask.Maximum = lines.Length
-            prgSecondaryTask.Value = 1
-
-            For Each line As String In lines
-                prgSecondaryTask.Increment(1)
-                Dim matched As Match = Regex.Match(line,
-                                                   $"{Chr(34)} data-pack-tag={Chr(34)}(.*?){Chr(34)}.*?href={Chr(34) _
-                                                      }(.*?){Chr(34)}.*?pack__name{Chr(34)}>(.*?)<\/div>.*?__date{ _
-                                                      Chr(34)}>(.*?)<\/span>.*?__author--bold{Chr(34)}>(.*?)<\/span>")
-                Dim packTitle As String = matched.Groups(3).Value
-                Dim packAuthor As String = matched.Groups(4).Value
-                Dim packDate As String = matched.Groups(2).Value
-                Dim packCode As String = matched.Groups(1).Value
-                Dim packType As [Enum] = StringToEnum(Of GamePackCategories)(type)
-
-                If packTitle IsNot Nothing Then
-                    'tvListings.Nodes(0).Nodes(GamePackCategories.Standard).Nodes.Add(packTitle)
-                End If
-            Next
-        Next
-    End Sub
-
     Private Sub cbFilter_Click(sender As Object, e As EventArgs) Handles cbFilter.Click
-        cbFilter.Text = ""
+        If cbFilter.Text = $"<Filter ... >" Then
+            cbFilter.Text = ""
+        End If
     End Sub
 
     Private Sub cbFilter_LostFocus(sender As Object, e As EventArgs) Handles cbFilter.LostFocus
@@ -255,7 +251,7 @@ Public Class FrmMain
     End Sub
 
     Private Sub btnPullSelected_Click(sender As Object, e As EventArgs) Handles btnSyncSelected.Click
-        PullPacks
+        mdlBeatmaps.PullPacks()
     End Sub
 
     Private Sub btnCheckSession_Click(sender As Object, e As EventArgs) Handles btnCheckSession.Click
@@ -270,21 +266,23 @@ Public Class FrmMain
             Else
                 MessageBox.Show(
                     $"XSRF Token does not appear to be valid - Should be in the format: XSRF-TOKEN={Chr(34)}{ _
-                                   StrDup(40, "X").ToString}", $"Error!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                                   StrDup(40, "X").ToString}", $"Error!", MessageBoxButtons.OK,
+                    MessageBoxIcon.Exclamation)
             End If
         Else
             MessageBox.Show(
                 $"Osu Session Token does not appear to be valid - Should be in the format: osu_session={Chr(34)}{ _
-                               StrDup(300, "X").ToString}%3D", $"Error!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                               StrDup(300, "X").ToString}%3D", $"Error!", MessageBoxButtons.OK,
+                MessageBoxIcon.Exclamation)
         End If
 
-        sessionCheck = VerifySession
+        sessionCheck = VerifySession()
 
         If sessionCheck = OsuSession.Valid Then
-            tslAuthenticatedValue.ForeColor = Color.DarkGreen
+            tslAuthenticatedValue.ForeColor = Drawing.Color.DarkGreen
             tslAuthenticatedValue.Image = My.Resources.icons8_lock_24_green
         Else
-            tslAuthenticatedValue.ForeColor = Color.GoldenRod
+            tslAuthenticatedValue.ForeColor = Drawing.Color.Goldenrod
             tslAuthenticatedValue.Text = My.Resources.MAIN_BTN_INVALID_SESSION
             tslAuthenticatedValue.Image = My.Resources.icons8_lock_24_yellow
         End If
@@ -298,8 +296,8 @@ Public Class FrmMain
         fdbTempFolder.ShowDialog()
     End Sub
 
-    Private Sub btnSetOsuFolder_Click(sender As Object, e As EventArgs)
-        fdbOsuFolder.ShowDialog
+    Private Sub btnSetOsuFolder_Click(sender As Object, e As EventArgs) Handles btnSetOsuFolder.Click
+        fdbOsuFolder.ShowDialog()
     End Sub
 
     Private Sub HandleIni(how As String)
@@ -362,9 +360,9 @@ Public Class FrmMain
             lblSleepInterval.Text = tbSleepInterval.Value.ToString()
 
             togDontExtractArchives.Checked = CBool((settings.GetValue("Options", "DontExtractArchives").ToString()))
-            togDisregardCache.Checked = CBool(settings.GetValue("Options", "DisregardCache"))
-            chkVerboseLogging.Checked = CBool(settings.GetValue("Options", "VerboseLogging"))
-            chkOverwriteExistingFiles.Checked = CBool(settings.GetValue("Options", "OverwriteExisting"))
+            togSkipCheckBrowser.Checked = CBool(settings.GetValue("Options", "DisregardCache"))
+            togVerboseLogging.Checked = CBool(settings.GetValue("Options", "VerboseLogging"))
+            togOverwriteExisting.Checked = CBool(settings.GetValue("Options", "OverwriteExisting"))
 
             fdbOsuFolder.SelectedPath = settings.GetValue("Paths", "OsuFolder")
             fdbTempFolder.SelectedPath = settings.GetValue("Paths", "TempFolder")
@@ -378,9 +376,9 @@ Public Class FrmMain
             settings.SetValue("Options", "ForkValue", tbForkValue.Value.ToString())
             settings.SetValue("Options", "SleepInterval", tbSleepInterval.Value.ToString())
             settings.SetValue("Options", "DontExtractArchives", togDontExtractArchives.Checked.ToString())
-            settings.SetValue("Options", "DisregardCache", togDisregardCache.Checked.ToString())
-            settings.SetValue("Options", "VerboseLogging", chkVerboseLogging.Checked.ToString())
-            settings.SetValue("Options", "OverwriteExisting", chkOverwriteExistingFiles.Checked.ToString())
+            settings.SetValue("Options", "DisregardCache", togSkipCheckBrowser.Checked.ToString())
+            settings.SetValue("Options", "VerboseLogging", togVerboseLogging.Checked.ToString())
+            settings.SetValue("Options", "OverwriteExisting", togOverwriteExisting.Checked.ToString())
 
             settings.SetValue("Paths", "DownloadFolder", fdbDownloadFolder.SelectedPath)
             settings.SetValue("Paths", "TempFolder", fdbTempFolder.SelectedPath)
@@ -390,7 +388,8 @@ Public Class FrmMain
             settings.SetValue("Cookies", "osu_session", txtSessionToken.Text)
 
             settings.SetValue("Database", "DatabaseFile", databaseFile)
-            settings.SetValue("Statistics", "RunCount", (CInt(settings.GetValue("Statistics", "RunCount")) + 1).ToString())
+            settings.SetValue("Statistics", "RunCount",
+                              (CInt(settings.GetValue("Statistics", "RunCount")) + 1).ToString())
 
             settings.Persist(iniFile)
         End If
@@ -399,23 +398,22 @@ Public Class FrmMain
     Private Sub btnCheckDownloadFolder_Click(sender As Object, e As EventArgs) Handles btnCheckDownloadFolder.Click
         Guna2MessageDialog1.Caption = "Current Download Path"
         Guna2MessageDialog1.Text = fdbDownloadFolder.SelectedPath
-        Guna2MessageDialog1.Show
+        Guna2MessageDialog1.Show()
         Guna2MessageDialog1.Style = MessageDialogStyle.Dark
     End Sub
 
     Private Sub btnCheckTempFolder_Click(sender As Object, e As EventArgs) Handles btnCheckTempFolder.Click
         Guna2MessageDialog1.Caption = "Current Temp Path"
         Guna2MessageDialog1.Text = fdbTempFolder.SelectedPath
-        Guna2MessageDialog1.Show
+        Guna2MessageDialog1.Show()
         Guna2MessageDialog1.Style = MessageDialogStyle.Dark
     End Sub
 
     Private Sub btnCheckOsuFolder_Click(sender As Object, e As EventArgs) Handles btnCheckOsuFolder.Click
         Guna2MessageDialog1.Caption = "Current Osu! Path"
         Guna2MessageDialog1.Text = fdbOsuFolder.SelectedPath
-        Guna2MessageDialog1.Show
+        Guna2MessageDialog1.Show()
         Guna2MessageDialog1.Style = MessageDialogStyle.Dark
-
     End Sub
 
     Private Sub FrmMain_Closing(sender As Object, e As CancelEventArgs) Handles Me.Closing
@@ -426,7 +424,17 @@ Public Class FrmMain
         HandleIni("close")
     End Sub
 
-    Private Sub Guna2GroupBox3_Click(sender As Object, e As EventArgs) Handles Guna2GroupBox3.Click
-
+    Private Sub ExitToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ExitToolStripMenuItem.Click
+        Close()
     End Sub
+
+    Private Sub togSkipCheckBrowser_Click(sender As Object, e As EventArgs) Handles togSkipCheckBrowser.Click
+        If togSkipCheckBrowser.Enabled = False Then
+            Guna2MessageDialog1.Caption = "Unsupported Browser"
+            Guna2MessageDialog1.Text = "This feature is not supported for Microsoft Edge"
+            Guna2MessageDialog1.Buttons = MessageDialogButtons.OK
+            Guna2MessageDialog1.Style = MessageDialogStyle.Light
+        End If
+    End Sub
+
 End Class
