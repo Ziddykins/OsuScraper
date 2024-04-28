@@ -53,7 +53,8 @@ Friend Module Cookies
         dataSource = "Data Source=" & cookiesFile & ";"
         conn = New SQLiteConnection(dataSource)
         cmd = conn.CreateCommand()
-        cmd.CommandText = $"SELECT {columns(0)}, {columns(1)} FROM main.{databaseName} WHERE {columns(2)} LIKE " & domainHost
+        cmd.CommandText = $"SELECT {columns(0)}, {columns(1)} FROM main.{databaseName} WHERE {columns(2)} LIKE " &
+                          domainHost
         conn.Open()
 
         Using reader As SQLiteDataReader = cmd.ExecuteReader()
@@ -83,7 +84,8 @@ Friend Module Cookies
         Return cookiesDict
     End Function
 
-    Public Function _decryptWithKey(ByVal message As Byte(), ByVal key As Byte(), ByVal nonSecretPayloadLength As Integer) As String
+    Public Function _decryptWithKey(ByVal message As Byte(), ByVal key As Byte(),
+                                    ByVal nonSecretPayloadLength As Integer) As String
         Const keyBitSize As Integer = 256
         Const macBitSize As Integer = 128
         Const nonceBitSize As Integer = 96
@@ -146,7 +148,7 @@ Friend Module Cookies
             Convert.FromBase64String(encodedKey).Skip(5).ToArray(),
             Nothing,
             DataProtectionScope.LocalMachine
-        )
+            )
 
         Return decodedKey
     End Function
