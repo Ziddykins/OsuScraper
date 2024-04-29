@@ -89,6 +89,8 @@ Public Class FrmMain
         Dim version As String = Application.ProductVersion.Split("+")(0)
         Dim progName As String = Application.ProductName
 
+        pbLocked.BringToFront()
+
         If File.Exists(iniFile) = True Then
             HandleIni("load")
         Else
@@ -127,15 +129,6 @@ Public Class FrmMain
                 log.Verbose($"Added focus/unfocus handlers for {cntl.Name}")
             End If
         Next
-
-        For Each tile As Guna2TileButton In grpModes.Controls
-            AddHandler tile.Click, AddressOf TileClick
-            log.Verbose($"Added click handler for {tile.Name}")
-        Next
-
-        PopulateDataGridView()
-
-        cbFilter.AutoCompleteSource = AutoCompleteSource.CustomSource
     End Sub
 
     Private Sub TileClick(sender As Object, e As EventArgs)
@@ -158,18 +151,18 @@ Public Class FrmMain
         End If
     End Sub
 
-    Private Sub PopulateDataGridView()
-        Dim dataSource As String = $"Datasource={databaseFile};"
-        Dim conn As New SQLiteConnection(dataSource)
-        Dim query As String = "SELECT * FROM tbl_packs"
-        Dim command As New SQLiteCommand(query, conn)
-        Dim adapter As New SQLiteDataAdapter(command)
-        Dim dataTable As New DataTable()
+    '
+    '        Dim dataSource As String = $"Datasource={databaseFile};"
+    '        Dim conn As New SQLiteConnection(dataSource)
+    '        Dim query As String = "SELECT * FROM tbl_packs"
+    '        Dim command As New SQLiteCommand(query, conn)
+    '        Dim adapter As New SQLiteDataAdapter(command)
+    '        Dim dataTable As New DataTable()''''
 
-        adapter.Fill(dataTable)
-        dgvListings.DataSource = dataTable
-        cbFilter.AutoCompleteCustomSource.AddRange(dataTable.Columns.Cast(Of DataColumn).Select(Function(x) x.ColumnName).ToArray())
-    End Sub
+    'adapter.Fill(dataTable)
+    'dgvListings.DataSource = dataTable
+    'cbFilter.AutoCompleteCustomSource.AddRange(dataTable.Columns.Cast(Of DataColumn).Select(Function(x) x.ColumnName).ToArray())
+    'EndSub
 
     Private Sub PrintRecursive(n As TreeNode)
         log.Information("Layer: {n}", n.Text)
@@ -238,18 +231,6 @@ Public Class FrmMain
         Return response
     End Function
 
-    Private Sub cbFilter_Click(sender As Object, e As EventArgs) Handles cbFilter.Click
-        If cbFilter.Text = $"<Filter ... >" Then
-            cbFilter.Text = ""
-        End If
-    End Sub
-
-    Private Sub cbFilter_LostFocus(sender As Object, e As EventArgs) Handles cbFilter.LostFocus
-        If cbFilter.Text = "" Then
-            cbFilter.Text = $"<Filter ... >"
-        End If
-    End Sub
-
     Private Sub btnPullSelected_Click(sender As Object, e As EventArgs) Handles btnSyncSelected.Click
         mdlBeatmaps.PullPacks()
     End Sub
@@ -281,6 +262,7 @@ Public Class FrmMain
         If sessionCheck = OsuSession.Valid Then
             tslAuthenticatedValue.ForeColor = Drawing.Color.DarkGreen
             tslAuthenticatedValue.Image = My.Resources.icons8_lock_24_green
+            pbLocked.Visible = False
         Else
             tslAuthenticatedValue.ForeColor = Drawing.Color.Goldenrod
             tslAuthenticatedValue.Text = My.Resources.MAIN_BTN_INVALID_SESSION

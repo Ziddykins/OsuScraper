@@ -5,12 +5,11 @@ Imports System.Net.Http
 Imports System.Text.RegularExpressions
 
 Public Class OsuCatelogue
-    Protected beatmapsets() As beatmapsets
+    Protected beatmapsets() As Beatmapset
 
-    Private Function AddToCatelogue(beatmapset As Beatmapset)
+    Private Sub AddToCatelogue(beatmapset As Beatmapset)
 
-        Return 1
-    End Function
+    End Sub
 
     Private Function GetPropertyValue(propertyName As String) As Object
         Dim propertyInfo As System.Reflection.PropertyInfo = Me.GetType().GetProperty(propertyName)
@@ -30,16 +29,6 @@ Public Class OsuCatelogue
         End If
     End Sub
 
-End Class
-
-Public Class Rootobject
-    Public Property beatmapsets() As Beatmapset
-    Public Property search As Search
-    Public Property recommended_difficulty As Single
-    Public Property _error As Object
-    Public Property total As Integer
-    Public Property cursor As Cursor
-    Public Property cursor_string As String
 End Class
 
 Public Class Search
